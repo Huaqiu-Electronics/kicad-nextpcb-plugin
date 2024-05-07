@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs, urlencode
 from wx.lib.pubsub import pub
 from pathlib import Path
 import tempfile
-from nextPCB_plugin.order.supported_region import SupportedRegion
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 
 class UploadFile:
     def __init__(self, board_manager: BoardManager, url, forms, smt_order_region, number ):
@@ -24,7 +24,7 @@ class UploadFile:
             Path(self.file_path).mkdir(parents=True, exist_ok=True)
         except PermissionError as e:
             self.file_path = os.path.join(tempfile.gettempdir(), "nextpcb")
-        
+
         self.usa_get_files()
         self.upload_pcbfile()
         self.upload_smtfile()

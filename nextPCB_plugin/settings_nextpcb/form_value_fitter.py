@@ -1,4 +1,4 @@
-from nextPCB_plugin.order.supported_region import SupportedRegion
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from .setting_manager import SETTING_MANAGER
 
 MAPPING = {

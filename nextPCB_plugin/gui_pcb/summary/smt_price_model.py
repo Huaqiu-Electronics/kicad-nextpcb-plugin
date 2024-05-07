@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from .price_model_base import PriceModelBase, PriceModelCol, PriceItem
-from nextPCB_plugin.utils.number_round import number_round
+from nextPCB_plugin.utils_nextpcb.number_round import number_round
 
 
 TRANSLATED = {

@@ -1,9 +1,9 @@
 import wx
 import os
-from nextPCB_plugin.gui_nextpcb.event.pcb_fabrication_evt_list import LocaleChangeEvent
+from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import LocaleChangeEvent
 from .kicad_setting import KiCadSetting
-from nextPCB_plugin.order.supported_region import SupportedRegion
-from nextPCB_plugin.utils.public_ip import get_ip_country
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+from nextPCB_plugin.utils_nextpcb.public_ip import get_ip_country
 
 APP_NAME = "kicad_amf_plugin"
 

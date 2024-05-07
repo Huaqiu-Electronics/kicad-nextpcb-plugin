@@ -6,7 +6,7 @@ from .smt_price_model import SmtPriceModel
 from .price_model_base import PriceModelCol
 from .price_model_base import PriceModelBase, PriceItem
 from enum import Enum
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 
 
 class PriceCategory(Enum):

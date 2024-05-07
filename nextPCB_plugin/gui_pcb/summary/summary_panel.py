@@ -1,15 +1,15 @@
-from nextPCB_plugin.order.supported_region import SupportedRegion
-from nextPCB_plugin.utils.roles import EditDisplayRole
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
 from .ui_summary_panel import UiSummaryPanel
-from nextPCB_plugin.icon import GetImagePath
+from nextPCB_plugin.icon_pcb import GetImagePath
 import wx
 from .order_summary_model import OrderSummaryModel
 from .price_summary_model import PriceSummaryModel
 
 
 import wx.dataview as dv
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
-from nextPCB_plugin.gui_nextpcb.event.pcb_fabrication_evt_list import (
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     UpdatePrice,
     PlaceOrder,
     OrderRegionChanged,
@@ -23,7 +23,7 @@ from nextPCB_plugin.kicad.board_manager import BoardManager
 from nextPCB_plugin.kicad_nextpcb_new.mainwindow import NextPCBTools
 from nextPCB_plugin.kicad_nextpcb_new.store import Store
 import os
-from nextPCB_plugin.api.base_request import (  SmtRequest )
+from nextPCB_plugin.api_pcb.base_request import (  SmtRequest )
 
 from pathlib import Path
 import tempfile
@@ -78,7 +78,7 @@ class SummaryPanel(UiSummaryPanel):
         )
         self.Bind(EVT_PANEL_TAB_CONTROL, self.init_ui)
         self.btn_bom_match.Bind(wx.EVT_BUTTON, self.on_bom_match)
-        self.btn_bom_match.Enable(False)
+        # self.btn_bom_match.Enable(False)
 
     def init_ui(self ):
         self.list_bom_view.AppendTextColumn(

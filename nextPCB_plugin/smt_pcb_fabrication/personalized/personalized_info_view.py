@@ -1,14 +1,14 @@
 import wx
-from nextPCB_plugin.order.order_region import OrderRegion, SupportedRegion
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
-from nextPCB_plugin.settings.form_value_fitter import fitter_and_map_form_value
+from nextPCB_plugin.order_nextpcb.order_region import OrderRegion, SupportedRegion
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .personalized_info_model import PersonalizedInfoModel
 from .ui_smt_personalized import UiPersonalizedService, BOX_SP_REQUEST
-from nextPCB_plugin.utils.constraint import BOOLEAN_CHOICE
+from nextPCB_plugin.utils_nextpcb.constraint import BOOLEAN_CHOICE
 from .personalized_info_model import PersonalizedInfoModel
-from nextPCB_plugin.utils.form_panel_base import FormKind, FormPanelBase
-from nextPCB_plugin.utils.roles import EditDisplayRole
-from nextPCB_plugin.settings.single_plugin import SINGLE_PLUGIN
+from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
+from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
+from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 
 ASSEMBLY_WELD ={
     _("No Need"): "No Need",

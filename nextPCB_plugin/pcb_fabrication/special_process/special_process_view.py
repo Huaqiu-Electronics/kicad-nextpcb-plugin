@@ -1,15 +1,15 @@
 from nextPCB_plugin.kicad.board_manager import BoardManager
-from nextPCB_plugin.order.order_region import SupportedRegion
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
-from nextPCB_plugin.settings.form_value_fitter import fitter_and_map_form_value
+from nextPCB_plugin.order_nextpcb.order_region import SupportedRegion
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .ui_special_process import UiSpecialProcess
 from .special_process_model import SpecialProcessModel
 import wx
 import wx.xrc
 import wx.dataview
-from nextPCB_plugin.utils.constraint import BOOLEAN_CHOICE
+from nextPCB_plugin.utils_nextpcb.constraint import BOOLEAN_CHOICE
 from .special_process_model import SpecialProcessModel
-from nextPCB_plugin.utils.form_panel_base import FormKind, FormPanelBase
+from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 
 HDI_STRUCTURE_CHOICE = [_("N/A"), _("Rank 1"), _("Rank 2"), _("Rank 3")]
 

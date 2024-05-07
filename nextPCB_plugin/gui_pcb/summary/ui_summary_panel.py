@@ -10,8 +10,8 @@
 import wx
 import wx.xrc
 import wx.dataview
-from nextPCB_plugin.utils.platebtn import PlateButton ,PB_STYLE_GRADIENT
-from nextPCB_plugin.utils.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE
+from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT
+from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE
 
 import gettext
 _ = gettext.gettext

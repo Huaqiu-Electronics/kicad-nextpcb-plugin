@@ -3,8 +3,8 @@
 import pcbnew
 import os
 
-from nextPCB_plugin.plugin._main import _main
-from nextPCB_plugin.icon import ICON_ROOT
+from nextPCB_plugin.plugin_nextpcb._main import _main
+from nextPCB_plugin.icon_pcb import ICON_ROOT
 
 
 class NextPCBPlugin(pcbnew.ActionPlugin):

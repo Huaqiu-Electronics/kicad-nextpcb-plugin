@@ -1,11 +1,11 @@
 from nextPCB_plugin.kicad.board_manager import BoardManager
-from nextPCB_plugin.settings.form_value_fitter import fitter_and_map_form_value
+from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .process_info_model import ProcessInfoModel
-from nextPCB_plugin.utils.form_panel_base import FormKind, FormPanelBase
-from nextPCB_plugin.utils.roles import EditDisplayRole
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
-from nextPCB_plugin.settings.single_plugin import SINGLE_PLUGIN
-from nextPCB_plugin.order.supported_region import SupportedRegion
+from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
+from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 
 from .ui_process_info import UiProcessInfo
 import wx

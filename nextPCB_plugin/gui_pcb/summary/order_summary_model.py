@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import wx.dataview as dv
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from enum import Enum
 
 from collections import namedtuple

@@ -596,7 +596,7 @@
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
                                 <property name="id">wxID_ANY</property>
-                                <property name="include">from nextPCB_plugin.utils.platebtn import PlateButton ,PB_STYLE_GRADIENT</property>
+                                <property name="include">from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1135,7 +1135,7 @@
                 <property name="gripper">0</property>
                 <property name="hidden">0</property>
                 <property name="id">wxID_ANY</property>
-                <property name="include">from nextPCB_plugin.utils.platebtn import PlateButton ,PB_STYLE_GRADIENT</property>
+                <property name="include">from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT</property>
                 <property name="max_size"></property>
                 <property name="maximize_button">0</property>
                 <property name="maximum_size"></property>
@@ -1198,7 +1198,7 @@
                 <property name="gripper">0</property>
                 <property name="hidden">0</property>
                 <property name="id">wxID_ANY</property>
-                <property name="include">from nextPCB_plugin.utils.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE</property>
+                <property name="include">from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE</property>
                 <property name="max_size"></property>
                 <property name="maximize_button">0</property>
                 <property name="maximum_size"></property>

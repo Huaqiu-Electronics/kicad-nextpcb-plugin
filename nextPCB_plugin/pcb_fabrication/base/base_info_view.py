@@ -1,10 +1,10 @@
 from nextPCB_plugin.kicad.board_manager import BoardManager
-from nextPCB_plugin.order.supported_region import SupportedRegion
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
-from nextPCB_plugin.settings.single_plugin import SINGLE_PLUGIN
-from nextPCB_plugin.utils.form_panel_base import FormKind, FormPanelBase
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
+from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 from .base_info_model import BaseInfoModel
-from nextPCB_plugin.gui_nextpcb.event.pcb_fabrication_evt_list import (
+from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     LayerCountChange, boardCount,EVT_BOARD_COUNT )
 from .ui_base_info import (
     UiBaseInfo,
@@ -12,13 +12,13 @@ from .ui_base_info import (
     BOX_PANEL_SETTING,
     BOX_BREAK_AWAY,
 )
-from nextPCB_plugin.utils.validators import (
+from nextPCB_plugin.utils_nextpcb.validators import (
     NumericTextCtrlValidator,
     FloatTextCtrlValidator,
 )
-from nextPCB_plugin.utils.roles import EditDisplayRole
-from nextPCB_plugin.settings.form_value_fitter import fitter_and_map_form_value
-from nextPCB_plugin.settings.supported_layer_count import AVAILABLE_LAYER_COUNTS
+from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
+from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
+from nextPCB_plugin.settings_nextpcb.supported_layer_count import AVAILABLE_LAYER_COUNTS
 
 import pcbnew
 import wx

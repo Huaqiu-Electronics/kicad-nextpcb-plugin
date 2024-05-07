@@ -1,11 +1,11 @@
-from nextPCB_plugin.gui_nextpcb.summary.price_summary_model import PriceCategory
+from nextPCB_plugin.gui_pcb.summary.price_summary_model import PriceCategory
 from nextPCB_plugin.kicad.board_manager import BoardManager
 from nextPCB_plugin.kicad.fabrication_data_generator_evt import (
     EVT_BUTTON_FABRICATION_DATA_GEN_RES,
     FabricationDataGenEvent,
     GenerateStatus,
 )
-from nextPCB_plugin.order.supported_region import SupportedRegion
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.pcb_fabrication.base.base_info_view import BaseInfoView
 from nextPCB_plugin.pcb_fabrication.process.process_info_view import ProcessInfoView
 from nextPCB_plugin.pcb_fabrication.special_process.special_process_view import (
@@ -14,11 +14,11 @@ from nextPCB_plugin.pcb_fabrication.special_process.special_process_view import 
 from nextPCB_plugin.pcb_fabrication.personalized.personalized_info_view import (
     PersonalizedInfoView,
 )
-from nextPCB_plugin.gui_nextpcb.summary.summary_panel import SummaryPanel
-from nextPCB_plugin.settings.default_express import DEFAULT_EXPRESS ,ALLOWED_KEYS , ADDED_DATA
-from nextPCB_plugin.settings.single_plugin import SINGLE_PLUGIN
-from nextPCB_plugin.utils.form_panel_base import FormKind, FormPanelBase
-from nextPCB_plugin.gui_nextpcb.event.pcb_fabrication_evt_list import (
+from nextPCB_plugin.gui_pcb.summary.summary_panel import SummaryPanel
+from nextPCB_plugin.settings_nextpcb.default_express import DEFAULT_EXPRESS ,ALLOWED_KEYS , ADDED_DATA
+from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
+from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
+from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     EVT_LAYER_COUNT_CHANGE,
     EVT_UPDATE_PRICE,
     EVT_PLACE_ORDER,
@@ -27,11 +27,11 @@ from nextPCB_plugin.gui_nextpcb.event.pcb_fabrication_evt_list import (
     PanelTabControl,
     EVT_COMBO_NUMBER,
 )
-from nextPCB_plugin.settings.setting_manager import SETTING_MANAGER
+from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.kicad.fabrication_data_generator import FabricationDataGenerator
-from nextPCB_plugin.api.base_request import ( BaseRequest, SmtRequest, SmtFiles )
-from nextPCB_plugin.utils.request_helper import RequestHelper
-from nextPCB_plugin.gui_nextpcb.summary.order_summary_model import (
+from nextPCB_plugin.api_pcb.base_request import ( BaseRequest, SmtRequest, SmtFiles )
+from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
+from nextPCB_plugin.gui_pcb.summary.order_summary_model import (
     AVAILABLE_TIME_UNIT,
     OrderSummary,
     BuildTime,
@@ -44,7 +44,7 @@ import urllib
 import requests
 import webbrowser
 import json
-from nextPCB_plugin.order.order_region import OrderRegion, URL_KIND
+from nextPCB_plugin.order_nextpcb.order_region import OrderRegion, URL_KIND
 from nextPCB_plugin.kicad.fabrication_data_generator_thread import DataGenThread
 from enum import Enum
 
@@ -55,7 +55,7 @@ from nextPCB_plugin.smt_pcb_fabrication.personalized.personalized_info_view impo
     SmtPersonalizedInfoView,
 )
 from urllib.parse import urlencode
-from nextPCB_plugin.gui_nextpcb.summary.upload_file import UploadFile
+from nextPCB_plugin.gui_pcb.summary.upload_file import UploadFile
 from wx.lib.pubsub import pub
 
 class SMTPCBFormPart(Enum):

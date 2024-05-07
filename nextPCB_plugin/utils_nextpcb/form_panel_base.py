@@ -1,7 +1,7 @@
 import abc
 from enum import Enum
 
-from nextPCB_plugin.order.supported_region import SupportedRegion
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from .number_round import number_round
 
 

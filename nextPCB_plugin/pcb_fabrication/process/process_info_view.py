@@ -1,7 +1,7 @@
 from nextPCB_plugin.kicad.board_manager import BoardManager
-from nextPCB_plugin.settings.form_value_fitter import fitter_and_map_form_value
+from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .process_info_model import ProcessInfoModel
-from nextPCB_plugin.utils.form_panel_base import FormKind, FormPanelBase
+from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 
 
 from .ui_process_info import UiProcessInfo
