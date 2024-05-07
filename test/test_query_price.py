@@ -1,8 +1,8 @@
 from .test_utils import TestUtils
 from . import TEST_ROOT
-from kicad_amf_plugin.utils.request_helper import RequestHelper
-from kicad_amf_plugin.order.supported_region import SupportedRegion
-from kicad_amf_plugin.order.order_region import OrderRegion, URL_KIND
+from nextPCB_plugin.utils.request_helper import RequestHelper
+from nextPCB_plugin.order.supported_region import SupportedRegion
+from nextPCB_plugin.order.order_region import OrderRegion, URL_KIND
 
 import requests
 
