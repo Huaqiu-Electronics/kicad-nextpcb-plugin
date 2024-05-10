@@ -4,22 +4,16 @@ from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 from .base_info_model import BaseInfoModel
-from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
-    LayerCountChange, boardCount,EVT_BOARD_COUNT )
 from .ui_smt_base_info import (
     UiSmtBaseInfo,
     BOX_SIZE_SETTING,
     # BOX_PANEL_SETTING,
     # BOX_BREAK_AWAY,
 )
-from nextPCB_plugin.utils_nextpcb.validators import (
-    NumericTextCtrlValidator,
-    FloatTextCtrlValidator,
-)
+
 from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
 from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from nextPCB_plugin.settings_nextpcb.supported_layer_count import AVAILABLE_LAYER_COUNTS
-from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import ( ComboNumber )
 
 import pcbnew
 import wx
@@ -188,12 +182,13 @@ class SmtBaseInfoView(UiSmtBaseInfo, FormPanelBase):
 
 
     def loadBoardInfo(self):
-        boardWidth = pcbnew.ToMM(
-            self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth()
-        )
-        boardHeight = pcbnew.ToMM(
-            self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight()
-        )
+        from nextPCB_plugin.kicad.board_manager import BoardVarManager
+        
+        board_var_manager = BoardVarManager()
+        board_var_manager._init_event.wait()
+        boardWidth = pcbnew.ToMM( board_var_manager._board_width )
+        boardHeight = pcbnew.ToMM( board_var_manager._board_height )
+        
         self.edit_size_x.SetValue(str(boardWidth))
         self.edit_size_y.SetValue(str(boardHeight))
 
@@ -203,7 +198,6 @@ class SmtBaseInfoView(UiSmtBaseInfo, FormPanelBase):
 
 
     def on_region_changed(self):
-        # pass
         for i in [self.application_sphere, self.application_sphere_label,   
                 self.is_pcb_soft_board, self.is_pcb_soft_board_label,
                 self.custom_pcb_board, self.custom_pcb_board_label,

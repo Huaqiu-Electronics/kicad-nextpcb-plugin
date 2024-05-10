@@ -13,7 +13,7 @@ import wx.dataview as dv
 parameters = {
     "mpn": _("MPN"),
     "manufacturer": _("Manufacturer"),
-    "package": _("Package / Footprint"),
+    "pkg": _("Package / Footprint"),
     "category": _("Category"),
     "part_desc": _("Description"),
 }
@@ -122,7 +122,11 @@ class PartDetailsView(UiPartDetailsPanel):
                         key = f">{break_min} Piece($)"
                     else:
                         key = f"{break_min}-{break_max} Piece($)"
-                    price_echelon[key] = price_range["rmb"]
+                    price_echelon[key] = price_range.get("rmb", "-")
+                    # if not price_range["rmb"]:
+                    #     price_echelon[key] = "-"
+                    # else:
+                    #     price_echelon[key] = price_range["rmb"]
                 # Populate self.data_list with the key-value pairs
                 for key, value in price_echelon.items():
                     self.data_list.AppendItem([key, str(value)])

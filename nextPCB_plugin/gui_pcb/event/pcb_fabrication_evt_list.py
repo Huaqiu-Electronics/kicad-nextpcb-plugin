@@ -1,16 +1,7 @@
 import wx.lib.newevent as ne
 
+
 LocaleChangeEvent, EVT_LOCALE_CHANGE = ne.NewCommandEvent()
-
-# PackageChangeEvt, EVT_PACKAGE_CHANGE = ne.NewCommandEvent()
-
-# MarginModeChangedEvt, EVT_MARGIN_MODE_CHANGE = ne.NewCommandEvent()
-
-# SurfaceProcessChanged, EVT_SURFACE_PROCESS_CHANGE = ne.NewCommandEvent()
-
-# HDIChanged, EVT_HDI_CHANGE = ne.NewCommandEvent()
-
-# ReportChanged, EVT_REPORT_CHANGE = ne.NewCommandEvent()
 
 UpdatePrice, EVT_UPDATE_PRICE = ne.NewCommandEvent()
 
@@ -30,3 +21,8 @@ boardCount, EVT_BOARD_COUNT = ne.NewCommandEvent()
 PanelTabControl, EVT_PANEL_TAB_CONTROL = ne.NewCommandEvent()
 
 ComboNumber, EVT_COMBO_NUMBER = ne.NewCommandEvent()
+
+
+ShowTipFlnsihedCopperWeight, EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT = ne.NewCommandEvent()
+
+ShowSolderMaskColor, EVT_SHOW_SOLDER_MASK_COLOR = ne.NewCommandEvent()

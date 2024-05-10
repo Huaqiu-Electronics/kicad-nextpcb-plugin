@@ -7,9 +7,13 @@ DEFAULT_CERTIFICATION = True
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 
 
+
 def _main():
     if not SINGLE_PLUGIN.show_existing():
         from nextPCB_plugin.gui_pcb.app_base import NextPCBApp
+        from nextPCB_plugin.settings_nextpcb.timestamp import TimeStamp
+        timestamp=TimeStamp()
+        timestamp.log( "start load pcb ", level='info')
         app = NextPCBApp()
         if app.load_success():
             app.startup_dialog()

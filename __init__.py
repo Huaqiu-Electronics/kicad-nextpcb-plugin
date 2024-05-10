@@ -6,8 +6,10 @@ try:
     if PLUGIN_ROOT not in sys.path:
         sys.path.append(PLUGIN_ROOT)
     from .nextPCB_plugin.plugin_nextpcb.kicad_amf_action_plugin import NextPCBPlugin
-
     NextPCBPlugin().register()
+    
+
+
 except Exception as e:
     import logging
 

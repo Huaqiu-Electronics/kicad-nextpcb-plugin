@@ -8,7 +8,9 @@ from .ui_process_info import UiProcessInfo
 import wx
 import pcbnew
 from pcbnew import PCB_TRACK, PCB_TRACE_T, PCB_ARC_T, PCB_VIA_T
-
+from nextPCB_plugin.kicad.board_manager import BoardVarManager
+from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import ( ShowTipFlnsihedCopperWeight,
+                                                                   ShowSolderMaskColor )
 
 THICKNESS_SETTING = {
     "1": ["0.6", "0.8", "1.0", "1.2", "1.6", "2.0"],
@@ -93,16 +95,28 @@ ZO_2_SILK_SCREEN_COLOR_BY_SOLDER_COLOR = {
     _("Green"): [_("White")],
 }
 
+class MyCommandEvent(wx.PyEvent):
+    def __init__(self, etag, weight):
+        wx.PyEvent.__init__(self, etag)
+        self.weight = weight
+
+
 class ProcessInfoView(UiProcessInfo, FormPanelBase):
     def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
         self.board_manager = board_manager
+        self.board_var_manager = BoardVarManager()
+        self.board_var_manager._init_event.wait()
 
         self.combo_surface_process.Bind(wx.EVT_CHOICE, self.on_surface_process_changed)
         self.combo_solder_color.Bind(wx.EVT_CHOICE, self.OnMaskColorChange)
         self.combo_outer_copper_thickness.Bind(wx.EVT_CHOICE, self.on_outer_thickness_changed)
         self.combo_board_thickness.Bind(wx.EVT_CHOICE, self.on_thickness_selection)
+        self.xx_handle = None
         self.Fit()
+        
+
+        
 
     @fitter_and_map_form_value
     def get_from(self, kind: FormKind) -> "dict":
@@ -181,7 +195,8 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
 
     @property
     def layer_count(self):
-        return self.board_manager.board.GetCopperLayerCount()
+        return self.board_var_manager._layer_count
+        # return self.board_manager.board.GetCopperLayerCount()
 
     def get_board_thickness_in_kicad_setting(self):
         return self.board_manager.board.GetDesignSettings().GetBoardThickness()
@@ -264,7 +279,7 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
             minHoleSize = 0.15
             self.combo_min_hole_size.SetSelection(3)
 
-    def OnMaskColorChange(self, event):
+    def OnMaskColorChange(self, evt):
         self.combo_silk_screen_color.Clear()
         self.combo_silk_screen_color.Append(
             SILK_SCREEN_COLOR_BY_SOLDER_COLOR[
@@ -273,18 +288,34 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
         )
         self.combo_silk_screen_color.SetSelection(0)
         
-    def on_outer_thickness_changed(self, event):
+        evt = ShowSolderMaskColor( -1 ,solder_color_selection = self.combo_solder_color.GetStringSelection())
+        wx.PostEvent(self.GetEventHandler(), evt) 
+        
+        
+    def register_xx_handle(self, handle ):
+        self.xx_handle = handle
+        
+
+    def on_outer_thickness_changed(self, evt):
         if self.combo_outer_copper_thickness.GetSelection() == 1:  # Index 1 corresponds to '2 oz'
             self.combo_solder_color.SetSelection(0)
             self.combo_solder_color.Enable(False)
             self.combo_silk_screen_color.Enable(False)
             if 2 == self.layer_count:
-                self.on_thickness_selection(event)
+                self.on_thickness_selection(evt)
                 
         else:
             self.combo_solder_color.Enable(True)
             self.combo_silk_screen_color.Enable(True)
+        
+        # 触发事件:显示提示
+        evt = ShowTipFlnsihedCopperWeight( -1 ,copper_wight_selection = self.combo_outer_copper_thickness.GetSelection())
+        wx.PostEvent(self.GetEventHandler(), evt)
+        
+        if self.xx_handle:
+            self.xx_handle()
 
+        
 
     def on_thickness_selection(self, event):
         selected_thickness_index = self.combo_board_thickness.GetSelection()
@@ -298,7 +329,8 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
         pass
     
     def setup_trace_and_via(self):
-        designSettings = self.board_manager.board.GetDesignSettings()
+        # designSettings = self.board_manager.board.GetDesignSettings()
+        designSettings = self.board_var_manager._design_settings
         minTraceWidth = (
             designSettings.m_TrackMinWidth
             if designSettings.m_TrackMinWidth != 0
@@ -308,7 +340,8 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
         min_value = min(designSettings.m_MinThroughDrill, designSettings.m_ViasMinSize)
         minHoleSize = min_value if min_value != 0 else None
 
-        tracks: "list[PCB_TRACK]" = self.board_manager.board.Tracks()
+        # tracks: "list[PCB_TRACK]" = self.board_manager.board.Tracks()
+        tracks = self.board_var_manager._tracks
         for i in tracks:
             type_id = i.Type()
             if type_id in (PCB_TRACE_T, PCB_ARC_T):

@@ -5,7 +5,7 @@ from nextPCB_plugin.kicad.fabrication_data_generator_evt import (
     FabricationDataGenEvent,
     GenerateStatus,
 )
-from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+
 from nextPCB_plugin.pcb_fabrication.base.base_info_view import BaseInfoView
 from nextPCB_plugin.pcb_fabrication.process.process_info_view import ProcessInfoView
 from nextPCB_plugin.pcb_fabrication.special_process.special_process_view import (
@@ -19,18 +19,19 @@ from nextPCB_plugin.settings_nextpcb.default_express import DEFAULT_EXPRESS ,ALL
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
-    EVT_LAYER_COUNT_CHANGE,
     EVT_UPDATE_PRICE,
     EVT_PLACE_ORDER,
     EVT_ORDER_REGION_CHANGED,
     EVT_SMT_ORDER_REGION_CHANGED,
     PanelTabControl,
     EVT_COMBO_NUMBER,
+    EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT,
+    EVT_SHOW_SOLDER_MASK_COLOR,
 )
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.kicad.fabrication_data_generator import FabricationDataGenerator
-from nextPCB_plugin.api_pcb.base_request import ( BaseRequest, SmtRequest, SmtFiles )
-from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
+from nextPCB_plugin.api_pcb.base_request import ( BaseRequest )
+
 from nextPCB_plugin.gui_pcb.summary.order_summary_model import (
     AVAILABLE_TIME_UNIT,
     OrderSummary,
@@ -41,21 +42,19 @@ import wx
 import wx.xrc
 import wx.dataview
 import urllib
-import requests
-import webbrowser
+
 import json
 from nextPCB_plugin.order_nextpcb.order_region import OrderRegion, URL_KIND
 from nextPCB_plugin.kicad.fabrication_data_generator_thread import DataGenThread
 from enum import Enum
 
-# smt import
 from nextPCB_plugin.smt_pcb_fabrication.smt_base.base_info_view import SmtBaseInfoView
 from nextPCB_plugin.smt_pcb_fabrication.process.process_info_view import SmtProcessInfoView
 from nextPCB_plugin.smt_pcb_fabrication.personalized.personalized_info_view import (
     SmtPersonalizedInfoView,
 )
 from urllib.parse import urlencode
-from nextPCB_plugin.gui_pcb.summary.upload_file import UploadFile
+
 from wx.lib.pubsub import pub
 
 class SMTPCBFormPart(Enum):
@@ -176,6 +175,7 @@ class MainFrame(wx.Frame):
             view = PCB_PANEL_CTORS[i](pcb_fab_scroll_wind, self._board_manager)
             self._pcb_form_parts[i] = view
             lay_pcb_fab_panel.Add(view, 0, wx.ALL | wx.EXPAND, 5)
+            
         pcb_fab_scroll_wind.SetSizer(lay_pcb_fab_panel)
         pcb_fab_scroll_wind.Layout()
 
@@ -187,6 +187,8 @@ class MainFrame(wx.Frame):
         for i in self._pcb_form_parts.values():
             i.init()
             i.on_region_changed()
+
+        self._pcb_form_parts[ PCBFormPart.PROCESS_INFO].register_xx_handle(lambda :  self.summary_view.OnShowTipFinishedCopperWeight())
 
         #------------smt-------------
         self.surface_mount_technology = wx.Panel( self.main_notebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -238,14 +240,6 @@ class MainFrame(wx.Frame):
         self.main_notebook.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.change_ui)
 
 
-        self.Bind(
-            EVT_LAYER_COUNT_CHANGE,
-            self._pcb_form_parts[PCBFormPart.PROCESS_INFO].setup_board_thickness_choice,
-        )
-        self.Bind(
-            EVT_LAYER_COUNT_CHANGE,
-            self._pcb_form_parts[PCBFormPart.SPECIAL_PROCESS].on_layer_count_changed,
-        )
         self.Bind(EVT_UPDATE_PRICE, self.on_update_price)
         self.Bind(EVT_PLACE_ORDER, self.on_place_order)
         self.Bind(EVT_COMBO_NUMBER, self.on_place_order)
@@ -263,6 +257,9 @@ class MainFrame(wx.Frame):
         self.Bind(
             EVT_BUTTON_FABRICATION_DATA_GEN_RES, self.on_fabrication_data_gen_progress
         )
+        
+        self.Bind( EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT, self.OnShowTipFinishedCopperWeight )
+        self.Bind( EVT_SHOW_SOLDER_MASK_COLOR, self.OnShowTipSolderMaskColor  )
         pub.subscribe(self.receive_number_data, "combo_number")
 
         main_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -271,10 +268,19 @@ class MainFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
+
+    def OnShowTipFinishedCopperWeight(self, evt ):
+        self.summary_view.ShowTipFinishedCopperWeight(evt.copper_wight_selection)
+
+
+    def OnShowTipSolderMaskColor(self, evt ):
+        self.summary_view.ShowTipSolderMaskColor(evt.solder_color_selection)
+        
+        pass
+        
         
     def change_ui(self, evt):
         self.selected_page_index = self.main_notebook.GetSelection()
-        ev = PanelTabControl(-1, page_index= self.selected_page_index)
         if self.selected_page_index == 0:
             self.summary_view.switch_to_amf()
         elif self.selected_page_index == 1:
@@ -320,6 +326,8 @@ class MainFrame(wx.Frame):
         return base
 
     def get_query_price_form(self):
+        from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+        
         self.selected_page_index = self.main_notebook.GetSelection()
         if self.selected_page_index == 0:
             form = self.build_form(FormKind.QUERY_PRICE)
@@ -421,6 +429,8 @@ class MainFrame(wx.Frame):
         self.summary_view.update_order_summary(suggests)
 
     def on_update_price(self, evt):
+        from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
+        
         self.selected_page_index = self.main_notebook.GetSelection()
         if self.selected_page_index == 0:
             if not self.form_is_valid():
@@ -461,26 +471,6 @@ class MainFrame(wx.Frame):
                 return
             try:
                 form = self.get_query_price_form()
-                # smt chinese price
-                # if SETTING_MANAGER.order_region == 0:
-                #     form =form | SmtFiles().__dict__ 
-                #     json_data = json.dumps(form).encode('utf-8')
-                #     headers = {'Content-Type': 'application/json'}
-                #     rep = urllib.request.Request(
-                #         url,  data = json_data, headers=headers
-                #     )
-                #     fp = urllib.request.urlopen(rep)
-                #     data = fp.read()  
-                #     encoding = fp.info().get_content_charset("utf-8")
-                #     content = data.decode(encoding)
-                #     quotes = json.loads(content)
-                #     if not quotes.get("suc", {}):
-                #         wx.MessageBox(_("Return false"))
-                #         return
-                #     quote = quotes.get("body", {})
-
-                # else:
-                    # smt international price
                 encoded_data = urlencode(form).encode('utf-8')
                 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
                 rep = urllib.request.Request(
@@ -501,6 +491,9 @@ class MainFrame(wx.Frame):
                 raise e  # TODO remove me
 
     def on_place_order(self, evt):
+        import webbrowser
+        from nextPCB_plugin.gui_pcb.summary.upload_file import UploadFile
+        
         self.selected_page_index = self.main_notebook.GetSelection()
         if self.selected_page_index == 0:
             self.show_data_gen_progress_dialog()
@@ -535,20 +528,6 @@ class MainFrame(wx.Frame):
             self.show_data_gen_progress_dialog()
             try:
                 form = self.get_query_price_form()
-                # if SETTING_MANAGER.order_region == 0:
-                #     # requests会自动处理multipart/form-data
-                #     headers = { 'smt' : '1234' }
-                #     rsp = requests.post(
-                #         url,
-                #         files=self.smt_build_file(),
-                #         data=form,
-                #         headers=headers
-                #     )
-                #     fp = json.loads(rsp.content)
-                #     _url = fp.get("url", {})
-                #     uat_url = str(_url)
-                #     webbrowser.open(uat_url)
-                # else:
                 smt_order_region = SETTING_MANAGER.order_region
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
                 upload_file = uploadfile.upload_bomfile()

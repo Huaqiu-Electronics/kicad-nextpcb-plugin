@@ -178,7 +178,8 @@ class PartSelectorDialog(wx.Dialog):
             }
         ]
 
-        url = "http://192.168.50.100:5010/bom_components_match"
+        # url = "http://192.168.50.100:5010/bom_components_match"
+        url = "http://www.fdatasheets.com/api/chiplet/kicad/bomComponentsMatch"
         self.search_view.search_button.Disable()
         try:
             threading.Thread(target=self.search_api_request(url, body)).start()
@@ -201,7 +202,9 @@ class PartSelectorDialog(wx.Dialog):
             return
         self.search_part_list = []
         datas = response.json()
-        data = datas[0].get("parts", {})
+        # datas = datas.get("result", {})
+        data = datas.get("result", {})[0].get("parts", {})
+        # data = datas[0].get("parts", {})
         if not data:
             wx.MessageBox( _("No corresponding data was matched") )
             return
@@ -231,7 +234,8 @@ class PartSelectorDialog(wx.Dialog):
         else:
             self.part_list_view.result_count.SetLabel(f"{self.total_num} Results")
 
-        parameters = ["mpn", "manufacturer", "package", "category"]
+        # parameters = ["mpn", "manufacturer", "package", "category"]
+        parameters = ["mpn", "manufacturer", "pkg", "category"]
         # but "item_total_list" contains more comprehensive data infomation.
         self.item_total_list = []
         for idx, part_info in enumerate(self.search_part_list, start=1):
@@ -241,12 +245,13 @@ class PartSelectorDialog(wx.Dialog):
                 val = "-" if val == "" else val
                 part.append(val)
             part.insert(0, f"{idx}")
-            manu = part_info.get("manufacturer", {})
+            manu_id = part_info.get("manufacturer_id", {})
             mpn = part_info.get("mpn", {})
             supplier_chain = {}
             headers = {"Content-Type": "application/json"}
-            body = [f"-{mpn}"]
-            url = "http://192.168.50.102:8012/search/supplychain/list/mfg-mpn"
+            body = [f"{manu_id}-{mpn}"]
+            # url = "http://192.168.50.102:8012/search/supplychain/list/mfg-mpn"
+            url = "http://www.fdatasheets.com/api/chiplet/kicad/searchSupplyChain"
             response = requests.post(url, headers=headers, json=body, timeout=5)
             if response.status_code != 200:
                 self.report_part_search_error(
@@ -254,7 +259,10 @@ class PartSelectorDialog(wx.Dialog):
                 )
             # judge whether supplier chain data is available
             # Check if the response content is not empty
-            if not response.content:
+
+
+            datas = response.json()
+            if not datas.get("result", {}):
                 part.insert(5, "-")
                 part.insert(6, "-")
                 part.insert(7, "-")
@@ -266,9 +274,8 @@ class PartSelectorDialog(wx.Dialog):
                 self.item_total_list.append(combined_data)
                 self.part_list_view.part_list.AppendItem(part)
                 continue
-
-            datas = response.json()
-            supplier_chain = datas[0]
+            
+            supplier_chain = datas.get("result", {})[0]
             sku = supplier_chain.get("sku", {})
             sku = "-" if sku == None else sku
             part.insert(5, sku)
@@ -278,7 +285,7 @@ class PartSelectorDialog(wx.Dialog):
             if supplier_chain.get("price", {}) == None:
                 part.insert(7, "-")
             else:
-                price = supplier_chain.get("price", {})[0].get("rmb", {})
+                price = supplier_chain.get("price", {})[0].get("rmb", "-")
                 price = "-" if price == "" else price
                 part.insert(7, str(price))
             stock = supplier_chain.get("quantity", {})
@@ -379,7 +386,7 @@ class PartSelectorDialog(wx.Dialog):
             style=wx.ICON_ERROR,
         )
         wx.CallAfter(wx.EndBusyCursor)
-        wx.CallAfter(self.search_view.search_button.Enable())
+        # wx.CallAfter(self.search_view.search_button.Enable())
         return
 
     def on_right_down(self, e):

@@ -1,7 +1,7 @@
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
 from .ui_summary_panel import UiSummaryPanel
-from nextPCB_plugin.icon_pcb import GetImagePath
+
 import wx
 from .order_summary_model import OrderSummaryModel
 from .price_summary_model import PriceSummaryModel
@@ -15,15 +15,14 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     OrderRegionChanged,
     SmtOrderRegionChanged,
     EVT_PANEL_TAB_CONTROL,
+    
 )
 
-from nextPCB_plugin.kicad.helpers import get_valid_footprints
 from nextPCB_plugin.kicad.board_manager import BoardManager
 
 from nextPCB_plugin.kicad_nextpcb_new.mainwindow import NextPCBTools
 from nextPCB_plugin.kicad_nextpcb_new.store import Store
 import os
-from nextPCB_plugin.api_pcb.base_request import (  SmtRequest )
 
 from pathlib import Path
 import tempfile
@@ -31,6 +30,7 @@ from enum import Enum
 from .price_model_base import PriceModelBase
 from .pcb_price_model import PCBPriceModel
 from .smt_price_model import SmtPriceModel
+import threading
 
 OrderRegionSettings = (
     # EditDisplayRole(SupportedRegion.CHINA_MAINLAND, _("Mainland China")),
@@ -47,9 +47,12 @@ smt_price_model = { PriceCategory.PCB: pcb_price_model[PriceCategory.PCB],
                 PriceCategory.SMT: SmtPriceModel(),
                 }
 
+
+        
 class SummaryPanel(UiSummaryPanel):
     def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
+        self.init_ui()
         self._board_manager = board_manager
         self.project_path = os.path.split(self._board_manager.board.GetFileName())[0]
         nextpcb_path = os.path.join(self.project_path, "nextpcb")
@@ -66,8 +69,8 @@ class SummaryPanel(UiSummaryPanel):
             PriceCategory.SMT: SmtPriceModel(),
         }
 
-        self.init_ui()
-        self.load_Designator()
+        
+        
         self.btn_update_price.Bind(wx.EVT_BUTTON, self.on_update_price_clicked)
         self.btn_place_order.Bind(wx.EVT_BUTTON, self.on_place_order_clicked)
         self.choice_order_region.Bind(wx.EVT_CHOICE, self.on_region_changed)
@@ -76,9 +79,12 @@ class SummaryPanel(UiSummaryPanel):
             self.on_sash_changed,
             self.splitter_detail_summary,
         )
-        self.Bind(EVT_PANEL_TAB_CONTROL, self.init_ui)
+
         self.btn_bom_match.Bind(wx.EVT_BUTTON, self.on_bom_match)
-        # self.btn_bom_match.Enable(False)
+
+        initialization_thread = threading.Thread(target=self.load_Designator)
+        initialization_thread.start()
+
 
     def init_ui(self ):
         self.list_bom_view.AppendTextColumn(
@@ -167,6 +173,34 @@ class SummaryPanel(UiSummaryPanel):
         self.switch_smt_splitter.Unsplit(self.switch_smt_panel)
         wx.CallAfter(self.switch_smt_splitter.UpdateSize)
 
+    def OnShowTipFinishedCopperWeight(self ):
+        try:
+            print("Event triggered with weight:")
+            wx.MessageBox(f"Event triggered with weight:")
+            # 其他处理代码...
+        except Exception as e:
+            print("Exception in event handler:", e)
+
+
+    def ShowTipFinishedCopperWeight(self, copper_wight_selection ):
+        if copper_wight_selection == 0:
+            self.flnsihed_copper_text.Show(False)
+        else:
+            self.flnsihed_copper_text.Show(True)
+            
+        wx.CallAfter(self.show_hidden_text.Layout)
+        wx.CallAfter(self.switch_amf_panel.Layout)
+
+    def ShowTipSolderMaskColor(self, mask_color_selection ):
+        if mask_color_selection == _("Green"):
+            self.solder_mask_text.Show(False)
+        else:
+            self.solder_mask_text.Show(True)
+            
+        wx.CallAfter(self.show_hidden_text.Layout)
+        wx.CallAfter(self.switch_amf_panel.Layout)
+            
+
     def is_database_exists(self):
         result = os.path.exists(self.db_file_path)
         parts = self.store.get_reference_mpn_footprint()
@@ -212,6 +246,8 @@ class SummaryPanel(UiSummaryPanel):
         return smt_files
 
     def get_file_name(self):
+        from nextPCB_plugin.api_pcb.base_request import  SmtRequest 
+        
         file_list = self._get_file_list()
         patch_file = next((file for file in file_list if "CPL" in file and "zip" in file), "")
         pcb_file = next((file for file in file_list if "GERBER" in file and "zip" in file), "")
@@ -222,14 +258,6 @@ class SummaryPanel(UiSummaryPanel):
             pcb_file_name=os.path.basename(pcb_file),
         )
 
-    def on_bom_match(self, e):
-        dlg = NextPCBTools(self, self._board_manager)
-        result = dlg.ShowModal()
-        dlg.generate_fabrication_data(e)
-        self.get_data()
-        self.get_files()
-        if result in (wx.ID_OK, wx.ID_CANCEL):
-            dlg.Destroy()
 
     def switch_to_amf(self):
         self.switch_smt_splitter.Unsplit(self.switch_smt_panel)
@@ -272,18 +300,21 @@ class SummaryPanel(UiSummaryPanel):
     def update_order_summary(self, price_summary: "list"):
         self.model_order_summary.update_order_info(price_summary)
 
+    def on_bom_match(self, e):
+        dlg = NextPCBTools(self, self._board_manager)
+        result = dlg.ShowModal()
+        dlg.generate_fabrication_data(e)
+        self.get_data()
+        self.get_files()
+        if result in (wx.ID_OK, wx.ID_CANCEL):
+            dlg.Destroy()
+
     def on_update_price_clicked(self, ev):
         self.clear_content()
         evt = UpdatePrice(id=-1)
         wx.PostEvent(self.Parent, evt)
 
     def on_place_order_clicked(self, ev):
-        dlg = NextPCBTools(self, self._board_manager)
-        dlg.generate_fabrication_data(ev)
-        self.get_data()
-        self.get_files()
-        dlg.Destroy()
-        
         evt = PlaceOrder(id=-1)
         wx.PostEvent(self.Parent, evt)
 
@@ -292,6 +323,7 @@ class SummaryPanel(UiSummaryPanel):
         SETTING_MANAGER.set_summary_detail_sash_pos(sash_pos)
 
     def GetImagePath(self, bitmap_path):
+        from nextPCB_plugin.icon_pcb import GetImagePath
         return GetImagePath(bitmap_path)
 
     @staticmethod
@@ -319,18 +351,17 @@ class SummaryPanel(UiSummaryPanel):
         wx.PostEvent(self.Parent, evt)   
 
     def load_Designator(self):
-        # if self.is_database_exists():
-            for fp in get_valid_footprints(self._board_manager.board):
-                part = [
-                    fp.GetReference(),
-                    fp.GetValue(),
-                    str(fp.GetFPID().GetLibItemName()),
-                ]
+        from nextPCB_plugin.kicad.board_manager import BoardVarManager
+        if self.is_database_exists():
+            board_var_manager = BoardVarManager()
+            board_var_manager._init_event.wait()
+            for part in board_var_manager._fp_parts:
                 self.list_bom_view.AppendItem(part)
-        # else:
-        #     column_to_replace = self.list_bom_view.GetColumn(1)
-        #     column_to_replace.SetTitle( _("MPN") )
-        #     self.Layout()
-        #     self.get_data()
+                
+        else:
+            column_to_replace = self.list_bom_view.GetColumn(1)
+            column_to_replace.SetTitle( _("MPN") )
+            self.Layout()
+            self.get_data()
 
 

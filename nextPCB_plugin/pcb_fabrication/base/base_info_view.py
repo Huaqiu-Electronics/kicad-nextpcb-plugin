@@ -111,6 +111,7 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
         for editor in self.edit_panel_x, self.edit_panel_y:
             editor.SetValidator(NumericTextCtrlValidator())
         self.edit_margin_size.SetValidator(FloatTextCtrlValidator())
+        
 
     def is_valid(self) -> bool:
         if (
@@ -310,14 +311,19 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
             self.pcb_package_kind != PcbPackageKind.SINGLE_PIECE
         )
 
+
     def loadBoardInfo(self):
+        from nextPCB_plugin.kicad.board_manager import BoardVarManager
+        
+        board_var_manager = BoardVarManager()
+        board_var_manager._init_event.wait()
         boardWidth = pcbnew.ToMM(
-            self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth()
+            board_var_manager._board_width
         )
         boardHeight = pcbnew.ToMM(
-            self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight()
+            board_var_manager._board_height
         )
-        layerCount = self.board_manager.board.GetCopperLayerCount()
+        layerCount = board_var_manager._layer_count
         self.combo_layer_count.SetSelection(
             self.combo_layer_count.FindString(str(layerCount))
         )
@@ -325,6 +331,22 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
         self.edit_size_x.SetValue(str(boardWidth))
         self.edit_size_y.SetValue(str(boardHeight))
         self.combo_board_tg.Enabled = layerCount > 3
+
+    # def loadBoardInfo(self):
+    #     boardWidth = pcbnew.ToMM(
+    #         self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth()
+    #     )
+    #     boardHeight = pcbnew.ToMM(
+    #         self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight()
+    #     )
+    #     layerCount = self.board_manager.board.GetCopperLayerCount()
+    #     self.combo_layer_count.SetSelection(
+    #         self.combo_layer_count.FindString(str(layerCount))
+    #     )
+    #     self.combo_layer_count.Enabled = False
+    #     self.edit_size_x.SetValue(str(boardWidth))
+    #     self.edit_size_y.SetValue(str(boardHeight))
+    #     self.combo_board_tg.Enabled = layerCount > 3
 
     def on_pcb_packaging_changed(self, evt=None):
         if self.pcb_package_kind == PcbPackageKind.SINGLE_PIECE:

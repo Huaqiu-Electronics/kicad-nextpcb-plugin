@@ -108,7 +108,8 @@ class UiSummaryPanel ( wx.Panel ):
 
 		bSizer8.Add( sbSizer41, 1, wx.EXPAND, 5 )
 
-		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self.switch_amf_panel, wx.ID_ANY, _(u"Tip") ), wx.VERTICAL )
+		self.show_hidden_text = wx.Panel( self.switch_amf_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self.show_hidden_text, wx.ID_ANY, _(u"Tip") ), wx.VERTICAL )
 
 		self.m_staticText5 = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"30mm ≤ PCB Length/Width ≤ 100mm"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText5.Wrap( -1 )
@@ -123,15 +124,22 @@ class UiSummaryPanel ( wx.Panel ):
 		self.flnsihed_copper_text = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"Flnsihed Copper Weight (Best Price) : 1zo"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.flnsihed_copper_text.Wrap( -1 )
 
+		self.flnsihed_copper_text.Hide()
+
 		sbSizer8.Add( self.flnsihed_copper_text, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.solder_mask_text = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"Solder Mask Color (Best Price) : Green"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.solder_mask_text.Wrap( -1 )
 
+		self.solder_mask_text.Hide()
+
 		sbSizer8.Add( self.solder_mask_text, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-		bSizer8.Add( sbSizer8, 0, wx.ALL|wx.EXPAND, 5 )
+		self.show_hidden_text.SetSizer( sbSizer8 )
+		self.show_hidden_text.Layout()
+		sbSizer8.Fit( self.show_hidden_text )
+		bSizer8.Add( self.show_hidden_text, 0, wx.EXPAND |wx.ALL, 5 )
 
 
 		self.switch_amf_panel.SetSizer( bSizer8 )

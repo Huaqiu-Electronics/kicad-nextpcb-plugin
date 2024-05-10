@@ -95,10 +95,10 @@ class NextPCBTools(wx.Dialog):
         self.project_path = os.path.split(self.BOARD_LOADED.GetFileName())[0]
         self.board_name = os.path.split(self.BOARD_LOADED.GetFileName())[1]
         self.schematic_name = f"{self.board_name.split('.')[0]}.kicad_sch"
-        self.hide_bom_parts = False
-        self.hide_pos_parts = False
-        self.manufacturers = []
-        self.packages = []
+        # self.hide_bom_parts = False
+        # self.hide_pos_parts = False
+        # self.manufacturers = []
+        # self.packages = []
         self.store = None
         self.settings = None
         self.group_strategy = 0
@@ -310,10 +310,15 @@ class NextPCBTools(wx.Dialog):
         self.Bind(EVT_POPULATE_FOOTPRINT_LIST_EVENT, self.populate_footprint_list)
         self.Bind(EVT_UPDATE_SETTING, self.update_settings)
 
-        self.init_logger()
+        initialization_thread = threading.Thread(target=self.initialize)
+        initialization_thread.start()
+
+    def initialize(self):
         self.on_notebook_page_changed(None)
         self.init_fabrication()
         self.init_store()
+        self.init_logger()
+
 
     @property
     def file_path(self):
@@ -332,7 +337,7 @@ class NextPCBTools(wx.Dialog):
         elif self.selected_page_index == 1:
             self.footprint_list = self.fplist_unmana
 
-        self.populate_footprint_list()
+        wx.CallAfter(self.populate_footprint_list)
 
     def quit_dialog(self, e):
         """Destroy dialog on close"""
@@ -341,7 +346,7 @@ class NextPCBTools(wx.Dialog):
     def init_store(self):
         """Initialize the store of part assignments"""
         self.store = Store(self, self.file_path, self.BOARD_LOADED)
-        self.populate_footprint_list()
+        wx.CallAfter(self.populate_footprint_list)
 
     def init_fabrication(self):
         """Initialize the fabrication"""
@@ -426,7 +431,9 @@ class NextPCBTools(wx.Dialog):
                     "comment": value,
                 }
             ]
-            url = "http://192.168.50.100:5010/bom_components_match"
+            # url = "http://192.168.50.100:5010/bom_components_match"
+            url = "http://www.fdatasheets.com/api/chiplet/kicad/bomComponentsMatch"
+            
 
             response = requests.post(url, headers=headers, json=body)
             if response.status_code != 200:
@@ -441,22 +448,25 @@ class NextPCBTools(wx.Dialog):
 
             if not rsp_datas:
                 continue
-            rsp_data = rsp_datas[0].get("parts", {})
+            
+            # rsp_data = rsp_datas[0].get("parts", {})
+            rsp_data = rsp_datas.get("result", {})[0].get("parts", {})
             if not rsp_data:
                 continue
             if not rsp_data[0].get("part", {}):
                 continue
             BOM_part = rsp_data[0].get("part", {})
 
-            manu = BOM_part.get("manufacturer", {})
+            manu_id = BOM_part.get("manufacturer_id", {})
             mpn = BOM_part.get("mpn", {})
             supplier_chain = {}
             headers = {"Content-Type": "application/json"}
-            body = [f"-{mpn}"]
-            url = "http://192.168.50.102:8012/search/supplychain/list/mfg-mpn"
+            body = [f"{manu_id}-{mpn}"]
+            url = "http://www.fdatasheets.com/api/chiplet/kicad/searchSupplyChain"
             response = requests.post(url, headers=headers, json=body, timeout=5)
 
-            if not response.content:
+            datas = response.json()
+            if not datas.get("result", {}):
                 temp_list[3] = "-"
                 temp_list[4] = "-"
                 combined_data = {
@@ -464,8 +474,8 @@ class NextPCBTools(wx.Dialog):
                     "supplier_chain": [],
                 }
             else:
-                datas = response.json()
-                supplier_chain = datas[0]
+                
+                supplier_chain = datas.get("result", {})[0]
                 sku = supplier_chain.get("sku", {})
                 sku = "-" if sku == "" else sku
                 temp_list[3] = supplier_chain.get("sku", {})

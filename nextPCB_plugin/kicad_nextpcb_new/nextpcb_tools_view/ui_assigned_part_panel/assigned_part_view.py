@@ -13,7 +13,7 @@ from nextPCB_plugin.kicad_nextpcb_new.helpers import loadBitmapScaled
 parameters = {
     "mpn": _("MPN"),
     "manufacturer": _("Manufacturer"),
-    "package": _("Package / Footprint"),
+    "pkg": _("Package / Footprint"),
     "category": _("Category"),
     "part_desc": _("Description"),
 }
@@ -124,7 +124,7 @@ class AssignedPartView(UiAssignedPartPanel):
                         key = f">{break_min} Piece($)"
                     else:
                         key = f"{break_min}-{break_max} Piece($)"
-                    price_echelon[key] = price_range["rmb"]
+                    price_echelon[key] = price_range.get("rmb", "-")
                 # Populate self.data_list with the key-value pairs
                 for key, value in price_echelon.items():
                     self.data_list.AppendItem([key, str(value)])
