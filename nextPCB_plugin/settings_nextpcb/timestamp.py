@@ -8,8 +8,8 @@ class TimeStamp:
 
     def _setup_logging(self):
         try:
-            # 设置日志的配置信息
-            log_file_path = "C:/Users/haf/Documents/KiCad/7.0/scripting/plugins/kicad-nextpcb-plugin/plugin.log"
+            # 设置日志的配置信息C:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin
+            log_file_path = "C:/Users/haf/Documents/KiCad/8.0/scripting/plugins/kicad-nextpcb-plugin/plugin.log"
             logging.basicConfig(
                 level=logging.INFO,
                 format='%(asctime)s - %(levelname)s - %(message)s',

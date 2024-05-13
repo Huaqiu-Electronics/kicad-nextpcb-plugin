@@ -15,8 +15,6 @@ from .ui_part_list_panel.part_list_view import PartListView
 ID_SELECT_PART = wx.NewIdRef()
 
 COLUM_SKU = 5
-COLUM_PRICE = 6
-COLUM_STOCK = 7
 
 
 def ceil(x, y):
@@ -160,7 +158,8 @@ class PartSelectorDialog(wx.Dialog):
             manufacturer = ""
         else:
             manufacturer = self.search_view.manufacturer.GetValue()
-        if self.search_view.description.GetValue() == "":
+            
+        if self.search_view.description.GetValue() == "" or mpn != "" or manufacturer != "":
             comment = ""
         else:
             comment = self.search_view.description.GetValue()
@@ -247,7 +246,7 @@ class PartSelectorDialog(wx.Dialog):
             part.insert(0, f"{idx}")
             manu_id = part_info.get("manufacturer_id", {})
             mpn = part_info.get("mpn", {})
-            supplier_chain = {}
+            suppliers_chain = {}
             headers = {"Content-Type": "application/json"}
             body = [f"{manu_id}-{mpn}"]
             # url = "http://192.168.50.102:8012/search/supplychain/list/mfg-mpn"
@@ -264,9 +263,6 @@ class PartSelectorDialog(wx.Dialog):
             datas = response.json()
             if not datas.get("result", {}):
                 part.insert(5, "-")
-                part.insert(6, "-")
-                part.insert(7, "-")
-                part.insert(8, "-")
                 combined_data = {
                     "part_info": part_info,
                     "supplier_chain": [],
@@ -275,23 +271,18 @@ class PartSelectorDialog(wx.Dialog):
                 self.part_list_view.part_list.AppendItem(part)
                 continue
             
-            supplier_chain = datas.get("result", {})[0]
-            sku = supplier_chain.get("sku", {})
-            sku = "-" if sku == None else sku
+            
+            
+            suppliers_chain = datas.get("result", {})
+            sku = "-"
+            for supplier_chain  in suppliers_chain:
+                vendor = supplier_chain.get("vendor", {})
+                if vendor == "hqself":
+                    sku = supplier_chain.get("sku", "-")
             part.insert(5, sku)
-            supplier = supplier_chain.get("vendor", {})
-            supplier = "-" if supplier == None else supplier
-            part.insert(6, supplier)
-            if supplier_chain.get("price", {}) == None:
-                part.insert(7, "-")
-            else:
-                price = supplier_chain.get("price", {})[0].get("rmb", "-")
-                price = "-" if price == "" else price
-                part.insert(7, str(price))
-            stock = supplier_chain.get("quantity", {})
-            stock = "-" if stock == "" else stock
-            part.insert(8, str(stock))
-            combined_data = {"part_info": part_info, "supplier_chain": supplier_chain}
+            
+            
+            combined_data = {"part_info": part_info, "supplier_chain": suppliers_chain}
             self.item_total_list.append(combined_data)
             self.part_list_view.part_list.AppendItem(part)
 
@@ -305,14 +296,15 @@ class PartSelectorDialog(wx.Dialog):
         manu = self.part_list_view.part_list.GetValue(row, 2)
         cate = self.part_list_view.part_list.GetValue(row, 4)
         sku = self.part_list_view.part_list.GetValue(row, 5)
-        supp = self.part_list_view.part_list.GetValue(row, 6)
+        # supp = self.part_list_view.part_list.GetValue(row, 6)
+        # supp = "__"
         self.selected_part = self.item_total_list[row]
         evt = AssignPartsEvent(
             mpn=selection,
             manufacturer=manu,
             category=cate,
             sku=sku,
-            supplier=supp,
+            # supplier=supp,
             references=list(self.parts.keys()),
             selected_part_detail=self.selected_part,
         )
@@ -386,7 +378,6 @@ class PartSelectorDialog(wx.Dialog):
             style=wx.ICON_ERROR,
         )
         wx.CallAfter(wx.EndBusyCursor)
-        # wx.CallAfter(self.search_view.search_button.Enable())
         return
 
     def on_right_down(self, e):

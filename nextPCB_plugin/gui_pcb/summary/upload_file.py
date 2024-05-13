@@ -5,10 +5,10 @@ import webbrowser
 import json
 import wx
 from urllib.parse import urlparse, parse_qs, urlencode
-from wx.lib.pubsub import pub
 from pathlib import Path
 import tempfile
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+import threading
 
 class UploadFile:
     def __init__(self, board_manager: BoardManager, url, forms, smt_order_region, number ):
@@ -26,8 +26,17 @@ class UploadFile:
             self.file_path = os.path.join(tempfile.gettempdir(), "nextpcb")
 
         self.usa_get_files()
-        self.upload_pcbfile()
-        self.upload_smtfile()
+        # 创建线程进行上传
+        pcb_thread = threading.Thread(target=self.upload_pcbfile )
+        smt_thread = threading.Thread(target=self.upload_smtfile )
+
+        # 启动线程
+        pcb_thread.start()
+        smt_thread.start()
+        # 等待所有线程完成
+        pcb_thread.join()
+        smt_thread.join()
+
 
     def usa_get_files(self):
         self.getdir = os.path.join(self.file_path, "production_files")
@@ -57,7 +66,6 @@ class UploadFile:
         )
         fp = json.loads(rsp.content)
         self.gerber_file_id = fp.get("response_data",{}).get("gerber_file_id",{})
-        # return self.gerber_file_id
 
 
     def upload_smtfile(self):

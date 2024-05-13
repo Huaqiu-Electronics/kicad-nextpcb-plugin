@@ -77,9 +77,10 @@ class SmtPersonalizedInfoView(UiPersonalizedService, FormPanelBase):
     def __init__(self, parent, _):
         super().__init__(parent)
         self.special_process: PersonalizedInfoModel = None
-        self.initUI()
-        
         self.need_split.Bind(wx.EVT_CHOICE, self.on_need_split_changed)
+
+    def init(self):
+        self.initUI()
 
     def initUI(self):
         # NOTE It seems that all tests are free now

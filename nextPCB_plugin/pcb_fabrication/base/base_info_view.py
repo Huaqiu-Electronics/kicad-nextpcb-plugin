@@ -5,7 +5,7 @@ from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 from .base_info_model import BaseInfoModel
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
-    LayerCountChange, boardCount,EVT_BOARD_COUNT )
+    LayerCountChange, boardCount, ShowPcbPackageKind )
 from .ui_base_info import (
     UiBaseInfo,
     BOX_SIZE_SETTING,
@@ -313,17 +313,13 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
 
 
     def loadBoardInfo(self):
-        from nextPCB_plugin.kicad.board_manager import BoardVarManager
-        
-        board_var_manager = BoardVarManager()
-        board_var_manager._init_event.wait()
         boardWidth = pcbnew.ToMM(
-            board_var_manager._board_width
+            self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth()
         )
         boardHeight = pcbnew.ToMM(
-            board_var_manager._board_height
+            self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight()
         )
-        layerCount = board_var_manager._layer_count
+        layerCount = self.board_manager.board.GetCopperLayerCount()
         self.combo_layer_count.SetSelection(
             self.combo_layer_count.FindString(str(layerCount))
         )
@@ -332,21 +328,6 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
         self.edit_size_y.SetValue(str(boardHeight))
         self.combo_board_tg.Enabled = layerCount > 3
 
-    # def loadBoardInfo(self):
-    #     boardWidth = pcbnew.ToMM(
-    #         self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth()
-    #     )
-    #     boardHeight = pcbnew.ToMM(
-    #         self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight()
-    #     )
-    #     layerCount = self.board_manager.board.GetCopperLayerCount()
-    #     self.combo_layer_count.SetSelection(
-    #         self.combo_layer_count.FindString(str(layerCount))
-    #     )
-    #     self.combo_layer_count.Enabled = False
-    #     self.edit_size_x.SetValue(str(boardWidth))
-    #     self.edit_size_y.SetValue(str(boardHeight))
-    #     self.combo_board_tg.Enabled = layerCount > 3
 
     def on_pcb_packaging_changed(self, evt=None):
         if self.pcb_package_kind == PcbPackageKind.SINGLE_PIECE:
@@ -368,6 +349,10 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
         self.on_margin_mode_changed()
         if SINGLE_PLUGIN.get_main_wind() is not None:
             SINGLE_PLUGIN.get_main_wind().adjust_size()
+            
+        evt= ShowPcbPackageKind(-1, pcb_package_kind_selection = self.pcb_package_kind)
+        wx.PostEvent(self.Parent , evt)
+
 
     def on_margin_mode_changed(self, event=None):
         self.edit_margin_size.Enabled = self.margin_mode != MarginMode.NA

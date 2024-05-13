@@ -32,6 +32,8 @@ from .pcb_price_model import PCBPriceModel
 from .smt_price_model import SmtPriceModel
 import threading
 
+from nextPCB_plugin.kicad.helpers import get_valid_footprints
+
 OrderRegionSettings = (
     # EditDisplayRole(SupportedRegion.CHINA_MAINLAND, _("Mainland China")),
     EditDisplayRole(SupportedRegion.EUROPE_USA, _("Worldwide (English)")),
@@ -52,7 +54,7 @@ smt_price_model = { PriceCategory.PCB: pcb_price_model[PriceCategory.PCB],
 class SummaryPanel(UiSummaryPanel):
     def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
-        self.init_ui()
+        
         self._board_manager = board_manager
         self.project_path = os.path.split(self._board_manager.board.GetFileName())[0]
         nextpcb_path = os.path.join(self.project_path, "nextpcb")
@@ -79,12 +81,11 @@ class SummaryPanel(UiSummaryPanel):
             self.on_sash_changed,
             self.splitter_detail_summary,
         )
-
         self.btn_bom_match.Bind(wx.EVT_BUTTON, self.on_bom_match)
 
-        initialization_thread = threading.Thread(target=self.load_Designator)
-        initialization_thread.start()
-
+        self.init_ui()
+        thread = threading.Thread(target=self.load_Designator)
+        thread.start()  # 启动线程
 
     def init_ui(self ):
         self.list_bom_view.AppendTextColumn(
@@ -187,8 +188,6 @@ class SummaryPanel(UiSummaryPanel):
             self.flnsihed_copper_text.Show(False)
         else:
             self.flnsihed_copper_text.Show(True)
-            
-        wx.CallAfter(self.show_hidden_text.Layout)
         wx.CallAfter(self.switch_amf_panel.Layout)
 
     def ShowTipSolderMaskColor(self, mask_color_selection ):
@@ -196,10 +195,15 @@ class SummaryPanel(UiSummaryPanel):
             self.solder_mask_text.Show(False)
         else:
             self.solder_mask_text.Show(True)
-            
-        wx.CallAfter(self.show_hidden_text.Layout)
         wx.CallAfter(self.switch_amf_panel.Layout)
-            
+
+    def ShowTipPcbPackageKind(self, pcb_package_kind_selection):
+        if pcb_package_kind_selection == 1:
+            self.board_type_text.Show(False)
+        else:
+            self.board_type_text.Show(True)
+        wx.CallAfter(self.switch_amf_panel.Layout)
+
 
     def is_database_exists(self):
         result = os.path.exists(self.db_file_path)
@@ -351,11 +355,13 @@ class SummaryPanel(UiSummaryPanel):
         wx.PostEvent(self.Parent, evt)   
 
     def load_Designator(self):
-        from nextPCB_plugin.kicad.board_manager import BoardVarManager
         if self.is_database_exists():
-            board_var_manager = BoardVarManager()
-            board_var_manager._init_event.wait()
-            for part in board_var_manager._fp_parts:
+            for fp in get_valid_footprints(self._board_manager.board):
+                part = [
+                    fp.GetReference(),
+                    fp.GetValue(),
+                    str(fp.GetFPID().GetLibItemName()),
+                ]
                 self.list_bom_view.AppendItem(part)
                 
         else:

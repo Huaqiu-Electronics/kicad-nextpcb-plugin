@@ -27,6 +27,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     EVT_COMBO_NUMBER,
     EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT,
     EVT_SHOW_SOLDER_MASK_COLOR,
+    EVT_SHOW_PCB_PACKAGE_KIND,
 )
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.kicad.fabrication_data_generator import FabricationDataGenerator
@@ -54,8 +55,13 @@ from nextPCB_plugin.smt_pcb_fabrication.personalized.personalized_info_view impo
     SmtPersonalizedInfoView,
 )
 from urllib.parse import urlencode
-
+import threading
 from wx.lib.pubsub import pub
+import webbrowser
+from nextPCB_plugin.gui_pcb.summary.upload_file import UploadFile
+from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
+from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
+        
 
 class SMTPCBFormPart(Enum):
     SMT_BASE_INFO = 0
@@ -131,22 +137,6 @@ class MainFrame(wx.Frame):
             style=0 | wx.PD_APP_MODAL,
         )
         
-
-    def on_fabrication_data_gen_progress(self, evt: FabricationDataGenEvent):
-        if self._data_gen_progress is not None:
-            res = evt.get_status()
-            if GenerateStatus.RUNNING == res.get_status():
-                self._data_gen_progress.Update(res.get_progress(), res.get_message())
-            else:
-                self._data_gen_progress.Destroy()
-                self._data_gen_progress = None
-                if GenerateStatus.FAILED == res.get_status():
-                    wx.MessageBox(f"{res.get_message()}")
-
-    def destory_data_dialog(self):
-        self._data_gen_progress.Update(GenerateStatus.MAX_PROGRESS - 1, _("Sending order request"))
-        self._data_gen_progress.Destroy()
-        self._data_gen_progress = None
         
     def init_ui(self):
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
@@ -188,8 +178,7 @@ class MainFrame(wx.Frame):
             i.init()
             i.on_region_changed()
 
-        self._pcb_form_parts[ PCBFormPart.PROCESS_INFO].register_xx_handle(lambda :  self.summary_view.OnShowTipFinishedCopperWeight())
-
+        # self._pcb_form_parts[ PCBFormPart.PROCESS_INFO].register_xx_handle(lambda :  self.summary_view.OnShowTipFinishedCopperWeight())
         #------------smt-------------
         self.surface_mount_technology = wx.Panel( self.main_notebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
         self.main_notebook.AddPage( self.surface_mount_technology, u"         BOM && SMT         ", False )
@@ -225,8 +214,7 @@ class MainFrame(wx.Frame):
         for j in self.smt_pcb_form_parts.values():
             j.init()
             j.on_region_changed()
-        smt_fab_scroll_wind.Layout()
-
+            
         #---- book ctrl ----
         self.main_splitter.SplitVertically(
             self.book_ctrl, self.summary_view, 0
@@ -254,12 +242,15 @@ class MainFrame(wx.Frame):
             self.main_splitter,
         )
         self.main_splitter.Bind(wx.EVT_IDLE, self.main_splitter_on_idle)
-        self.Bind(
-            EVT_BUTTON_FABRICATION_DATA_GEN_RES, self.on_fabrication_data_gen_progress
-        )
+
         
         self.Bind( EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT, self.OnShowTipFinishedCopperWeight )
         self.Bind( EVT_SHOW_SOLDER_MASK_COLOR, self.OnShowTipSolderMaskColor  )
+        self.Bind(EVT_SHOW_PCB_PACKAGE_KIND, self.OnShowTipPcbPackageKind )
+
+        self.Bind(
+            EVT_BUTTON_FABRICATION_DATA_GEN_RES, self.on_fabrication_data_gen_progress
+        )
         pub.subscribe(self.receive_number_data, "combo_number")
 
         main_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -269,6 +260,7 @@ class MainFrame(wx.Frame):
         self.Centre(wx.BOTH)
 
 
+
     def OnShowTipFinishedCopperWeight(self, evt ):
         self.summary_view.ShowTipFinishedCopperWeight(evt.copper_wight_selection)
 
@@ -276,8 +268,8 @@ class MainFrame(wx.Frame):
     def OnShowTipSolderMaskColor(self, evt ):
         self.summary_view.ShowTipSolderMaskColor(evt.solder_color_selection)
         
-        pass
-        
+    def OnShowTipPcbPackageKind(self , evt):
+        self.summary_view.ShowTipPcbPackageKind(evt.pcb_package_kind_selection)
         
     def change_ui(self, evt):
         self.selected_page_index = self.main_notebook.GetSelection()
@@ -286,7 +278,22 @@ class MainFrame(wx.Frame):
         elif self.selected_page_index == 1:
             self.summary_view.switch_to_smt()
 
-    
+
+    def on_fabrication_data_gen_progress(self, evt: FabricationDataGenEvent):
+        if self._data_gen_progress is not None:
+            res = evt.get_status()
+            if GenerateStatus.RUNNING == res.get_status():
+                self._data_gen_progress.Update(res.get_progress(), res.get_message())
+            else:
+                self._data_gen_progress.Destroy()
+                self._data_gen_progress = None
+                if GenerateStatus.FAILED == res.get_status():
+                    wx.MessageBox(f"{res.get_message()}")
+
+    def destory_data_dialog(self):
+        self._data_gen_progress.Update(GenerateStatus.MAX_PROGRESS - 1, _("Sending order request"))
+        self._data_gen_progress.Destroy()
+        self._data_gen_progress = None
 
     def on_sash_pos_changed(self, evt):
         sash_pos = evt.GetSashPosition()
@@ -326,8 +333,7 @@ class MainFrame(wx.Frame):
         return base
 
     def get_query_price_form(self):
-        from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
-        
+
         self.selected_page_index = self.main_notebook.GetSelection()
         if self.selected_page_index == 0:
             form = self.build_form(FormKind.QUERY_PRICE)
@@ -429,8 +435,7 @@ class MainFrame(wx.Frame):
         self.summary_view.update_order_summary(suggests)
 
     def on_update_price(self, evt):
-        from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
-        
+
         self.selected_page_index = self.main_notebook.GetSelection()
         if self.selected_page_index == 0:
             if not self.form_is_valid():
@@ -491,23 +496,22 @@ class MainFrame(wx.Frame):
                 raise e  # TODO remove me
 
     def on_place_order(self, evt):
-        import webbrowser
-        from nextPCB_plugin.gui_pcb.summary.upload_file import UploadFile
-        
+        import time
+
         self.selected_page_index = self.main_notebook.GetSelection()
+        
         if self.selected_page_index == 0:
-            self.show_data_gen_progress_dialog()
             if not self.form_is_valid():
                 return
             url = OrderRegion.get_url(SETTING_MANAGER.order_region, URL_KIND.PLACE_ORDER)
             if url is None:
                 wx.MessageBox(_("No available url for placing order in current region"))
                 return
+            self.show_data_gen_progress_dialog()
             if self._dataGenThread is not None:
-                self._dataGenThread.start()
                 self._dataGenThread.join()
                 self._dataGenThread = None
-            
+
             self._dataGenThread = DataGenThread(
                 self, 
                 self.fabrication_data_generator, 
@@ -516,6 +520,7 @@ class MainFrame(wx.Frame):
             )
             
         elif self.selected_page_index == 1:
+            
             if not self.form_is_valid():
                 return
             url = OrderRegion.get_url(SETTING_MANAGER.order_region, URL_KIND.SMT_PLACE_ORDER)
@@ -529,12 +534,14 @@ class MainFrame(wx.Frame):
             try:
                 form = self.get_query_price_form()
                 smt_order_region = SETTING_MANAGER.order_region
+                time.sleep(1)
+                self._data_gen_progress.Update( 50, _("Upload fabrication file") )
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
+                self._data_gen_progress.Update( 200, _("Sending order request") )
                 upload_file = uploadfile.upload_bomfile()
                 webbrowser.open(upload_file)
 
                 self.destory_data_dialog()
-
 
             except Exception as e:
                 wx.MessageBox(str(e))

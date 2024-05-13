@@ -182,12 +182,8 @@ class SmtBaseInfoView(UiSmtBaseInfo, FormPanelBase):
 
 
     def loadBoardInfo(self):
-        from nextPCB_plugin.kicad.board_manager import BoardVarManager
-        
-        board_var_manager = BoardVarManager()
-        board_var_manager._init_event.wait()
-        boardWidth = pcbnew.ToMM( board_var_manager._board_width )
-        boardHeight = pcbnew.ToMM( board_var_manager._board_height )
+        boardWidth = pcbnew.ToMM( self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth() )
+        boardHeight = pcbnew.ToMM( self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight() )
         
         self.edit_size_x.SetValue(str(boardWidth))
         self.edit_size_y.SetValue(str(boardHeight))

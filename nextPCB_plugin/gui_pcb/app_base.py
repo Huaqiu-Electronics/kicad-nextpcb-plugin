@@ -1,4 +1,4 @@
-from nextPCB_plugin.language_trans.lang_const import LANG_DOMAIN
+from nextPCB_plugin.language.lang_const import LANG_DOMAIN
 
 import builtins
 import sys
@@ -46,6 +46,7 @@ class NextPCBApp(wx.EvtHandler):
         from nextPCB_plugin.gui_pcb.main_frame import MainFrame
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
         from nextPCB_plugin.icon_pcb import GetImagePath
+        import time
         
         from nextPCB_plugin.settings_nextpcb.timestamp import TimeStamp
         timestamp=TimeStamp()
@@ -54,4 +55,5 @@ class NextPCBApp(wx.EvtHandler):
         )
         timestamp.log( " show dialog ", level='info')
         self.main_wind.SetIcon(wx.Icon(GetImagePath("Huaqiu.ico")))
+        import time
         self.main_wind.Show()

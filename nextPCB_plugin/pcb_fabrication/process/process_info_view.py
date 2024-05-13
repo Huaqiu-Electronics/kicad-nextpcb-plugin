@@ -8,7 +8,6 @@ from .ui_process_info import UiProcessInfo
 import wx
 import pcbnew
 from pcbnew import PCB_TRACK, PCB_TRACE_T, PCB_ARC_T, PCB_VIA_T
-from nextPCB_plugin.kicad.board_manager import BoardVarManager
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import ( ShowTipFlnsihedCopperWeight,
                                                                    ShowSolderMaskColor )
 
@@ -105,14 +104,13 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
     def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
         self.board_manager = board_manager
-        self.board_var_manager = BoardVarManager()
-        self.board_var_manager._init_event.wait()
 
         self.combo_surface_process.Bind(wx.EVT_CHOICE, self.on_surface_process_changed)
         self.combo_solder_color.Bind(wx.EVT_CHOICE, self.OnMaskColorChange)
         self.combo_outer_copper_thickness.Bind(wx.EVT_CHOICE, self.on_outer_thickness_changed)
         self.combo_board_thickness.Bind(wx.EVT_CHOICE, self.on_thickness_selection)
         self.xx_handle = None
+        
         self.Fit()
         
 
@@ -195,8 +193,7 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
 
     @property
     def layer_count(self):
-        return self.board_var_manager._layer_count
-        # return self.board_manager.board.GetCopperLayerCount()
+        return self.board_manager.board.GetCopperLayerCount()
 
     def get_board_thickness_in_kicad_setting(self):
         return self.board_manager.board.GetDesignSettings().GetBoardThickness()
@@ -329,8 +326,7 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
         pass
     
     def setup_trace_and_via(self):
-        # designSettings = self.board_manager.board.GetDesignSettings()
-        designSettings = self.board_var_manager._design_settings
+        designSettings = self.board_manager.board.GetDesignSettings()
         minTraceWidth = (
             designSettings.m_TrackMinWidth
             if designSettings.m_TrackMinWidth != 0
@@ -340,8 +336,7 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
         min_value = min(designSettings.m_MinThroughDrill, designSettings.m_ViasMinSize)
         minHoleSize = min_value if min_value != 0 else None
 
-        # tracks: "list[PCB_TRACK]" = self.board_manager.board.Tracks()
-        tracks = self.board_var_manager._tracks
+        tracks: "list[PCB_TRACK]" = self.board_manager.board.Tracks()
         for i in tracks:
             type_id = i.Type()
             if type_id in (PCB_TRACE_T, PCB_ARC_T):

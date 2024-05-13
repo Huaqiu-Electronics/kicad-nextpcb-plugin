@@ -13,9 +13,6 @@ import wx.dataview
 from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT
 from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE
 
-import gettext
-_ = gettext.gettext
-
 ###########################################################################
 ## Class UiSummaryPanel
 ###########################################################################
@@ -111,7 +108,7 @@ class UiSummaryPanel ( wx.Panel ):
 		self.show_hidden_text = wx.Panel( self.switch_amf_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self.show_hidden_text, wx.ID_ANY, _(u"Tip") ), wx.VERTICAL )
 
-		self.m_staticText5 = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"30mm ≤ PCB Length/Width ≤ 100mm"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText5 = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"30mm ≤ PCB L/W ≤ 100mm"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText5.Wrap( -1 )
 
 		sbSizer8.Add( self.m_staticText5, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -120,6 +117,13 @@ class UiSummaryPanel ( wx.Panel ):
 		self.m_staticText4.Wrap( -1 )
 
 		sbSizer8.Add( self.m_staticText4, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+		self.board_type_text = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"Board Type (Recommand) : Single Piece"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.board_type_text.Wrap( -1 )
+
+		self.board_type_text.Hide()
+
+		sbSizer8.Add( self.board_type_text, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.flnsihed_copper_text = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"Flnsihed Copper Weight (Best Price) : 1zo"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.flnsihed_copper_text.Wrap( -1 )

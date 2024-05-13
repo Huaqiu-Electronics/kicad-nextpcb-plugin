@@ -7,6 +7,7 @@ from nextPCB_plugin.utils_nextpcb.constraint import BOOLEAN_CHOICE
 from .personalized_info_model import PersonalizedInfoModel
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
+import wx
 
 
 REVIEW_FILE_OPTION = [
@@ -54,6 +55,8 @@ class PersonalizedInfoView(UiPersonalizedService, FormPanelBase):
     def __init__(self, parent, _):
         super().__init__(parent)
         self.special_process: PersonalizedInfoModel = None
+
+    def init(self):
         self.initUI()
 
     def initUI(self):
@@ -93,6 +96,7 @@ class PersonalizedInfoView(UiPersonalizedService, FormPanelBase):
         for comb in map:
             comb.Append([i.DisplayRole for i in map[comb]])
             comb.SetSelection(0)
+        
         self.on_region_changed()
 
     @fitter_and_map_form_value
@@ -161,5 +165,3 @@ class PersonalizedInfoView(UiPersonalizedService, FormPanelBase):
         self.sp_box.Show( True )
 
 
-        
-        
