@@ -44,7 +44,7 @@ if os.name == "nt" and m == "3" and s == "8":
     pyI18nFolder = os.path.join(pyToolsFolder, "i18n")
     pyGettext = os.path.join(pyI18nFolder, "pygettext.py")
     pyMsgfmt = os.path.join(pyI18nFolder, "msgfmt.py")
-    outFolder = os.path.join(appFolder, "language", "locale")
+    outFolder = os.path.join(appFolder, "language_pcb", "locale")
     # build command for pygettext
     gtOptions = "-a -d %s -o %s.pot -p %s %s"
 
@@ -62,7 +62,7 @@ if os.name == "nt" and m == "3" and s == "8":
 
     for tLang in supportedLang:
         # build command for msgfmt
-        langDir = os.path.join(appFolder, (f"language/locale/{tLang}/LC_MESSAGES"))
+        langDir = os.path.join(appFolder, (f"language_pcb/locale/{tLang}/LC_MESSAGES"))
         if not os.path.exists(langDir):
             os.mkdir(langDir)
         poFile = os.path.join(langDir, LANG_DOMAIN + ".po")
@@ -78,7 +78,7 @@ else:
     # Simply run the msg format cmd to update the .mo on the Ubuntu ci server
     for tLang in supportedLang:
         # build command for msgfmt
-        langDir = os.path.join(appFolder, (f"language/locale/{tLang}/LC_MESSAGES"))
+        langDir = os.path.join(appFolder, (f"language_pcb/locale/{tLang}/LC_MESSAGES"))
         if not os.path.exists(langDir):
             os.mkdir(langDir)
         poFile = os.path.join(langDir, LANG_DOMAIN + ".po")

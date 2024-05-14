@@ -1,20 +1,20 @@
-from nextPCB_plugin.gui_pcb.summary.price_summary_model import PriceCategory
-from nextPCB_plugin.kicad.board_manager import BoardManager
-from nextPCB_plugin.kicad.fabrication_data_generator_evt import (
+from nextPCB_plugin.gui_pcb.summary.price_summary_model import PriceCategoryNextpcb
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
+from nextPCB_plugin.kicad_pcb.fabrication_data_generator_evt import (
     EVT_BUTTON_FABRICATION_DATA_GEN_RES,
     FabricationDataGenEvent,
     GenerateStatus,
 )
 
-from nextPCB_plugin.pcb_fabrication.base.base_info_view import BaseInfoView
-from nextPCB_plugin.pcb_fabrication.process.process_info_view import ProcessInfoView
-from nextPCB_plugin.pcb_fabrication.special_process.special_process_view import (
-    SpecialProcessView,
+from nextPCB_plugin.pcb_fabrication_pcb.base_pcb.base_info_view import BaseInfoViewNextpcb
+from nextPCB_plugin.pcb_fabrication_pcb.process_pcb.process_info_view import ProcessInfoViewNextpcb
+from nextPCB_plugin.pcb_fabrication_pcb.special_process_pcb.special_process_view import (
+    SpecialProcessViewNextpcb,
 )
-from nextPCB_plugin.pcb_fabrication.personalized.personalized_info_view import (
-    PersonalizedInfoView,
+from nextPCB_plugin.pcb_fabrication_pcb.personalized_pcb.personalized_info_view import (
+    PersonalizedInfoViewNextpcb,
 )
-from nextPCB_plugin.gui_pcb.summary.summary_panel import SummaryPanel
+from nextPCB_plugin.gui_pcb.summary.summary_panel import SummaryPanelNextpcb
 from nextPCB_plugin.settings_nextpcb.default_express import DEFAULT_EXPRESS ,ALLOWED_KEYS , ADDED_DATA
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
@@ -30,7 +30,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     EVT_SHOW_PCB_PACKAGE_KIND,
 )
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
-from nextPCB_plugin.kicad.fabrication_data_generator import FabricationDataGenerator
+from nextPCB_plugin.kicad_pcb.fabrication_data_generator import FabricationDataGenerator
 from nextPCB_plugin.api_pcb.base_request import ( BaseRequest )
 
 from nextPCB_plugin.gui_pcb.summary.order_summary_model import (
@@ -46,13 +46,13 @@ import urllib
 
 import json
 from nextPCB_plugin.order_nextpcb.order_region import OrderRegion, URL_KIND
-from nextPCB_plugin.kicad.fabrication_data_generator_thread import DataGenThread
+from nextPCB_plugin.kicad_pcb.fabrication_data_generator_thread import DataGenThread
 from enum import Enum
 
-from nextPCB_plugin.smt_pcb_fabrication.smt_base.base_info_view import SmtBaseInfoView
-from nextPCB_plugin.smt_pcb_fabrication.process.process_info_view import SmtProcessInfoView
-from nextPCB_plugin.smt_pcb_fabrication.personalized.personalized_info_view import (
-    SmtPersonalizedInfoView,
+from nextPCB_plugin.smt_pcb_fabrication_pcb.smt_base_nextpcb.base_info_view import SmtBaseInfoViewNextpcb
+from nextPCB_plugin.smt_pcb_fabrication_pcb.process_nextpcb.process_info_view import SmtProcessInfoViewNextpcb
+from nextPCB_plugin.smt_pcb_fabrication_pcb.personalized_nextpcb.personalized_info_view import (
+    SmtPersonalizedInfoViewNextpcb,
 )
 from urllib.parse import urlencode
 import threading
@@ -63,31 +63,31 @@ from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
         
 
-class SMTPCBFormPart(Enum):
+class SMTPCBFormPartNextpcb(Enum):
     SMT_BASE_INFO = 0
     SMT_PROCESS_INFO = 1
     SMT_PERSONALIZED = 2
 
 
-SMT_PCB_PANEL_CTORS = {
-    SMTPCBFormPart.SMT_BASE_INFO: SmtBaseInfoView,
-    SMTPCBFormPart.SMT_PROCESS_INFO: SmtProcessInfoView,
-    SMTPCBFormPart.SMT_PERSONALIZED: SmtPersonalizedInfoView,
+SMT_PCB_PANEL_CTORS_NEXTPCB = {
+    SMTPCBFormPartNextpcb.SMT_BASE_INFO: SmtBaseInfoViewNextpcb,
+    SMTPCBFormPartNextpcb.SMT_PROCESS_INFO: SmtProcessInfoViewNextpcb,
+    SMTPCBFormPartNextpcb.SMT_PERSONALIZED: SmtPersonalizedInfoViewNextpcb,
 }
 
 
-class PCBFormPart(Enum):
+class PCBFormPartNextpcb(Enum):
     BASE_INFO = 0
     PROCESS_INFO = 1
     SPECIAL_PROCESS = 2
     PERSONALIZED = 3
 
 
-PCB_PANEL_CTORS = {
-    PCBFormPart.BASE_INFO: BaseInfoView,
-    PCBFormPart.PROCESS_INFO: ProcessInfoView,
-    PCBFormPart.SPECIAL_PROCESS: SpecialProcessView,
-    PCBFormPart.PERSONALIZED: PersonalizedInfoView,
+PCB_PANEL_CTORS_NEXTPCB = {
+    PCBFormPartNextpcb.BASE_INFO: BaseInfoViewNextpcb,
+    PCBFormPartNextpcb.PROCESS_INFO: ProcessInfoViewNextpcb,
+    PCBFormPartNextpcb.SPECIAL_PROCESS: SpecialProcessViewNextpcb,
+    PCBFormPartNextpcb.PERSONALIZED: PersonalizedInfoViewNextpcb,
 }
 
 DATA = "data"
@@ -102,8 +102,8 @@ FEE = "fee"
 BCOUNT = "bcount"
 
 
-class MainFrame(wx.Frame):
-    def __init__(self, board_manager: BoardManager, size, parent=None):
+class MainFrameNextpcb(wx.Frame):
+    def __init__(self, board_manager: BoardManagerNextpcb, size, parent=None):
         wx.Frame.__init__(
             self,
             parent,
@@ -116,8 +116,8 @@ class MainFrame(wx.Frame):
         self._board_manager = board_manager
         self._fabrication_data_gen = None
         self._fabrication_data_gen_thread = None
-        self._pcb_form_parts: "dict[PCBFormPart, FormPanelBase]" = {}       
-        self.smt_pcb_form_parts: "dict[PCBFormPart, FormPanelBase]" = {}    
+        self._pcb_form_parts: "dict[PCBFormPartNextpcb, FormPanelBase]" = {}       
+        self.smt_pcb_form_parts: "dict[PCBFormPartNextpcb, FormPanelBase]" = {}    
         self._data_gen_progress: wx.ProgressDialog = None
         self._dataGenThread: DataGenThread = None
         self._number = 5
@@ -161,15 +161,15 @@ class MainFrame(wx.Frame):
         pcb_fab_scroll_wind.SetScrollRate(10, 10)
 
         lay_pcb_fab_panel = wx.BoxSizer(wx.VERTICAL)
-        for i in PCB_PANEL_CTORS:
-            view = PCB_PANEL_CTORS[i](pcb_fab_scroll_wind, self._board_manager)
+        for i in PCB_PANEL_CTORS_NEXTPCB:
+            view = PCB_PANEL_CTORS_NEXTPCB[i](pcb_fab_scroll_wind, self._board_manager)
             self._pcb_form_parts[i] = view
             lay_pcb_fab_panel.Add(view, 0, wx.ALL | wx.EXPAND, 5)
             
         pcb_fab_scroll_wind.SetSizer(lay_pcb_fab_panel)
         pcb_fab_scroll_wind.Layout()
 
-        self.summary_view = SummaryPanel( self.main_splitter, self._board_manager )
+        self.summary_view = SummaryPanelNextpcb( self.main_splitter, self._board_manager )
         amf_sizer.Add(pcb_fab_scroll_wind, 1, wx.EXPAND, 8)
         self.active_manufacturing.SetSizer(amf_sizer)
         self.active_manufacturing.Layout()
@@ -178,7 +178,7 @@ class MainFrame(wx.Frame):
             i.init()
             i.on_region_changed()
 
-        # self._pcb_form_parts[ PCBFormPart.PROCESS_INFO].register_xx_handle(lambda :  self.summary_view.OnShowTipFinishedCopperWeight())
+        # self._pcb_form_parts[ PCBFormPartNextpcb.PROCESS_INFO].register_xx_handle(lambda :  self.summary_view.OnShowTipFinishedCopperWeight())
         #------------smt-------------
         self.surface_mount_technology = wx.Panel( self.main_notebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
         self.main_notebook.AddPage( self.surface_mount_technology, u"         BOM && SMT         ", False )
@@ -194,8 +194,8 @@ class MainFrame(wx.Frame):
         smt_fab_scroll_wind.SetScrollRate(10, 10)
 
         lay_pcb_fab_panel1 = wx.BoxSizer(wx.VERTICAL)
-        for i in SMT_PCB_PANEL_CTORS:
-            view = SMT_PCB_PANEL_CTORS[i](smt_fab_scroll_wind, self._board_manager)
+        for i in SMT_PCB_PANEL_CTORS_NEXTPCB:
+            view = SMT_PCB_PANEL_CTORS_NEXTPCB[i](smt_fab_scroll_wind, self._board_manager)
             self.smt_pcb_form_parts[i] = view
             lay_pcb_fab_panel1.Add(view, 0, wx.ALL | wx.EXPAND, 5)
 
@@ -388,7 +388,7 @@ class MainFrame(wx.Frame):
         return BuildTime(int(t), unit)
 
     def parse_price(self, summary: json):
-        self.summary_view.update_price_detail({PriceCategory.PCB.value: summary})
+        self.summary_view.update_price_detail({PriceCategoryNextpcb.PCB.value: summary})
         normal_total_price = self.summary_view.get_total_price()
         suggests = []
         if SUGGEST in summary and DEL_TIME in summary[SUGGEST]:
@@ -408,7 +408,7 @@ class MainFrame(wx.Frame):
         self.summary_view.update_order_summary(suggests)
 
     def parse_smt_price(self, summary: json):
-        self.summary_view.update_price_detail({PriceCategory.SMT.value: summary})
+        self.summary_view.update_price_detail({PriceCategoryNextpcb.SMT.value: summary})
 
     def parse_price_list(self, summary: json):
         self.summary_view.update_price_detail(summary)

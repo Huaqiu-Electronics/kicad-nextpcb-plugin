@@ -5,7 +5,7 @@ import requests
 from threading import Thread
 import wx
 
-from nextPCB_plugin.kicad.fabrication_data_generator import FabricationDataGenerator
+from nextPCB_plugin.kicad_pcb.fabrication_data_generator import FabricationDataGenerator
 from nextPCB_plugin.order_nextpcb.order_region import URL_KIND, OrderRegion
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from .fabrication_data_generator_evt import (

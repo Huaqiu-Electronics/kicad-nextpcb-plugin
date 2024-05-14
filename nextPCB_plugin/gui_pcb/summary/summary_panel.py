@@ -1,6 +1,6 @@
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.utils_nextpcb.roles import EditDisplayRole
-from .ui_summary_panel import UiSummaryPanel
+from .ui_summary_panel import UiSummaryPanelNextpcb
 
 import wx
 from .order_summary_model import OrderSummaryModel
@@ -18,7 +18,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     
 )
 
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 
 from nextPCB_plugin.kicad_nextpcb_new.mainwindow import NextPCBTools
 from nextPCB_plugin.kicad_nextpcb_new.store import Store
@@ -32,7 +32,7 @@ from .pcb_price_model import PCBPriceModel
 from .smt_price_model import SmtPriceModel
 import threading
 
-from nextPCB_plugin.kicad.helpers import get_valid_footprints
+from nextPCB_plugin.kicad_pcb.helpers import get_valid_footprints
 
 OrderRegionSettings = (
     # EditDisplayRole(SupportedRegion.CHINA_MAINLAND, _("Mainland China")),
@@ -40,19 +40,19 @@ OrderRegionSettings = (
     EditDisplayRole(SupportedRegion.JAPAN, _("Worldwide (Japanese)")),
 )
 
-class PriceCategory(Enum):
+class PriceCategoryNextpcb(Enum):
     PCB = "pcb"
     SMT = "smt"
 
-pcb_price_model = { PriceCategory.PCB: PCBPriceModel() }
-smt_price_model = { PriceCategory.PCB: pcb_price_model[PriceCategory.PCB],
-                PriceCategory.SMT: SmtPriceModel(),
+pcb_price_model = { PriceCategoryNextpcb.PCB: PCBPriceModel() }
+smt_price_model = { PriceCategoryNextpcb.PCB: pcb_price_model[PriceCategoryNextpcb.PCB],
+                PriceCategoryNextpcb.SMT: SmtPriceModel(),
                 }
 
 
         
-class SummaryPanel(UiSummaryPanel):
-    def __init__(self, parent, board_manager: BoardManager):
+class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         super().__init__(parent)
         
         self._board_manager = board_manager
@@ -67,8 +67,8 @@ class SummaryPanel(UiSummaryPanel):
         self.get_files_dir = os.path.join(self.project_path, "nextpcb", "production_files")
         self.store = Store(self, self.project_path, self._board_manager.board )
         self.price_category: "dict[int,PriceModelBase]" = {
-            PriceCategory.PCB: PCBPriceModel(),
-            PriceCategory.SMT: SmtPriceModel(),
+            PriceCategoryNextpcb.PCB: PCBPriceModel(),
+            PriceCategoryNextpcb.SMT: SmtPriceModel(),
         }
 
         
@@ -134,7 +134,7 @@ class SummaryPanel(UiSummaryPanel):
         )
 
         self.list_order_summary.SetMinSize(
-            wx.Size(-1, SummaryPanel.GetLineHeight(self) * 3 + 30)
+            wx.Size(-1, SummaryPanelNextpcb.GetLineHeight(self) * 3 + 30)
         )
         self.model_order_summary = OrderSummaryModel()
         self.list_order_summary.AssociateModel(self.model_order_summary)

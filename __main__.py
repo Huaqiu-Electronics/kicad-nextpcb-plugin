@@ -1,5 +1,4 @@
 from wx import App, Locale
-from nextPCB_plugin.settings_nextpcb.timestamp import TimeStamp
 
 class StandAloneApp(App):
     def __init__(
@@ -10,15 +9,13 @@ class StandAloneApp(App):
     def OnInit(self):
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 
-        # self.locale = Locale(SETTING_MANAGER.get_language())
+        self.locale = Locale(SETTING_MANAGER.get_language())
         return True
 
 
 if __name__ == "__main__":
     from nextPCB_plugin.plugin_nextpcb._main import _main
-    
-    timestamp=TimeStamp()
-    timestamp.log( " init Plugin ", level='info')
+
 
     app = StandAloneApp()
     _main()

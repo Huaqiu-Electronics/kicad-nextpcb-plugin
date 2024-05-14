@@ -1,5 +1,5 @@
 import os
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 import requests
 import webbrowser
 import json
@@ -11,7 +11,7 @@ from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 import threading
 
 class UploadFile:
-    def __init__(self, board_manager: BoardManager, url, forms, smt_order_region, number ):
+    def __init__(self, board_manager: BoardManagerNextpcb, url, forms, smt_order_region, number ):
         self._board_manager = board_manager
         self._url = url
         self._form = forms

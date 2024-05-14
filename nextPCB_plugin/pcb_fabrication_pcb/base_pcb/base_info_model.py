@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BaseInfoModel:
+class BaseInfoModelNextpcb:
     blayer: str  # Layer Count
     blength: str  # GetPcbLength
     bwidth: str  # GetPcbWidth

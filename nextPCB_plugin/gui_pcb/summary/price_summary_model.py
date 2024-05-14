@@ -9,7 +9,7 @@ from enum import Enum
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 
 
-class PriceCategory(Enum):
+class PriceCategoryNextpcb(Enum):
     PCB = "pcb"
     SMT = "smt"
 
@@ -30,8 +30,8 @@ class PriceSummaryModel(dv.PyDataViewModel):
         dv.PyDataViewModel.__init__(self)
         self.UseWeakRefs(True)
         # self.price_category: "dict[int,PriceModelBase]" = {
-        #     PriceCategory.PCB: PCBPriceModel(),
-        #     PriceCategory.SMT: SmtPriceModel(),
+        #     PriceCategoryNextpcb.PCB: PCBPriceModel(),
+        #     PriceCategoryNextpcb.SMT: SmtPriceModel(),
         # }
         self.price_category = models
         self._days_cost = 0
@@ -47,10 +47,10 @@ class PriceSummaryModel(dv.PyDataViewModel):
         return self._pcb_quantity
 
     def update_price(self, price: "dict"):
-        # for i in PriceCategory.PCB, PriceCategory.SMT, PriceCategory.BOM:
-        print(f"{PriceCategory.SMT.value}")
-        # if  PriceCategory.SMT.value 
-        # for i in PriceCategory.PCB, PriceCategory.SMT:
+        # for i in PriceCategoryNextpcb.PCB, PriceCategoryNextpcb.SMT, PriceCategoryNextpcb.BOM:
+        print(f"{PriceCategoryNextpcb.SMT.value}")
+        # if  PriceCategoryNextpcb.SMT.value 
+        # for i in PriceCategoryNextpcb.PCB, PriceCategoryNextpcb.SMT:
         for i in self.price_category:
             if i.value in price:
                 self.price_category[i].update(price[i.value])
@@ -109,7 +109,7 @@ class PriceSummaryModel(dv.PyDataViewModel):
     #     # if not parent:
     #     #     for cat in self.price_category:
     #     #         # Check if hideSmt is True and the category is SMT, skip appending the child
-    #     #         if hideSmt and cat == PriceCategory.SMT:
+    #     #         if hideSmt and cat == PriceCategoryNextpcb.SMT:
     #     #             continue
     #     #         children.append(self.ObjectToItem(self.price_category[cat]))
     #     # else:
@@ -216,13 +216,13 @@ class PriceSummaryModel(dv.PyDataViewModel):
         return False
 
     def clear_content(self):
-        # for i in PriceCategory.PCB, PriceCategory.SMT,:
+        # for i in PriceCategoryNextpcb.PCB, PriceCategoryNextpcb.SMT,:
         #     self.price_category[i].clear()
         # self.Cleared()
         pass
 
     def set_visibility(self, visibility):
-        for i in PriceCategory.PCB, PriceCategory.SMT,:
+        for i in PriceCategoryNextpcb.PCB, PriceCategoryNextpcb.SMT,:
             self.price_category[i].set_visibility(visibility)
         # self.visible = visibility
         

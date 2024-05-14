@@ -9,7 +9,7 @@ class EmptyBoardException(Exception):
         super().__init__(*args)
 
 
-class BoardManager:
+class BoardManagerNextpcb:
     def __init__(self, board) -> None:
         if board is None:
             raise EmptyBoardException("Empty kicad board")
@@ -25,11 +25,11 @@ def load_board_manager():
         GetBoard().GetFileName()
         board = GetBoard()
         if board:
-            return BoardManager(board)
+            return BoardManagerNextpcb(board)
     except Exception as e:
         for fp in   "C:\\Program Files\\demos\\video\\video.kicad_pcb",'C:\\Program Files\\demos\\flat_hierarchy\\flat_hierarchy.kicad_pcb',:
             if os.path.exists(fp):
-                return BoardManager(LoadBoard(fp))
+                return BoardManagerNextpcb(LoadBoard(fp))
 
 
 class BoardVarManager:
@@ -48,7 +48,7 @@ class BoardVarManager:
 
 
     def _async_init(self):
-        from nextPCB_plugin.kicad.helpers import get_valid_footprints
+        from nextPCB_plugin.kicad_pcb.helpers import get_valid_footprints
         try:
             self._board_width = self.board_manager.board.GetBoardEdgesBoundingBox().GetWidth()
             self._board_height = self.board_manager.board.GetBoardEdgesBoundingBox().GetHeight()

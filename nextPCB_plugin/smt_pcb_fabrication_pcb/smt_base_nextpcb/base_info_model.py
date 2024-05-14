@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BaseInfoModel:
+class BaseInfoModelNextpcb:
     
     application_sphere: int
     is_pcb_soft_board: str

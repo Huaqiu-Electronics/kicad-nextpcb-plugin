@@ -1,23 +1,23 @@
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 from nextPCB_plugin.order_nextpcb.order_region import SupportedRegion
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .ui_special_process import UiSpecialProcess
-from .special_process_model import SpecialProcessModel
+from .special_process_model import SpecialProcessModelNextpcb
 import wx
 import wx.xrc
 import wx.dataview
 from nextPCB_plugin.utils_nextpcb.constraint import BOOLEAN_CHOICE
-from .special_process_model import SpecialProcessModel
+from .special_process_model import SpecialProcessModelNextpcb
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
 
-HDI_STRUCTURE_CHOICE = [_("N/A"), _("Rank 1"), _("Rank 2"), _("Rank 3")]
+HDI_STRUCTURE_CHOICE_NEXTPCB = [_("N/A"), _("Rank 1"), _("Rank 2"), _("Rank 3")]
 
-STACKUP_CHOICE = [_("No Requirement"), _("Customer Specified Stack up")]
+STACKUP_CHOICE_NEXTPCB = [_("No Requirement"), _("Customer Specified Stack up")]
 
 
-class SpecialProcessView(UiSpecialProcess, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManager):
+class SpecialProcessViewNextpcb(UiSpecialProcess, FormPanelBase):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         super().__init__(parent)
         self.board_manager = board_manager
 
@@ -44,10 +44,10 @@ class SpecialProcessView(UiSpecialProcess, FormPanelBase):
                 ctrl.Append(_(i))
             ctrl.SetSelection(0)
 
-        self.combo_hdi_structure.Append(HDI_STRUCTURE_CHOICE)
+        self.combo_hdi_structure.Append(HDI_STRUCTURE_CHOICE_NEXTPCB)
         self.combo_hdi_structure.SetSelection(0)
 
-        self.combo_stackup.Append(STACKUP_CHOICE)
+        self.combo_stackup.Append(STACKUP_CHOICE_NEXTPCB)
         self.combo_stackup.SetSelection(0)
         self.combo_hdi_structure.Enabled = False
         self.combo_baobian.Append([str(i) for i in range(0, 5)])
@@ -55,7 +55,7 @@ class SpecialProcessView(UiSpecialProcess, FormPanelBase):
 
     @fitter_and_map_form_value
     def get_from(self, kind: FormKind) -> "dict":
-        info = SpecialProcessModel(
+        info = SpecialProcessModelNextpcb(
             impendance=str(self.combo_impedance.GetSelection()),
             bankong=str(self.combo_halfHole.GetSelection()),
             blind=self.GetBlindValue(),

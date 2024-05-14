@@ -1,9 +1,9 @@
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
-from .base_info_model import BaseInfoModel
+from .base_info_model import BaseInfoModelNextpcb
 from .ui_smt_base_info import (
     UiSmtBaseInfo,
     BOX_SIZE_SETTING,
@@ -97,8 +97,8 @@ AVAILABLE_QUANTITY = [
     10000,
 ]
  
-class SmtBaseInfoView(UiSmtBaseInfo, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManager):
+class SmtBaseInfoViewNextpcb(UiSmtBaseInfo, FormPanelBase):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         super().__init__(parent)
         self.board_manager = board_manager
         
@@ -131,7 +131,7 @@ class SmtBaseInfoView(UiSmtBaseInfo, FormPanelBase):
 
     @fitter_and_map_form_value
     def get_from(self, kind: FormKind) -> "dict":
-        data = BaseInfoModel(
+        data = BaseInfoModelNextpcb(
 
             application_sphere = AVAILABLE_MATERIAL_TYPES[ self.application_sphere.GetSelection() ].EditRole,
             is_pcb_soft_board= PCB_SOFT_BOARD[ self.is_pcb_soft_board.GetSelection() ].EditRole,

@@ -17,7 +17,7 @@ rm -f $PCM_ROOT/*.zip
 rm -rf $PLUGIN_PATH
 
 
-TRANSLATION_PATH="$PRJECT_ROOT/kicad_amf_plugin/language/geni18n.py"
+TRANSLATION_PATH="$PRJECT_ROOT/kicad_amf_plugin/language_pcb/geni18n.py"
 echo "Excuting the translation script  : $TRANSLATION_PATH"
 python3 $TRANSLATION_PATH
 

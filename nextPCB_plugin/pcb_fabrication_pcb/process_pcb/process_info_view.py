@@ -1,4 +1,4 @@
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .process_info_model import ProcessInfoModel
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
@@ -11,7 +11,7 @@ from pcbnew import PCB_TRACK, PCB_TRACE_T, PCB_ARC_T, PCB_VIA_T
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import ( ShowTipFlnsihedCopperWeight,
                                                                    ShowSolderMaskColor )
 
-THICKNESS_SETTING = {
+THICKNESS_SETTING_NEXTPCB = {
     "1": ["0.6", "0.8", "1.0", "1.2", "1.6", "2.0"],
     "2": ["0.6", "0.8", "1.0", "1.2", "1.6", "2.0"],
     "4": ["0.6", "0.8", "1.0", "1.2", "1.6", "2.0"],
@@ -27,21 +27,20 @@ THICKNESS_SETTING = {
 
 OZ = "oz"
 
-OUTER_THICKNESS_CHOICE = [1, 2]
+OUTER_THICKNESS_CHOICE_NEXTPCB = [1, 2]
 
 
-INNER_COPPER_THICKNESS_CHOICE = [0.5, 1, 2]
+INNER_COPPER_THICKNESS_CHOICE_NEXTPCB = [0.5, 1, 2]
 
 MIL = "mil"
 
-MIN_TRACE_WIDTH_CLEARANCE_CHOICE = [ 10, 8, 6, 5, 4, 3.5 ]
-MIN_HOLE_SIZE_CHOICE = [0.3, 0.25, 0.2, 0.15]
+MIN_TRACE_WIDTH_CLEARANCE_CHOICE_NEXTPCB = [ 10, 8, 6, 5, 4, 3.5 ]
+MIN_HOLE_SIZE_CHOICE_NEXTPCB = [0.3, 0.25, 0.2, 0.15]
 
 MM = "mm"
 
-DEFAULT_MIN_TRACK_WIDTH = 6
 
-KNOW_COLOR_MAPPING = {
+KNOW_COLOR_MAPPING_NEXTPCB = {
     _("Green"): "Green",
     _("Red"): "Red",
     _("Yellow"): "Yellow",
@@ -51,7 +50,7 @@ KNOW_COLOR_MAPPING = {
     _("Black"): "Black",
 }
 
-SOLDER_COLOR_CHOICE = [
+SOLDER_COLOR_CHOICE_NEXTPCB = [
     _("Green"),
     _("Red"),
     _("Yellow"),
@@ -62,25 +61,25 @@ SOLDER_COLOR_CHOICE = [
 ]
 
 
-SOLDER_COVER_CHOICE = {
+SOLDER_COVER_CHOICE_NEXTPCB = {
     _("Tenting Vias"): "Tenting Vias",
     _("Vias not covered"): "Vias not covered",
     _("Solder Mask Plug (IV-B)"): "Solder Mask Plug (IV-B)",
     _("Non-Conductive Fill"): "Non-Conductive Fill & Cap (VII)",
 }
 
-SURFACE_PROCESS_CHOICE = {
+SURFACE_PROCESS_CHOICE_NEXTPCB = {
     _("HASL"): "HASL",
     _("Lead free HASL"): "Lead free HASL",
     _("ENIG"): "ENIG",
     _("OSP"): "OSP",
 }
 
-GOLD_THICKNESS_CHOICE = [1, 2, 3]
+GOLD_THICKNESS_CHOICE_NEXTPCB = [1, 2, 3]
 
-GOLD_THICKNESS_CHOICE_UNIT = "µm"
+GOLD_THICKNESS_CHOICE_NEXTPCB_UNIT_NEXTPCB = "µm"
 
-SILK_SCREEN_COLOR_BY_SOLDER_COLOR = {
+SILK_SCREEN_COLOR_BY_SOLDER_COLOR_NEXTPCB = {
     _("Green"): [_("White")],
     _("Red"): [_("White")],
     _("Yellow"): [_("White")],
@@ -90,7 +89,7 @@ SILK_SCREEN_COLOR_BY_SOLDER_COLOR = {
     _("Black"): [_("White")],
 }
 
-ZO_2_SILK_SCREEN_COLOR_BY_SOLDER_COLOR = {
+ZO_2_SILK_SCREEN_COLOR_BY_SOLDER_COLOR_NEXTPCB = {
     _("Green"): [_("White")],
 }
 
@@ -100,8 +99,8 @@ class MyCommandEvent(wx.PyEvent):
         self.weight = weight
 
 
-class ProcessInfoView(UiProcessInfo, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManager):
+class ProcessInfoViewNextpcb(UiProcessInfo, FormPanelBase):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         super().__init__(parent)
         self.board_manager = board_manager
 
@@ -127,12 +126,12 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
                 self.combo_min_trace_width_clearance.GetStringSelection()
             ).split("/")[0],
             vias=str(self.combo_min_hole_size.GetStringSelection()).removesuffix(MM),
-            color=KNOW_COLOR_MAPPING[self.combo_solder_color.GetStringSelection()],
-            charcolor=KNOW_COLOR_MAPPING[
+            color=KNOW_COLOR_MAPPING_NEXTPCB[self.combo_solder_color.GetStringSelection()],
+            charcolor=KNOW_COLOR_MAPPING_NEXTPCB[
                 self.combo_silk_screen_color.GetStringSelection()
             ],
-            cover=SOLDER_COVER_CHOICE[self.combo_solder_cover.GetStringSelection()],
-            spray=SURFACE_PROCESS_CHOICE[
+            cover=SOLDER_COVER_CHOICE_NEXTPCB[self.combo_solder_cover.GetStringSelection()],
+            spray=SURFACE_PROCESS_CHOICE_NEXTPCB[
                 self.combo_surface_process.GetStringSelection()
             ],
         )
@@ -149,45 +148,45 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
         self.loadBoardInfo()
 
     def initUI(self):
-        self.combo_board_thickness.Append(THICKNESS_SETTING["1"])
+        self.combo_board_thickness.Append(THICKNESS_SETTING_NEXTPCB["1"])
         self.combo_board_thickness.SetSelection(4)
 
         self.combo_outer_copper_thickness.Append(
-            [f"{i}{OZ}" for i in OUTER_THICKNESS_CHOICE]
+            [f"{i}{OZ}" for i in OUTER_THICKNESS_CHOICE_NEXTPCB]
         )
         self.combo_outer_copper_thickness.SetSelection(0)
 
         self.combo_inner_copper_thickness.Append(
-            [f"{i}{OZ}" for i in INNER_COPPER_THICKNESS_CHOICE]
+            [f"{i}{OZ}" for i in INNER_COPPER_THICKNESS_CHOICE_NEXTPCB]
         )
         self.combo_inner_copper_thickness.SetSelection(0)
 
         self.combo_min_trace_width_clearance.Append(
-            [f"{i}/{i}{MIL}" for i in MIN_TRACE_WIDTH_CLEARANCE_CHOICE]
+            [f"{i}/{i}{MIL}" for i in MIN_TRACE_WIDTH_CLEARANCE_CHOICE_NEXTPCB]
         )
         self.combo_min_trace_width_clearance.SetSelection(2)
 
-        self.combo_min_hole_size.Append([f"{i}{MM}" for i in MIN_HOLE_SIZE_CHOICE])
+        self.combo_min_hole_size.Append([f"{i}{MM}" for i in MIN_HOLE_SIZE_CHOICE_NEXTPCB])
         self.combo_min_hole_size.SetSelection(0)
 
-        self.combo_solder_color.Append(SOLDER_COLOR_CHOICE)
+        self.combo_solder_color.Append(SOLDER_COLOR_CHOICE_NEXTPCB)
         self.combo_solder_color.SetSelection(0)
 
         self.combo_silk_screen_color.Append(
-            SILK_SCREEN_COLOR_BY_SOLDER_COLOR[
+            SILK_SCREEN_COLOR_BY_SOLDER_COLOR_NEXTPCB[
                 self.combo_solder_color.GetStringSelection()
             ]
         )
         self.combo_silk_screen_color.SetSelection(0)
 
-        self.combo_solder_cover.Append([i for i in SOLDER_COVER_CHOICE])
+        self.combo_solder_cover.Append([i for i in SOLDER_COVER_CHOICE_NEXTPCB])
         self.combo_solder_cover.SetSelection(0)
 
-        self.combo_surface_process.Append([i for i in SURFACE_PROCESS_CHOICE])
+        self.combo_surface_process.Append([i for i in SURFACE_PROCESS_CHOICE_NEXTPCB])
         self.combo_surface_process.SetSelection(0)
 
         self.combo_gold_thickness.Append(
-            [f"{i}{GOLD_THICKNESS_CHOICE_UNIT}" for i in GOLD_THICKNESS_CHOICE]
+            [f"{i}{GOLD_THICKNESS_CHOICE_NEXTPCB_UNIT_NEXTPCB}" for i in GOLD_THICKNESS_CHOICE_NEXTPCB]
         )
         self.combo_gold_thickness.SetSelection(0)
 
@@ -209,7 +208,7 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
     def setup_board_thickness_choice(self, event):
         layer_count = event if isinstance(event, int) else event.GetInt()
         self.combo_board_thickness.Clear()
-        val_list = THICKNESS_SETTING[str(layer_count)]
+        val_list = THICKNESS_SETTING_NEXTPCB[str(layer_count)]
         self.combo_board_thickness.Append(val_list)
         self.set_board_thickness(
             pcbnew.ToMM(self.get_board_thickness_in_kicad_setting())
@@ -279,7 +278,7 @@ class ProcessInfoView(UiProcessInfo, FormPanelBase):
     def OnMaskColorChange(self, evt):
         self.combo_silk_screen_color.Clear()
         self.combo_silk_screen_color.Append(
-            SILK_SCREEN_COLOR_BY_SOLDER_COLOR[
+            SILK_SCREEN_COLOR_BY_SOLDER_COLOR_NEXTPCB[
                 self.combo_solder_color.GetStringSelection()
             ]
         )

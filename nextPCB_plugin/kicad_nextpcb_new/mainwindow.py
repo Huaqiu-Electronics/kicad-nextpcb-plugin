@@ -60,7 +60,7 @@ from .button_id import (
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 
 DB_MPN = 3
 DB_MANU = 4
@@ -75,7 +75,7 @@ DB_SIDE = 11
 
 
 class NextPCBTools(wx.Dialog):
-    def __init__(self, parent, board_manager: BoardManager):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         wx.Dialog.__init__(
             self,
             parent,

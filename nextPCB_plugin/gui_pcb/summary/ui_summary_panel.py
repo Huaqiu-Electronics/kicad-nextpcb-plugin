@@ -13,11 +13,12 @@ import wx.dataview
 from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT
 from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE
 
+
 ###########################################################################
-## Class UiSummaryPanel
+## Class UiSummaryPanelNextpcb
 ###########################################################################
 
-class UiSummaryPanel ( wx.Panel ):
+class UiSummaryPanelNextpcb ( wx.Panel ):
 
 	def __init__( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( -1,-1 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
 		wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )

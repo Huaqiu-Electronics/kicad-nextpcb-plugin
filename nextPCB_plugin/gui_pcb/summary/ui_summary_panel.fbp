@@ -17,7 +17,7 @@
     <property name="image_path_wrapper_function_name">GetImagePath</property>
     <property name="indent_with_spaces"></property>
     <property name="internationalize">1</property>
-    <property name="name">UiSummaryPanel</property>
+    <property name="name">UiSummaryPanelNextpcb</property>
     <property name="namespace"></property>
     <property name="path">.</property>
     <property name="precompiled_header"></property>
@@ -44,7 +44,7 @@
       <property name="id">wxID_ANY</property>
       <property name="maximum_size"></property>
       <property name="minimum_size"></property>
-      <property name="name">UiSummaryPanel</property>
+      <property name="name">UiSummaryPanelNextpcb</property>
       <property name="pos"></property>
       <property name="size">-1,-1</property>
       <property name="subclass">; ; forward_declare</property>

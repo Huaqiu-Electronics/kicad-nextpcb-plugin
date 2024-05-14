@@ -1,10 +1,10 @@
-from nextPCB_plugin.language.lang_const import LANG_DOMAIN
+from nextPCB_plugin.language_pcb.lang_const import LANG_DOMAIN
 
 import builtins
 import sys
 import os
 from nextPCB_plugin import PLUGIN_ROOT
-from nextPCB_plugin.kicad.board_manager import load_board_manager
+from nextPCB_plugin.kicad_pcb.board_manager import load_board_manager
 from nextPCB_plugin.utils_nextpcb.combo_box_ignore_wheel import ComboBoxIgnoreWheel
 
 import wx
@@ -24,7 +24,7 @@ class NextPCBApp(wx.EvtHandler):
         super().__init__()
         sys.displayhook = _displayHook
         wx.Locale.AddCatalogLookupPathPrefix(
-            os.path.join(PLUGIN_ROOT, "language", "locale")
+            os.path.join(PLUGIN_ROOT, "language_pcb", "locale")
         )
         existing_locale = wx.GetLocale()
         if existing_locale is not None:
@@ -43,17 +43,14 @@ class NextPCBApp(wx.EvtHandler):
         return True
 
     def startup_dialog(self):
-        from nextPCB_plugin.gui_pcb.main_frame import MainFrame
+        from nextPCB_plugin.gui_pcb.main_frame import MainFrameNextpcb
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
         from nextPCB_plugin.icon_pcb import GetImagePath
         import time
         
-        from nextPCB_plugin.settings_nextpcb.timestamp import TimeStamp
-        timestamp=TimeStamp()
-        self.main_wind = MainFrame(
+        self.main_wind = MainFrameNextpcb(
             self.board_manager, SETTING_MANAGER.get_window_size()
         )
-        timestamp.log( " show dialog ", level='info')
         self.main_wind.SetIcon(wx.Icon(GetImagePath("Huaqiu.ico")))
         import time
         self.main_wind.Show()

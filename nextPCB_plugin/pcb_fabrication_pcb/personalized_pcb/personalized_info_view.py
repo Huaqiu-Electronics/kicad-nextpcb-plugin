@@ -51,7 +51,7 @@ REPORT_FORMAT_CHOICE = [_("Paper"), _("Electronic")]
 UL_MARK_CHOICE = [_("No"), _("UL+Week/Year"), _("UL+Year/Week")]
 
 
-class PersonalizedInfoView(UiPersonalizedService, FormPanelBase):
+class PersonalizedInfoViewNextpcb(UiPersonalizedService, FormPanelBase):
     def __init__(self, parent, _):
         super().__init__(parent)
         self.special_process: PersonalizedInfoModel = None

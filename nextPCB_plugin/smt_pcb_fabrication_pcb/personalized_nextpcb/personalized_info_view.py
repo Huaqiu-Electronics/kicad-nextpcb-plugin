@@ -73,7 +73,7 @@ PACKING_TYPE = {
 }
 
 
-class SmtPersonalizedInfoView(UiPersonalizedService, FormPanelBase):
+class SmtPersonalizedInfoViewNextpcb(UiPersonalizedService, FormPanelBase):
     def __init__(self, parent, _):
         super().__init__(parent)
         self.special_process: PersonalizedInfoModel = None

@@ -1,9 +1,9 @@
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
-from .base_info_model import BaseInfoModel
+from .base_info_model import BaseInfoModelNextpcb
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     LayerCountChange, boardCount, ShowPcbPackageKind )
 from .ui_base_info import (
@@ -99,8 +99,8 @@ AVAILABLE_QUANTITY = [
 ]
 
 
-class BaseInfoView(UiBaseInfo, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManager):
+class BaseInfoViewNextpcb(UiBaseInfo, FormPanelBase):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         super().__init__(parent)
         self.board_manager = board_manager
 
@@ -230,7 +230,7 @@ class BaseInfoView(UiBaseInfo, FormPanelBase):
 
     @fitter_and_map_form_value
     def get_from(self, kind: FormKind) -> "dict":
-        data = BaseInfoModel(
+        data = BaseInfoModelNextpcb(
             blayer=self.combo_layer_count.GetStringSelection(),
             plate_type=AVAILABLE_MATERIAL_TYPES[0],
             board_tg=self.combo_board_tg.GetStringSelection()

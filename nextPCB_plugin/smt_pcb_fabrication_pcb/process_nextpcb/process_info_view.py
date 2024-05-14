@@ -1,4 +1,4 @@
-from nextPCB_plugin.kicad.board_manager import BoardManager
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
 from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .process_info_model import ProcessInfoModel
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
@@ -29,8 +29,8 @@ STEEL_FOLLOW_DELIVERY = [
 ]
 
 
-class SmtProcessInfoView(UiProcessInfo, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManager):
+class SmtProcessInfoViewNextpcb(UiProcessInfo, FormPanelBase):
+    def __init__(self, parent, board_manager: BoardManagerNextpcb):
         super().__init__(parent)
         self.board_manager = board_manager
 
