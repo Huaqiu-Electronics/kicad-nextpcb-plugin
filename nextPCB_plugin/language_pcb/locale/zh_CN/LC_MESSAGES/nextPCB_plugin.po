@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2024-05-21 13:58+0800\n"
-"PO-Revision-Date: 2024-05-21 14:01+0800\n"
+"PO-Revision-Date: 2024-05-21 14:26+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -255,7 +255,7 @@ msgstr "值"
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\summary_panel.py:107
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:45
 msgid "Footprint"
-msgstr "封装布局"
+msgstr "封装"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\summary_panel.py:116
 msgid "Build Time"
@@ -320,7 +320,7 @@ msgstr "提示"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:114
 msgid "Factors that affect the priceLayerMin Trace/Space OuterMin Pilled Hole "
-msgstr ""
+msgstr "影响价格的因素：板层、最小线宽线距、最小孔径"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:119
 msgid "Board Type (Recommand) : Single Piece"
@@ -343,10 +343,8 @@ msgid "Add to Cart"
 msgstr "加入购物车"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:82
-#, fuzzy
-#| msgid "NextPCB Tools"
 msgid "BOM Tools"
-msgstr "NextPCB Tools"
+msgstr ""
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:148
 msgid " Group by: "
@@ -358,7 +356,7 @@ msgstr "不分组"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:156
 msgid " Value & Footprint "
-msgstr "值&封装布局"
+msgstr "值&封装"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:161
 msgid "No Group"
@@ -438,7 +436,7 @@ msgstr "索引"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:31
 msgid "Reference"
-msgstr "偏好设置"
+msgstr "位号"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:59
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:17
@@ -459,7 +457,7 @@ msgstr "种类"
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:19
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\part_list_view.py:45
 msgid "SKU"
-msgstr "库存管理单元"
+msgstr "SKU"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:81
 msgid "Quantity"
@@ -476,7 +474,7 @@ msgstr "面"
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:18
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:16
 msgid "Package / Footprint"
-msgstr "封装/封装布局"
+msgstr "封装"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:20
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:18
@@ -499,7 +497,7 @@ msgstr "数据手册"
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:152
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:130
 msgid "The width and height of new size must be greater than 0"
-msgstr ""
+msgstr "新尺寸的宽高必须大于0"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:176
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:153
@@ -536,10 +534,8 @@ msgid " Epxort... "
 msgstr "导出.."
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:31
-#, fuzzy
-#| msgid "NextPCB Search Online"
 msgid "BOM Search Online"
-msgstr "NextPCB Search Online"
+msgstr "BOM Search Online"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:197
 msgid "returned JSON data does not have expected 'part' attribute"
@@ -550,10 +546,8 @@ msgid "1000 Results (limited)"
 msgstr "1000 条（被限制）"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:238
-#, fuzzy
-#| msgid "No corresponding data was matched"
 msgid "No corresponding sku data was matched"
-msgstr "没有匹配到相应的数据"
+msgstr "没有匹配到相应的SKU数据"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:303
 msgid "Failed to get clicked part from NextPCB"
@@ -573,7 +567,7 @@ msgstr "图片"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\part_list_view.py:33
 msgid "Package/Footprint"
-msgstr "封装/封装布局"
+msgstr "封装"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\ui_part_list_panel.py:28
 msgid "0 Results"

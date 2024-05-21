@@ -28,3 +28,5 @@ ShowTipFlnsihedCopperWeight, EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT = ne.NewCommand
 ShowSolderMaskColor, EVT_SHOW_SOLDER_MASK_COLOR = ne.NewCommandEvent()
 
 ShowPcbPackageKind, EVT_SHOW_PCB_PACKAGE_KIND = ne.NewCommandEvent()
+
+GetUniqueMpnCount, EVT_GET_UNIQUE_MPN_COUNT = ne.NewCommandEvent()

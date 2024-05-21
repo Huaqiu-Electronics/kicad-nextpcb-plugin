@@ -46,11 +46,14 @@ class NextPCBApp(wx.EvtHandler):
         from nextPCB_plugin.gui_pcb.main_frame import MainFrameNextpcb
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
         from nextPCB_plugin.icon_pcb import GetImagePath
-        import time
+        from nextPCB_plugin.kicad_nextpcb_new.mainwindow import NextPCBTools
+
+        
+        # dlg = NextPCBTools(None, self.board_manager)
+        # dlg.ShowModal()
         
         self.main_wind = MainFrameNextpcb(
             self.board_manager, SETTING_MANAGER.get_window_size()
         )
         self.main_wind.SetIcon(wx.Icon(GetImagePath("Huaqiu.ico")))
-        import time
         self.main_wind.Show()

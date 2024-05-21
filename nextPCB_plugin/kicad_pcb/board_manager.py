@@ -2,14 +2,13 @@ from pcbnew import GetBoard, LoadBoard, PCB_TRACK
 import wx
 import os
 import threading
-import queue
 
 class EmptyBoardException(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
 
-class BoardManagerNextpcb:
+class BoardManager:
     def __init__(self, board) -> None:
         if board is None:
             raise EmptyBoardException("Empty kicad board")
@@ -19,18 +18,16 @@ class BoardManagerNextpcb:
     def board(self):
         return self._board
 
-
 def load_board_manager():
     try:
         GetBoard().GetFileName()
         board = GetBoard()
         if board:
-            return BoardManagerNextpcb(board)
+            return BoardManager(board)
     except Exception as e:
-        for fp in   "C:\\Program Files\\demos\\video\\video.kicad_pcb",'C:\\Program Files\\demos\\flat_hierarchy\\flat_hierarchy.kicad_pcb',:
+        for fp in   "C:\\Program Files\\demos\\video\\video.kicad_pcb", 'C:\\Program Files\\demos\\flat_hierarchy\\flat_hierarchy.kicad_pcb', "C:\\Program Files\\demos\\ecc83\\ecc83-pp.kicad_pcb",:
             if os.path.exists(fp):
-                return BoardManagerNextpcb(LoadBoard(fp))
-
+                return BoardManager(LoadBoard(fp))
 
 class BoardVarManager:
     def __init__(self) -> None:

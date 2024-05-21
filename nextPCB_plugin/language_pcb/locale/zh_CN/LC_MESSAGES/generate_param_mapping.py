@@ -1,7 +1,7 @@
 import json
 
 mapping = {}
-with open("kicad_amf_plugin.po", encoding="utf-8", errors="ignore") as f:
+with open("nextPCB_plugin.po", encoding="utf-8", errors="ignore") as f:
     pair = []
     for line in f.readlines():
         if line.startswith("msgstr"):

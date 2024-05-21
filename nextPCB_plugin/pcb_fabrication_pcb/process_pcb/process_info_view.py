@@ -1,4 +1,4 @@
-from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
 from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
 from .process_info_model import ProcessInfoModel
 from nextPCB_plugin.utils_nextpcb.form_panel_base import FormKind, FormPanelBase
@@ -100,7 +100,7 @@ class MyCommandEvent(wx.PyEvent):
 
 
 class ProcessInfoViewNextpcb(UiProcessInfo, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManagerNextpcb):
+    def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
         self.board_manager = board_manager
 

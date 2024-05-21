@@ -1,5 +1,5 @@
 # language domain
-LANG_DOMAIN = "kicad_amf_plugin"
+LANG_DOMAIN = "nextPCB_plugin"
 
 
 ENGLISH = "English"

@@ -28,7 +28,7 @@ class PartSelectorDialog(wx.Dialog):
             self,
             parent,
             id=wx.ID_ANY,
-            title=_("NextPCB Search Online"),
+            title=_("BOM Search Online"),
             pos=wx.DefaultPosition,
             size=HighResWxSize(parent.window, wx.Size(1200, 800)),
             style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER | wx.MAXIMIZE_BOX,
@@ -150,35 +150,18 @@ class PartSelectorDialog(wx.Dialog):
         if self.current_page == 0:
             self.current_page = 1
 
-        if self.search_view.mpn_textctrl.GetValue() == "":
-            mpn = ""
-        else:
-            mpn = self.search_view.mpn_textctrl.GetValue()
-        if self.search_view.manufacturer.GetValue() == "":
-            manufacturer = ""
-        else:
-            manufacturer = self.search_view.manufacturer.GetValue()
-            
-        if self.search_view.description.GetValue() == "" or mpn != "" or manufacturer != "":
-            comment = ""
-        else:
-            comment = self.search_view.description.GetValue()
+        if self.search_view.mpn_textctrl.GetValue():
+            body_value = self.search_view.mpn_textctrl.GetValue()
+        elif self.search_view.manufacturer.GetValue():
+            body_value = self.search_view.manufacturer.GetValue()
+        else: 
+            body_value = self.search_view.description.GetValue()
 
-        body = [
-            {
-                "line_no": "10",
-                "mpn": mpn,
-                "manufacturer": manufacturer,
-                "package": "",
-                "reference": "",
-                "quantity": 0,
-                "sku": "",
-                "comment": comment,
-            }
-        ]
+        body = {
+            "desc": body_value
+        }
+        url = "http://www.fdatasheets.com/api/chiplet/bom/queryByDesc"
 
-        # url = "http://192.168.50.100:5010/bom_components_match"
-        url = "http://www.fdatasheets.com/api/chiplet/kicad/bomComponentsMatch"
         self.search_view.search_button.Disable()
         try:
             threading.Thread(target=self.search_api_request(url, body)).start()
@@ -190,7 +173,7 @@ class PartSelectorDialog(wx.Dialog):
 
         headers = {"Content-Type": "application/json"}
         try:
-            response = requests.post(url, headers=headers, json=data, timeout=5)
+            response = requests.post(url, headers=headers, json=data )
         except Timeout:
 
             self.report_part_search_error("HTTP response timeout")
@@ -200,22 +183,20 @@ class PartSelectorDialog(wx.Dialog):
             )
             return
         self.search_part_list = []
-        datas = response.json()
-        # datas = datas.get("result", {})
-        data = datas.get("result", {})[0].get("parts", {})
-        # data = datas[0].get("parts", {})
-        if not data:
+        res_datas = response.json().get("result", {})
+        if not res_datas:
             wx.MessageBox( _("No corresponding data was matched") )
             return
-        self.total_num = len(data)
+
+        self.total_num = len(res_datas)
         if self.total_num == 0:
             self.current_page = 0
-        for item in data:
-            if not item.get("part", {}):
+        for item in res_datas:
+            if not item.get("queryPartVO", {}).get("part", {}):
                 self.report_part_search_error(
                     _("returned JSON data does not have expected 'part' attribute")
                 )
-            search_part = item.get("part", {})
+            search_part = item.get("queryPartVO", {}).get("part", {})
             self.search_part_list.append(search_part)
         wx.CallAfter(self.populate_part_list)
         wx.CallAfter(wx.EndBusyCursor)
@@ -233,58 +214,49 @@ class PartSelectorDialog(wx.Dialog):
         else:
             self.part_list_view.result_count.SetLabel(f"{self.total_num} Results")
 
-        # parameters = ["mpn", "manufacturer", "package", "category"]
-        parameters = ["mpn", "manufacturer", "pkg", "category"]
-        # but "item_total_list" contains more comprehensive data infomation.
-        self.item_total_list = []
+        parameters = ["mpn", "manufacturer", "pkg", "category", "sku"]
+        body = []
+        for part_info in self.search_part_list:
+            manu_id = part_info.get("manufacturer_id", {})
+            mpn = part_info.get("mpn", {})
+            body_value = ( f"{manu_id}-{mpn}" )
+            body.append(body_value)
+        
+        headers = {"Content-Type": "application/json"}
+        
+        url = "http://www.fdatasheets.com/api/chiplet/kicad/searchSupplyChain"
+        response = requests.post(url, headers=headers, json=body, timeout=5)
+        if response.status_code != 200:
+            self.report_part_search_error(
+                _(f"non-OK HTTP response status：{response.status_code}")
+            )
+            # judge whether supplier chain data is available
+            # Check if the response content is not empty
+
+        res_datas = response.json().get("result", {})
+        if not response.json():
+            wx.MessageBox( _("No corresponding sku data was matched") )
+            
         for idx, part_info in enumerate(self.search_part_list, start=1):
+            sku = "-"
+            mpn = part_info["mpn"]
+            for data in res_datas:
+                if data.get("mpn") == mpn and data.get("vendor") == "hqself":
+                    sku = data.get("sku", "-") 
+                    break 
+            part_info["sku"] = sku
+            self.search_part_list[idx-1]["sku"] = sku
+            
             part = []
             for k in parameters:
                 val = part_info.get(k, "")
                 val = "-" if val == "" else val
                 part.append(val)
             part.insert(0, f"{idx}")
-            manu_id = part_info.get("manufacturer_id", {})
-            mpn = part_info.get("mpn", {})
-            suppliers_chain = {}
-            headers = {"Content-Type": "application/json"}
-            body = [f"{manu_id}-{mpn}"]
-            # url = "http://192.168.50.102:8012/search/supplychain/list/mfg-mpn"
-            url = "http://www.fdatasheets.com/api/chiplet/kicad/searchSupplyChain"
-            response = requests.post(url, headers=headers, json=body, timeout=5)
-            if response.status_code != 200:
-                self.report_part_search_error(
-                    _(f"non-OK HTTP response status：{response.status_code}")
-                )
-            # judge whether supplier chain data is available
-            # Check if the response content is not empty
-
-
-            datas = response.json()
-            if not datas.get("result", {}):
-                part.insert(5, "-")
-                combined_data = {
-                    "part_info": part_info,
-                    "supplier_chain": [],
-                }
-                self.item_total_list.append(combined_data)
-                self.part_list_view.part_list.AppendItem(part)
-                continue
-            
-            
-            
-            suppliers_chain = datas.get("result", {})
-            sku = "-"
-            for supplier_chain  in suppliers_chain:
-                vendor = supplier_chain.get("vendor", {})
-                if vendor == "hqself":
-                    sku = supplier_chain.get("sku", "-")
-            part.insert(5, sku)
-            
-            
-            combined_data = {"part_info": part_info, "supplier_chain": suppliers_chain}
-            self.item_total_list.append(combined_data)
             self.part_list_view.part_list.AppendItem(part)
+
+
+        
 
     def select_part(self, e):
         """Save the selected part number and close the modal."""
@@ -296,15 +268,12 @@ class PartSelectorDialog(wx.Dialog):
         manu = self.part_list_view.part_list.GetValue(row, 2)
         cate = self.part_list_view.part_list.GetValue(row, 4)
         sku = self.part_list_view.part_list.GetValue(row, 5)
-        # supp = self.part_list_view.part_list.GetValue(row, 6)
-        # supp = "__"
-        self.selected_part = self.item_total_list[row]
+        self.selected_part = self.search_part_list[row]
         evt = AssignPartsEvent(
             mpn=selection,
             manufacturer=manu,
             category=cate,
             sku=sku,
-            # supplier=supp,
             references=list(self.parts.keys()),
             selected_part_detail=self.selected_part,
         )
@@ -322,7 +291,7 @@ class PartSelectorDialog(wx.Dialog):
         row = self.part_list_view.part_list.ItemToRow(item)
         if row == -1:
             return
-        self.clicked_part = self.item_total_list[row]
+        self.clicked_part = self.search_part_list[row]
         if self.clicked_part != "":
             try:
                 wx.BeginBusyCursor()
@@ -373,7 +342,7 @@ class PartSelectorDialog(wx.Dialog):
 
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _(f"Failed to download part detail from the NextPCB API ({reason})\r\n"),
+            _(f"Failed to download part detail from the BOM API ({reason})\r\n"),
             _("Error"),
             style=wx.ICON_ERROR,
         )
@@ -392,3 +361,4 @@ class PartSelectorDialog(wx.Dialog):
         conMenu.Enable(ID_SELECT_PART, True)
         self.part_list_view.part_list.PopupMenu(conMenu)
         conMenu.Destroy()
+

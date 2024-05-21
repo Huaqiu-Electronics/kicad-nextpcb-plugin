@@ -1,4 +1,4 @@
-from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
 from nextPCB_plugin.order_nextpcb.order_region import SupportedRegion
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.settings_nextpcb.form_value_fitter import fitter_and_map_form_value
@@ -17,7 +17,7 @@ STACKUP_CHOICE_NEXTPCB = [_("No Requirement"), _("Customer Specified Stack up")]
 
 
 class SpecialProcessViewNextpcb(UiSpecialProcess, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManagerNextpcb):
+    def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
         self.board_manager = board_manager
 

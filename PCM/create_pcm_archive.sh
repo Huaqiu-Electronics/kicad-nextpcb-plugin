@@ -17,7 +17,7 @@ rm -f $PCM_ROOT/*.zip
 rm -rf $PLUGIN_PATH
 
 
-TRANSLATION_PATH="$PRJECT_ROOT/kicad_amf_plugin/language_pcb/geni18n.py"
+TRANSLATION_PATH="$PRJECT_ROOT/nextPCB_plugin/language_pcb/geni18n.py"
 echo "Excuting the translation script  : $TRANSLATION_PATH"
 python3 $TRANSLATION_PATH
 
@@ -27,7 +27,7 @@ mkdir -p $RESOURCE_PATH
 
 echo "Copy plugin to destination"
 
-for i in __init__.py __main__.py kicad_amf_plugin
+for i in __init__.py __main__.py nextPCB_plugin
     do cp -r $i $PLUGIN_PATH
 done
 

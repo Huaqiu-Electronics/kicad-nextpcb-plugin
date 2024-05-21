@@ -11,7 +11,7 @@
     <property name="embedded_files_path">res</property>
     <property name="encoding">UTF-8</property>
     <property name="event_generation">connect</property>
-    <property name="file"></property>
+    <property name="file">ui_assigned_part_panel</property>
     <property name="first_id">1000</property>
     <property name="help_provider">none</property>
     <property name="image_path_wrapper_function_name"></property>
@@ -64,7 +64,7 @@
         <object class="sizeritem" expanded="true">
           <property name="border">5</property>
           <property name="flag">wxEXPAND | wxALL</property>
-          <property name="proportion">1</property>
+          <property name="proportion">3</property>
           <object class="wxScrolledWindow" expanded="true">
             <property name="BottomDockable">1</property>
             <property name="LeftDockable">1</property>
@@ -172,7 +172,7 @@
         <object class="sizeritem" expanded="true">
           <property name="border">5</property>
           <property name="flag">wxEXPAND | wxALL</property>
-          <property name="proportion">1</property>
+          <property name="proportion">2</property>
           <object class="wxScrolledWindow" expanded="true">
             <property name="BottomDockable">1</property>
             <property name="LeftDockable">1</property>

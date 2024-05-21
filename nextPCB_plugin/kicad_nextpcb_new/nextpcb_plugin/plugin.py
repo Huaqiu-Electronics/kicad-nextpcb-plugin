@@ -1,11 +1,11 @@
 import os
 from pcbnew import ActionPlugin
-from nextPCB_plugin.kicad_nextpcb_new.nextpcb_plugin._main import _main
+from nextPCB_plugin.kicad_nextpcb_new.nextPCB_plugin._main import _main
 
 
 class NextPcbBomTool(ActionPlugin):
     def defaults(self):
-        self.name = "NextPCB Tools"
+        self.name = "BOM Tools"
         self.category = "Fabrication data generation"
         self.description = (
             "Generate NextPCB-compatible Gerber, Excellon, BOM and CPL files"

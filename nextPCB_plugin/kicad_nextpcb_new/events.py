@@ -11,3 +11,5 @@ UpdateSetting, EVT_UPDATE_SETTING = NewEvent()
 # part selector
 UpdatePage, EVT_UPDATE_PAGE = NewEvent()
 ExportCSV, EVT_EXPORT_CSV = NewEvent()
+
+CacheBitmapInDatabase, EVT_CACHE_BITMAP_IN_DATABASE = NewEvent()

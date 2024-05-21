@@ -1,5 +1,5 @@
 from nextPCB_plugin.gui_pcb.summary.price_summary_model import PriceCategoryNextpcb
-from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
 from nextPCB_plugin.kicad_pcb.fabrication_data_generator_evt import (
     EVT_BUTTON_FABRICATION_DATA_GEN_RES,
     FabricationDataGenEvent,
@@ -28,6 +28,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT,
     EVT_SHOW_SOLDER_MASK_COLOR,
     EVT_SHOW_PCB_PACKAGE_KIND,
+    EVT_GET_UNIQUE_MPN_COUNT,
 )
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.kicad_pcb.fabrication_data_generator import FabricationDataGenerator
@@ -103,7 +104,7 @@ BCOUNT = "bcount"
 
 
 class MainFrameNextpcb(wx.Frame):
-    def __init__(self, board_manager: BoardManagerNextpcb, size, parent=None):
+    def __init__(self, board_manager: BoardManager, size, parent=None):
         wx.Frame.__init__(
             self,
             parent,
@@ -247,6 +248,8 @@ class MainFrameNextpcb(wx.Frame):
         self.Bind( EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT, self.OnShowTipFinishedCopperWeight )
         self.Bind( EVT_SHOW_SOLDER_MASK_COLOR, self.OnShowTipSolderMaskColor  )
         self.Bind(EVT_SHOW_PCB_PACKAGE_KIND, self.OnShowTipPcbPackageKind )
+        self.Bind(EVT_GET_UNIQUE_MPN_COUNT, self.OnGetBomMaterialCount )
+        
 
         self.Bind(
             EVT_BUTTON_FABRICATION_DATA_GEN_RES, self.on_fabrication_data_gen_progress
@@ -264,12 +267,14 @@ class MainFrameNextpcb(wx.Frame):
     def OnShowTipFinishedCopperWeight(self, evt ):
         self.summary_view.ShowTipFinishedCopperWeight(evt.copper_wight_selection)
 
-
     def OnShowTipSolderMaskColor(self, evt ):
         self.summary_view.ShowTipSolderMaskColor(evt.solder_color_selection)
         
     def OnShowTipPcbPackageKind(self , evt):
         self.summary_view.ShowTipPcbPackageKind(evt.pcb_package_kind_selection)
+        
+    def OnGetBomMaterialCount(self , evt):
+        self.smt_pcb_form_parts[SMTPCBFormPartNextpcb.SMT_PROCESS_INFO].SetBomMaterialCount(evt.unique_npm_count)
         
     def change_ui(self, evt):
         self.selected_page_index = self.main_notebook.GetSelection()
@@ -497,7 +502,6 @@ class MainFrameNextpcb(wx.Frame):
 
     def on_place_order(self, evt):
         import time
-
         self.selected_page_index = self.main_notebook.GetSelection()
         
         if self.selected_page_index == 0:
@@ -535,12 +539,11 @@ class MainFrameNextpcb(wx.Frame):
                 form = self.get_query_price_form()
                 smt_order_region = SETTING_MANAGER.order_region
                 time.sleep(1)
-                self._data_gen_progress.Update( 50, _("Upload fabrication file") )
+                self._data_gen_progress.Update( 200, _("Upload fabrication file") )
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
-                self._data_gen_progress.Update( 200, _("Sending order request") )
+                self._data_gen_progress.Update( 500, _("Sending order request") )
                 upload_file = uploadfile.upload_bomfile()
                 webbrowser.open(upload_file)
-
                 self.destory_data_dialog()
 
             except Exception as e:

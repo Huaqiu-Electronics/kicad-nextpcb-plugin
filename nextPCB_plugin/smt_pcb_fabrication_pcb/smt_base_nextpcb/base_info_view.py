@@ -1,4 +1,4 @@
-from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.settings_nextpcb.single_plugin import SINGLE_PLUGIN
@@ -98,7 +98,7 @@ AVAILABLE_QUANTITY = [
 ]
  
 class SmtBaseInfoViewNextpcb(UiSmtBaseInfo, FormPanelBase):
-    def __init__(self, parent, board_manager: BoardManagerNextpcb):
+    def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
         self.board_manager = board_manager
         

@@ -15,10 +15,11 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     OrderRegionChanged,
     SmtOrderRegionChanged,
     EVT_PANEL_TAB_CONTROL,
+    GetUniqueMpnCount,
     
 )
 
-from nextPCB_plugin.kicad_pcb.board_manager import BoardManagerNextpcb
+from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
 
 from nextPCB_plugin.kicad_nextpcb_new.mainwindow import NextPCBTools
 from nextPCB_plugin.kicad_nextpcb_new.store import Store
@@ -52,7 +53,7 @@ smt_price_model = { PriceCategoryNextpcb.PCB: pcb_price_model[PriceCategoryNextp
 
         
 class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
-    def __init__(self, parent, board_manager: BoardManagerNextpcb):
+    def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
         
         self._board_manager = board_manager
@@ -207,6 +208,10 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
 
     def is_database_exists(self):
         result = os.path.exists(self.db_file_path)
+        
+        evt = GetUniqueMpnCount(-1, unique_npm_count = self.store.get_unique_mpn_count() )
+        wx.PostEvent(self.Parent, evt)
+        
         parts = self.store.get_reference_mpn_footprint()
         mpn_values = [part[1] for part in parts]
         all_empty = all(value == '' for value in mpn_values)
@@ -216,6 +221,9 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         parts = []
         self.list_bom_view.DeleteAllItems()
         parts = self.store.get_reference_mpn_footprint()
+
+        evt = GetUniqueMpnCount(-1, unique_npm_count = self.store.get_unique_mpn_count() )
+        wx.PostEvent(self.Parent, evt)
         for part in parts:
             self.list_bom_view.AppendItem(part)
 
@@ -307,9 +315,9 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
     def on_bom_match(self, e):
         dlg = NextPCBTools(self, self._board_manager)
         result = dlg.ShowModal()
-        dlg.generate_fabrication_data(e)
-        self.get_data()
-        self.get_files()
+        # dlg.generate_fabrication_data(e)
+        # self.get_data()
+        # self.get_files()
         if result in (wx.ID_OK, wx.ID_CANCEL):
             dlg.Destroy()
 
@@ -321,6 +329,13 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
     def on_place_order_clicked(self, ev):
         evt = PlaceOrder(id=-1)
         wx.PostEvent(self.Parent, evt)
+        
+        dlg = NextPCBTools(self, self._board_manager)
+        dlg.generate_fabrication_data(ev)
+        self.get_data()
+        self.get_files()
+        dlg.Destroy()
+
 
     def on_sash_changed(self, evt):
         sash_pos = evt.GetSashPosition()

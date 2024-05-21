@@ -76,13 +76,6 @@ class FootPrintList(wx.dataview.DataViewListCtrl):
             align=wx.ALIGN_CENTER,
             flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
-        # self.colu_supplier = self.AppendTextColumn(
-        #     _("Supplier"),
-        #     mode=wx.dataview.DATAVIEW_CELL_INERT,
-        #     width=int(mainwindows.scale_factor * 150),
-        #     align=wx.ALIGN_CENTER,
-        #     flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
-        # )
         
         self.colu_quantity = self.AppendTextColumn(
             _("Quantity"),
@@ -102,13 +95,6 @@ class FootPrintList(wx.dataview.DataViewListCtrl):
             _("POS"),
             mode=wx.dataview.DATAVIEW_CELL_ACTIVATABLE,
             width=int(mainwindows.scale_factor * 60),
-            align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
-        )
-        self.rot = self.AppendTextColumn(
-            _("Rotation"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 80),
             align=wx.ALIGN_CENTER,
             flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
