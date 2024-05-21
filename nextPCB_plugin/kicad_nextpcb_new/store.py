@@ -396,15 +396,6 @@ class Store:
                     f"SELECT part_detail, image FROM part_info WHERE reference = '{ref}'"
                 ).fetchone()
                 return result
-
-        
-    def get_part_details(self, ref):
-        """Get a part from the database by its reference."""
-        with contextlib.closing(sqlite3.connect(self.dbfile)) as con:
-            with con as cur:
-                return cur.execute(
-                    f"SELECT part_detail FROM part_info WHERE reference = '{ref}'"
-                ).fetchone()
         
 
     def update_from_board(self):

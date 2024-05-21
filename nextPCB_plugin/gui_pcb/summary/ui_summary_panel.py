@@ -13,6 +13,7 @@ import wx.dataview
 from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT
 from nextPCB_plugin.utils_nextpcb.platebtn import PlateButton ,PB_STYLE_GRADIENT,PB_STYLE_SQUARE
 
+
 ###########################################################################
 ## Class UiSummaryPanelNextpcb
 ###########################################################################
@@ -108,7 +109,7 @@ class UiSummaryPanelNextpcb ( wx.Panel ):
 		self.show_hidden_text = wx.Panel( self.switch_amf_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self.show_hidden_text, wx.ID_ANY, _(u"Tip") ), wx.VERTICAL )
 
-		self.m_staticText4 = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"Factors that affect the price：Layer、Min Trace/Space Outer、Min Pilled Hole "), wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
+		self.m_staticText4 = wx.StaticText( sbSizer8.GetStaticBox(), wx.ID_ANY, _(u"Factors that affect the price : Layer,  Min Trace/Space Outer, Min Pilled Hole "), wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
 		self.m_staticText4.Wrap( 310 )
 
 		sbSizer8.Add( self.m_staticText4, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
