@@ -245,7 +245,7 @@ class Store:
     def set_bom_match_ref(self,references, value):
         """Change the BOM attribute for a part in the database."""
         with contextlib.closing(sqlite3.connect(self.dbfile)) as con:
-            if isinstance(value[4], str):
+            if isinstance(value[4], str) and value[4]:
                  value[4] = json.loads( value[4] )
             
             detail_data = json.dumps(value[4])

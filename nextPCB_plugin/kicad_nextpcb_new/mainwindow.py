@@ -497,7 +497,7 @@ class NextPCBTools(wx.Dialog):
                 match_list[4] = batch_part[4].get("sku", "-")
                 match_list[5] = batch_part[4]
                 match_lists.append(match_list)
-                
+
         self.batch_update_db_match(match_lists)
         self.populate_footprint_list()
 
@@ -665,7 +665,7 @@ class NextPCBTools(wx.Dialog):
             mpn = self.footprint_list.GetTextValue(row, 4)
             if mpn:
                 if refs:
-                    match_list =[None, None, None, None, None]
+                    match_list =['', '', '', '', '']
                     self.store.set_bom_match_ref( refs,match_list )
                     self.store.set_bom( refs, True )
                     self.store.set_pos( refs, True )
