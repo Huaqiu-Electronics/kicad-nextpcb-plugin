@@ -136,14 +136,6 @@ class AssignedPartView(UiAssignedPartPanel):
             # Handle the error if the image file is not valid
             print(f"Error opening image: {e}")
             return
-    
-        # Convert the PIL image to a wxPython image
-        wx_image = wx.Image(image.width, image.height)
-        wx_image.SetData(image.tobytes())
-        
-        if not wx_image.IsOk():
-            print("The image is not valid.")
-            return
         
         sb_size = self.part_image.GetSize()
         min_dimension = min(sb_size.GetWidth(), sb_size.GetHeight())

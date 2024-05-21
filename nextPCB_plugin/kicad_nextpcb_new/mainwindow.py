@@ -423,7 +423,7 @@ class NextPCBTools(wx.Dialog):
             response = requests.post(url, headers=headers, json=body, timeout=5)
         except requests.exceptions.Timeout:
             self.report_part_search_error(
-                _(f"Request timed out. Please try again later.")
+                _("Request timed out. Please try again later.")
             )
         except requests.exceptions.RequestException as e:
             self.report_part_search_error(
@@ -436,12 +436,11 @@ class NextPCBTools(wx.Dialog):
             )
 
         if not response.json():
-            wx.MessageBox(  _(f"No return data"), _("Info"), style=wx.ICON_ERROR, )
+            wx.MessageBox( _("No return data"), _("Info"), style=wx.ICON_ERROR, )
             return
         data = response.json()
         res_datas = response.json().get("result", {})
         if not res_datas:
-            wx.MessageBox(  _(f"No return data"), _("Info"), style=wx.ICON_ERROR, )
             return
         
         request_bodys = []
@@ -549,6 +548,7 @@ class NextPCBTools(wx.Dialog):
     def assign_parts(self, e):
         """Assign a selected nextPCB number to parts"""
         if len(e.references) == 1 and isinstance(e.references[0], str):
+            detail = e.selected_part_detail
             match_list =[e.mpn, e.manufacturer, e.category, e.sku, e.selected_part_detail]
             self.store.set_bom_match_ref( e.references[0],match_list )
         self.populate_footprint_list()
@@ -665,10 +665,11 @@ class NextPCBTools(wx.Dialog):
             mpn = self.footprint_list.GetTextValue(row, 4)
             if mpn:
                 if refs:
-                    match_list =["", "", "", "", ""]
+                    match_list =[None, None, None, None, None]
                     self.store.set_bom_match_ref( refs,match_list )
-                    self.store.set_bom(refs, True)
-                    self.store.set_pos(refs, True)
+                    self.store.set_bom( refs, True )
+                    self.store.set_pos( refs, True )
+                    self.store.set_cache_image( refs, None )
         self.populate_footprint_list()
 
 
@@ -706,7 +707,7 @@ class NextPCBTools(wx.Dialog):
         e.Skip()
     
     def onCacheBitmapInDatabase(self, evt):
-        wx.CallAfter( self.store.set_cache_image, evt.content, self.image_refs)
+        wx.CallAfter( self.store.set_cache_image, self.image_refs, evt.content)
 
 
     def get_column_by_name(self, column_title_to_find):
@@ -785,7 +786,8 @@ class NextPCBTools(wx.Dialog):
         part += str(self.footprint_list.GetTextValue(row, 6)) + "\n"
         part += str(self.footprint_list.GetTextValue(row, 7)) + "\n"
         ref = self.footprint_list.GetTextValue(row, 1).split(",")[0]
-        part += str(self.store.get_part_detail(ref))
+        detail = self.store.get_part_detail(ref)[0]
+        part += str( detail )
 
         if part != "":
             if wx.TheClipboard.Open():
@@ -806,6 +808,7 @@ class NextPCBTools(wx.Dialog):
             row = self.footprint_list.ItemToRow(item)
             references = self.footprint_list.GetTextValue(row, 1)
             self.store.set_bom_match_ref( references,lines )
+            self.store.set_cache_image( references, None )
         self.populate_footprint_list()
 
     def export_to_schematic(self, e):

@@ -98,13 +98,10 @@ class PartDetailsView(UiPartDetailsPanel):
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Error downloading image: {e}")
             return None
-        
         if not content:
             return None
-        
         bitmap = self.display_bitmap(content)
         return bitmap
-        
         
     def display_bitmap(self, content):
         io_bytes = io.BytesIO(content)
@@ -113,14 +110,6 @@ class PartDetailsView(UiPartDetailsPanel):
         except (IOError, SyntaxError) as e:
             # Handle the error if the image file is not valid
             print(f"Error opening image: {e}")
-            return
-    
-        # Convert the PIL image to a wxPython image
-        wx_image = wx.Image(image.width, image.height)
-        wx_image.SetData(image.tobytes())
-        
-        if not wx_image.IsOk():
-            print("The image is not valid.")
             return
         
         sb_size = self.part_image.GetSize()

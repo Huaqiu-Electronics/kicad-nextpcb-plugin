@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-05-21 13:58+0800\n"
-"PO-Revision-Date: 2024-05-21 14:26+0800\n"
+"POT-Creation-Date: 2024-05-21 14:48+0800\n"
+"PO-Revision-Date: 2024-05-21 14:49+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -290,61 +290,61 @@ msgstr "绿"
 msgid "MPN"
 msgstr "MPN"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:35
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:32
 msgid "Preference"
 msgstr "偏好设置"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:37
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:34
 msgid "Website"
 msgstr "下单站点"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:68
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:65
 msgid "BOM View"
 msgstr "BOM查看"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:76
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:73
 msgid "BOM Match"
 msgstr "BOM匹配"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:84
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:81
 msgid "Cost Detail"
 msgstr "价格明细"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:103
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:100
 msgid "Order Summary"
 msgstr "订单信息汇总"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:112
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:109
 msgid "Tip"
 msgstr "提示"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:114
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:111
 msgid "Factors that affect the priceLayerMin Trace/Space OuterMin Pilled Hole "
 msgstr "影响价格的因素：板层、最小线宽线距、最小孔径"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:119
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:116
 msgid "Board Type (Recommand) : Single Piece"
 msgstr "出货形式（推荐）：单片出货"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:126
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:123
 msgid "Flnsihed Copper Weight (Best Price) : 1zo"
 msgstr "外层铜厚（最优价格）: 1zo"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:133
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:130
 msgid "Solder Mask Color (Best Price) : Green"
 msgstr "阻焊颜色（最优价格）: 绿"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:155
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:152
 msgid "Update Price"
 msgstr "更新价格"
 
-#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:158
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\ui_summary_panel.py:155
 msgid "Add to Cart"
 msgstr "加入购物车"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:82
 msgid "BOM Tools"
-msgstr ""
+msgstr "BOM Tools"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:148
 msgid " Group by: "
@@ -392,6 +392,15 @@ msgstr ""
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:924
 msgid "Info"
 msgstr "信息"
+
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:426
+msgid "Request timed out. Please try again later."
+msgstr "请求超时，请再次请求。"
+
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:439
+#: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:444
+msgid "No return data"
+msgstr "没有返回数据"
 
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:482
 #: c:\Users\haf\Desktop\SourceCode\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:188

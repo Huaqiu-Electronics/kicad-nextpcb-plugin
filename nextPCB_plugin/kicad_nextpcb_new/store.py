@@ -245,6 +245,9 @@ class Store:
     def set_bom_match_ref(self,references, value):
         """Change the BOM attribute for a part in the database."""
         with contextlib.closing(sqlite3.connect(self.dbfile)) as con:
+            if isinstance(value[4], str):
+                 value[4] = json.loads( value[4] )
+            
             detail_data = json.dumps(value[4])
             update_params = (value[0], value[1], value[2], value[3], detail_data)
             try:
@@ -257,25 +260,6 @@ class Store:
                                 update_params,
                         )
                         cur.commit()
-            except sqlite3.Error as e:
-                print(f"Database error: {e}")
-            except Exception as e:
-                print(f"An error occurred: {e}")
-
-    def set_bom_match(self, value):
-        """Change the BOM attribute for a part in the database."""
-        with contextlib.closing(sqlite3.connect(self.dbfile)) as con:
-            detail_data = json.dumps(value[5])
-            update_params = (value[1], value[2], value[3], value[4], detail_data)
-            try:
-                for reference in value[0].split(","):
-                    with con as cur:
-                        cur.execute(
-                            f"UPDATE part_info SET  mpn = ?, manufacturer = ?, \
-                                category = ?,sku = ?,part_detail = ? WHERE reference = '{reference}'",
-                                update_params,
-                        )
-                        cur.commit()    
             except sqlite3.Error as e:
                 print(f"Database error: {e}")
             except Exception as e:
@@ -301,7 +285,7 @@ class Store:
                     print(f"An error occurred: {e}")
                     
 
-    def set_cache_image(self, image_params, refs):
+    def set_cache_image(self, refs, image_params):
         """Cache image binary data in the database."""
         with contextlib.closing(sqlite3.connect(self.dbfile)) as con:
             try:
@@ -412,11 +396,16 @@ class Store:
                     f"SELECT part_detail, image FROM part_info WHERE reference = '{ref}'"
                 ).fetchone()
                 return result
-                # return cur.execute(
-                #     f"SELECT part_detail, image FROM part_info WHERE reference = '{ref}'"
-                # ).fetchone()
-        
 
+        
+    def get_part_details(self, ref):
+        """Get a part from the database by its reference."""
+        with contextlib.closing(sqlite3.connect(self.dbfile)) as con:
+            with con as cur:
+                return cur.execute(
+                    f"SELECT part_detail FROM part_info WHERE reference = '{ref}'"
+                ).fetchone()
+        
 
     def update_from_board(self):
         """Read all footprints from the board and insert them into the database if they do not exist."""
