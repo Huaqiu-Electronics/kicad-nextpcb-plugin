@@ -62,6 +62,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
+import time
 
 DB_MPN = 3
 DB_MANU = 4
@@ -269,15 +270,18 @@ class NextPCBTools(wx.Dialog):
             wx.dataview.EVT_DATAVIEW_COLUMN_HEADER_CLICK, self.on_sort_footprint_list
         )
         self.notebook.Bind(
-            wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.get_part_details
+            wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.get_part_details_timer_event
         )
         self.notebook.Bind(
-            wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.get_part_details
+            wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.get_part_details_timer_event
         )
         self.notebook.Bind(wx.dataview.EVT_DATAVIEW_ITEM_CONTEXT_MENU, self.OnRightDown)
         self.notebook.Bind(
             wx.dataview.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.toggle_update_to_db
         )
+        
+        self.last_call_time = 0  # 记录上一次事件触发的时间
+        self.throttle_interval = 0.4  # 设置时间间隔，单位为秒
 
         # ---------------------------------------------------------------------
         # ---------------------- Main Layout Sizer ----------------------------
@@ -691,7 +695,15 @@ class NextPCBTools(wx.Dialog):
             if part[1] == value and part[2] == fp:
                 self.footprint_list.SelectRow(r)
 
-    def get_part_details(self, e):
+
+    def get_part_details_timer_event(self, event):
+        current_time = time.time()
+        if current_time - self.last_call_time < self.throttle_interval:
+            return  # 如果时间间隔小于设定的阈值，则不处理事件
+        self.last_call_time = current_time
+        self.get_part_details()
+
+    def get_part_details(self):
         """Fetch part details from NextPCB and show them one after another each in a modal."""
         item = self.footprint_list.GetSelection()
         row = self.footprint_list.ItemToRow(item)
@@ -704,10 +716,11 @@ class NextPCBTools(wx.Dialog):
             ref = self.image_refs.split(",")[0]
             part_detail_db = self.store.get_part_detail(ref)
             self.assigned_part_view.get_part_data(part_detail_db)
-        e.Skip()
+
     
     def onCacheBitmapInDatabase(self, evt):
         wx.CallAfter( self.store.set_cache_image, self.image_refs, evt.content)
+
 
 
     def get_column_by_name(self, column_title_to_find):

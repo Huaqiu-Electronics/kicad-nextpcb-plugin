@@ -68,8 +68,11 @@ class AssignedPartView(UiAssignedPartPanel):
         """Open the linked datasheet PDF on button click."""
         item = self.data_list.GetSelection()
         row = self.data_list.ItemToRow(item)
+        if item is None or row == -1:
+            self.logger.debug("No item selected or clicked on empty space.")
+            return 
         Datasheet = self.data_list.GetTextValue(row, 0)
-        if self.pdfurl != "-" and Datasheet == "Datasheet":
+        if self.pdfurl != "-" and Datasheet == _("Datasheet"):
             self.logger.info("opening %s", str(self.pdfurl))
             webbrowser.open("https:" + self.pdfurl)
 

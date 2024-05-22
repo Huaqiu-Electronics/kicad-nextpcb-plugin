@@ -58,6 +58,7 @@ class PartDetailsView(UiPartDetailsPanel):
             self.data_list.AppendItem([v, " "])
         # self.data_list.AppendItem([_("Price"), " "])
         self.data_list.AppendItem([_("Datasheet"), " "])
+        self.data_list.AppendItem(["1", " "])
         # update layout
         self.Layout()
 
@@ -65,10 +66,18 @@ class PartDetailsView(UiPartDetailsPanel):
         """Open the linked datasheet PDF on button click."""
         item = self.data_list.GetSelection()
         row = self.data_list.ItemToRow(item)
+        if item is None or row == -1:
+            self.logger.debug("No item selected or clicked on empty space.")
+            return 
         Datasheet = self.data_list.GetTextValue(row, 0)
-        if self.pdfurl != "-" and Datasheet == "Datasheet":
-            self.logger.info("opening %s", str(self.pdfurl))
-            webbrowser.open("https:" + self.pdfurl)
+        if Datasheet == _("Datasheet"): 
+            self.logger.debug(f"pdf trigger link")
+            if self.pdfurl != "-" :
+                self.logger.info("opening %s", str(self.pdfurl))
+                webbrowser.open("https:" + self.pdfurl)
+        else:
+            self.logger.debug(f"pdf trigger link error")
+            return
 
     def show_image(self, picture):
         if picture:
