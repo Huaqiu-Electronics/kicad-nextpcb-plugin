@@ -12,7 +12,7 @@ import threading
 from requests.exceptions import Timeout, HTTPError
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import DestorySmtDataGen
 
-TIMEOUT_SECONDS = 5
+TIMEOUT_SECONDS = 40
 class UploadFile:
     def __init__(self, board_manager: BoardManager, url, forms, smt_order_region, number ):
         self._board_manager = board_manager
