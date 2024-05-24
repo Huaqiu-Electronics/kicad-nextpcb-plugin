@@ -107,7 +107,7 @@ class FootPrintList(wx.dataview.DataViewListCtrl):
         )
 
         self.AppendTextColumn(
-            "",
+            " ",
             mode=wx.dataview.DATAVIEW_CELL_INERT,
             width=1,
             align=wx.ALIGN_CENTER,

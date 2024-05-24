@@ -180,36 +180,10 @@ class NextPCBTools(wx.Dialog):
         )
         self.upper_toolbar.AddStretchableSpace()
 
-        # self.generate_button = wx.Button(
-        #     self.upper_toolbar,
-        #     ID_GENERATE,
-        #     _(" Generate "),
-        #     wx.DefaultPosition,
-        #     wx.DefaultSize,
-        #     0,
-        # )
-        # self.generate_button.SetToolTip(
-        #     wx.ToolTip( _("Generate fabrication files to the project folder") )
-        # )
-        # self.upper_toolbar.AddControl(self.generate_button)
-        # self.upper_toolbar.SetToolLongHelp(
-        #     ID_GENERATE, _("Generate fabrication files")
-        # )
-
-
-        # self.settings_button = self.upper_toolbar.AddTool(
-        #     ID_SETTINGS,
-        #     "",
-        #     loadBitmapScaled("nextpcb-setting.png", self.scale_factor),
-        #     _("Settings"),
-        # )
-
         self.upper_toolbar.Realize()
 
         self.Bind(wx.EVT_COMBOBOX, self.group_parts, self.cb_group_strategy)
         self.Bind(wx.EVT_TOOL, self.auto_match_parts, self.auto_match_button)
-        # self.Bind(wx.EVT_BUTTON, self.generate_fabrication_file, self.generate_button)
-        # self.Bind(wx.EVT_TOOL, self.manage_settings, self.settings_button)
 
         # ---------------------------------------------------------------------
         # ------------------ down toolbar List --------------------------
@@ -307,7 +281,6 @@ class NextPCBTools(wx.Dialog):
         self.Bind(EVT_ASSIGN_PARTS_EVENT, self.assign_parts)
         self.Bind(EVT_POPULATE_FOOTPRINT_LIST_EVENT, self.populate_footprint_list)
         self.Bind(EVT_UPDATE_SETTING, self.update_settings)
-        
         self.Bind( EVT_CACHE_BITMAP_IN_DATABASE, self.onCacheBitmapInDatabase )
 
         self.on_notebook_page_changed(None)
@@ -535,7 +508,7 @@ class NextPCBTools(wx.Dialog):
         self.store.set_batch_cache_image(matched_lists)
 
 
-    def generate_fabrication_data(self, e):
+    def generate_fabrication_data(self):
         """Generate fabrication data."""
         self.fabrication.fill_zones()
         self.fabrication.generate_geber(None)
@@ -544,10 +517,6 @@ class NextPCBTools(wx.Dialog):
         self.fabrication.generate_cpl()
         self.fabrication.generate_bom()
 
-    def generate_fabrication_file(self, e):
-        """Generate fabrication data."""
-        self.generate_fabrication_data(e)
-        self.fabrication.path_message()
 
     def assign_parts(self, e):
         """Assign a selected nextPCB number to parts"""
@@ -743,10 +712,6 @@ class NextPCBTools(wx.Dialog):
             row, self.get_column_position_by_name(column_title)
         )
 
-    def manage_settings(self, e=None):
-        """Manage settings."""
-        SettingsDialog(self).ShowModal()
-
     def update_settings(self, e):
         """Update the settings on change"""
         if e.section not in self.settings:
@@ -778,11 +743,14 @@ class NextPCBTools(wx.Dialog):
             fp = self.footprint_list.GetValue(row, 3)
             MPN = self.footprint_list.GetValue(row, 4)
             Manufacturer = self.footprint_list.GetValue(row, 5)
-            selection[reference] = MPN + "," + Manufacturer + "," + value + "," + fp
+            selection[reference] = value + "," + fp + "," + MPN + "," + Manufacturer 
         self.logger.debug(f"Create SQLite table for rotations, {selection}")
         try:
             wx.BeginBusyCursor()
             PartSelectorDialog(self, selection).ShowModal()
+        except Exception as e:
+            # 处理异常，例如记录日志或向用户显示错误消息
+            self.logger.error("An exception occurred: %s", e)
         finally:
             wx.EndBusyCursor()
 

@@ -157,7 +157,7 @@ class Store:
             con.create_collation("naturalsort", natural_sort_collation)
             with con as cur:
                 # Query all parts that are supposed to be in the BOM an have an mpn number, group the references together
-                query = f"SELECT mpn, COUNT(*) as quantity, GROUP_CONCAT(reference), manufacturer, category, sku \
+                query = f"SELECT mpn, COUNT(*) as quantity, GROUP_CONCAT(reference), value, manufacturer, category, sku \
                 FROM part_info GROUP BY footprint, mpn\
                 ORDER BY reference COLLATE naturalsort ASC"
                 a = [list(part) for part in cur.execute(query).fetchall()]
@@ -422,24 +422,24 @@ class Store:
                 # if the board part matches the dbpart except for the and the stock value,
                 if part[PART_REFERENCE:PART_FOOTPRINT] == list(dbpart[PART_REFERENCE:PART_FOOTPRINT]) and part[PART_BOMCHECK:PART_POSCHECK ] == [bool(x) for x in dbpart[8:9] ]:
                     # if part in the database, has no mpn value the board part has a mpn value, update including mpn
-                    if dbpart and not dbpart[PART_MPN]:
-                        self.logger.debug(
-                            f"Part {part[PART_REFERENCE]} is already in the database but without mpn value, so the value supplied from the board will be set."
-                        )
+                    # if dbpart and not dbpart[PART_MPN]:
+                    #     self.logger.debug(
+                    #         f"Part {part[PART_REFERENCE]} is already in the database but without mpn value, so the value supplied from the board will be set."
+                    #     )
                         # self.update_part(part)
                     # if part in the database, has a mpn value
-                    elif dbpart and dbpart[PART_MPN]:
+                    if dbpart and dbpart[PART_MPN]:
                         # update mpn value as well if setting is accordingly
                         part.pop(PART_MPN)
-                        self.logger.debug(
-                            f"Part {part[PART_REFERENCE]} is already in the database and has a mpn value, the value supplied from the board will be ignored."
-                        )
+                        # self.logger.debug(
+                        #     f"Part {part[PART_REFERENCE]} is already in the database and has a mpn value, the value supplied from the board will be ignored."
+                        # )
                         # self.update_part(part)
                 else:
                     # If something changed, we overwrite the part and dump the mpn value or use the one supplied by the board
-                    self.logger.debug(
-                        f"Part {part[PART_REFERENCE]} is already in the database but value, footprint, bom or pos values changed in the board file, part will be updated, mpn overwritten/cleared."
-                    )
+                    # self.logger.debug(
+                    #     f"Part {part[PART_REFERENCE]} is already in the database but value, footprint, bom or pos values changed in the board file, part will be updated, mpn overwritten/cleared."
+                    # )
                     self.update_part(part)
         self.clean_database()
 

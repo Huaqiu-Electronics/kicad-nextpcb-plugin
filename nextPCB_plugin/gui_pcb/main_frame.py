@@ -535,10 +535,10 @@ class MainFrameNextpcb(wx.Frame):
                 wx.MessageBox(_('Place perform "BOM Match"'))
                 return
             self.show_data_gen_progress_dialog()
+            self.summary_view.on_generate_fabrication_file()
             try:
                 form = self.get_query_price_form()
                 smt_order_region = SETTING_MANAGER.order_region
-                time.sleep(1)
                 self._data_gen_progress.Update( 200, _("Upload fabrication file") )
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
                 self._data_gen_progress.Update( 500, _("Sending order request") )
@@ -549,7 +549,6 @@ class MainFrameNextpcb(wx.Frame):
             except Exception as e:
                 wx.MessageBox(str(e))
                 raise e  # TODO remove me
-
 
     def receive_number_data(self, param1):
         self._number =  param1

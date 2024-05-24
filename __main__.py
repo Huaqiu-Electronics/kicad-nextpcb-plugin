@@ -9,7 +9,7 @@ class StandAloneApp(App):
     def OnInit(self):
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 
-        # self.locale = Locale(SETTING_MANAGER.get_language())
+        self.locale = Locale(SETTING_MANAGER.get_language())
         return True
 
 

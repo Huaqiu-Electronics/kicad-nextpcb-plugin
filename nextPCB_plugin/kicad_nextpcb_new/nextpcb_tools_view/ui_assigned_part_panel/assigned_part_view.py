@@ -18,6 +18,7 @@ parameters = {
     "pkg": _("Package / Footprint"),
     "category": _("Category"),
     "part_desc": _("Description"),
+    "datasheet":_("Datasheet"),
     "sku": _("SKU"),
 }
 
@@ -60,8 +61,6 @@ class AssignedPartView(UiAssignedPartPanel):
 
         for k, v in parameters.items():
             self.data_list.AppendItem([v, " "])
-        self.data_list.AppendItem([_("Datasheet"), " "])
-        # update layout
         self.Layout()
 
     def on_open_pdf(self, e):
@@ -69,12 +68,23 @@ class AssignedPartView(UiAssignedPartPanel):
         item = self.data_list.GetSelection()
         row = self.data_list.ItemToRow(item)
         if item is None or row == -1:
-            self.logger.debug("No item selected or clicked on empty space.")
             return 
         Datasheet = self.data_list.GetTextValue(row, 0)
-        if self.pdfurl != "-" and Datasheet == _("Datasheet"):
-            self.logger.info("opening %s", str(self.pdfurl))
-            webbrowser.open("https:" + self.pdfurl)
+        if Datasheet == _("Datasheet"): 
+            if self.pdfurl != "-" :
+                self.logger.info("opening %s", str(self.pdfurl))
+                filename_pos = self.pdfurl.find('filename=')
+                if filename_pos != -1:
+                    query_pos = self.pdfurl.rfind('?')
+                    if query_pos != -1:
+                        self.pdfurl = self.pdfurl[:query_pos]
+                # 确保 URL 以 'http' 开头
+                if not self.pdfurl.startswith('http'):
+                    self.pdfurl = 'http:' + self.pdfurl
+                webbrowser.open(self.pdfurl)
+        else:
+            self.logger.debug(f"pdf trigger link error")
+            return
 
     def show_cache_image(self, content):
         bitmap = self.display_bitmap(content)
@@ -184,12 +194,7 @@ class AssignedPartView(UiAssignedPartPanel):
 
         self.pdfurl = self.clicked_part.get("datasheet", {})
         self.pdfurl = "-" if self.pdfurl == "" else self.pdfurl
-        self.data_list.AppendItem(
-            [
-                _("Datasheet"),
-                self.pdfurl,
-            ]
-        )
+
         
         if self.bitmap_data and self.bitmap_data is not None:
             self.show_cache_image(self.bitmap_data)

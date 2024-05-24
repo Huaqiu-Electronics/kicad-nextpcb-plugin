@@ -16,6 +16,7 @@ parameters = {
     "pkg": _("Package / Footprint"),
     "category": _("Category"),
     "part_desc": _("Description"),
+    "datasheet":_("Datasheet"),
     "sku": _("SKU"),
 }
 
@@ -56,9 +57,6 @@ class PartDetailsView(UiPartDetailsPanel):
 
         for k, v in parameters.items():
             self.data_list.AppendItem([v, " "])
-        # self.data_list.AppendItem([_("Price"), " "])
-        self.data_list.AppendItem([_("Datasheet"), " "])
-        self.data_list.AppendItem(["1", " "])
         # update layout
         self.Layout()
 
@@ -67,14 +65,20 @@ class PartDetailsView(UiPartDetailsPanel):
         item = self.data_list.GetSelection()
         row = self.data_list.ItemToRow(item)
         if item is None or row == -1:
-            self.logger.debug("No item selected or clicked on empty space.")
             return 
         Datasheet = self.data_list.GetTextValue(row, 0)
         if Datasheet == _("Datasheet"): 
-            self.logger.debug(f"pdf trigger link")
             if self.pdfurl != "-" :
                 self.logger.info("opening %s", str(self.pdfurl))
-                webbrowser.open("https:" + self.pdfurl)
+                filename_pos = self.pdfurl.find('filename=')
+                if filename_pos != -1:
+                    query_pos = self.pdfurl.rfind('?')
+                    if query_pos != -1:
+                        self.pdfurl = self.pdfurl[:query_pos]
+                # 确保 URL 以 'http' 开头
+                if not self.pdfurl.startswith('http'):
+                    self.pdfurl = 'http:' + self.pdfurl
+                webbrowser.open(self.pdfurl)
         else:
             self.logger.debug(f"pdf trigger link error")
             return
@@ -88,7 +92,7 @@ class PartDetailsView(UiPartDetailsPanel):
                 self.part_image.SetBitmap(self.get_scaled_bitmap(picture))
         else:
             self.part_image.SetBitmap(wx.NullBitmap)
-            self.Layout()
+        self.Layout()
 
     def get_scaled_bitmap(self, url):
         """Download a picture from a URL and convert it into a wx Bitmap"""
@@ -163,12 +167,6 @@ class PartDetailsView(UiPartDetailsPanel):
 
         self.pdfurl = self.clicked_part.get("datasheet", {})
         self.pdfurl = "-" if self.pdfurl == "" else self.pdfurl
-        self.data_list.AppendItem(
-            [
-                _("Datasheet"),
-                self.pdfurl,
-            ]
-        )
 
         picture = self.clicked_part.get("image", [])
         threading.Thread(target= self.show_image,args=(picture, ) ).start()
@@ -181,4 +179,4 @@ class PartDetailsView(UiPartDetailsPanel):
             _("Error"),
             style=wx.ICON_ERROR,
         )
-        # self.Destroy()
+

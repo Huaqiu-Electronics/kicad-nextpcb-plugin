@@ -315,9 +315,6 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
     def on_bom_match(self, e):
         dlg = NextPCBTools(self, self._board_manager)
         result = dlg.ShowModal()
-        # dlg.generate_fabrication_data(e)
-        # self.get_data()
-        # self.get_files()
         if result in (wx.ID_OK, wx.ID_CANCEL):
             dlg.Destroy()
 
@@ -330,8 +327,9 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         evt = PlaceOrder(id=-1)
         wx.PostEvent(self.Parent, evt)
         
+    def on_generate_fabrication_file(self ):
         dlg = NextPCBTools(self, self._board_manager)
-        dlg.generate_fabrication_data(ev)
+        dlg.generate_fabrication_data()
         self.get_data()
         self.get_files()
         dlg.Destroy()
