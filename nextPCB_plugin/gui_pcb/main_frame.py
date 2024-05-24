@@ -29,6 +29,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     EVT_SHOW_SOLDER_MASK_COLOR,
     EVT_SHOW_PCB_PACKAGE_KIND,
     EVT_GET_UNIQUE_MPN_COUNT,
+    EVT_DESTORY_SMT_DATA_GEN,
 )
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
 from nextPCB_plugin.kicad_pcb.fabrication_data_generator import FabricationDataGenerator
@@ -254,8 +255,9 @@ class MainFrameNextpcb(wx.Frame):
         self.Bind(
             EVT_BUTTON_FABRICATION_DATA_GEN_RES, self.on_fabrication_data_gen_progress
         )
+        self.Bind( EVT_DESTORY_SMT_DATA_GEN, self.destory_data_gen_dialog )
+        
         pub.subscribe(self.receive_number_data, "combo_number")
-
         main_sizer = wx.BoxSizer(wx.HORIZONTAL)
         main_sizer.Add(self.main_splitter, 1, wx.EXPAND, 5)
         self.SetSizer(main_sizer)
@@ -295,7 +297,7 @@ class MainFrameNextpcb(wx.Frame):
                 if GenerateStatus.FAILED == res.get_status():
                     wx.MessageBox(f"{res.get_message()}")
 
-    def destory_data_dialog(self):
+    def destory_data_gen_dialog(self, evt):
         self._data_gen_progress.Update(GenerateStatus.MAX_PROGRESS - 1, _("Sending order request"))
         self._data_gen_progress.Destroy()
         self._data_gen_progress = None
@@ -541,14 +543,16 @@ class MainFrameNextpcb(wx.Frame):
                 smt_order_region = SETTING_MANAGER.order_region
                 self._data_gen_progress.Update( 200, _("Upload fabrication file") )
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
-                self._data_gen_progress.Update( 500, _("Sending order request") )
-                upload_file = uploadfile.upload_bomfile()
-                webbrowser.open(upload_file)
-                self.destory_data_dialog()
+                if uploadfile.verify_pcb_smt_upload_success():
+                    self._data_gen_progress.Update( 500, _("Sending order request") )
+                    upload_file = uploadfile.upload_bomfile()
+                    webbrowser.open(upload_file)
 
             except Exception as e:
                 wx.MessageBox(str(e))
                 raise e  # TODO remove me
+            finally:
+                self.destory_data_gen_dialog(evt)
 
     def receive_number_data(self, param1):
         self._number =  param1

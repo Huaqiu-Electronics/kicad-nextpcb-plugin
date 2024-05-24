@@ -249,11 +249,11 @@ class PartSelectorDialog(wx.Dialog):
             return
         self.total_pages = ceil(self.total_num, self.one_page_size)
         self.update_page_label()
-        self.part_list_view.result_count.SetLabel(_(f"{self.total_num} Results"))
+        self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
         if self.total_num >= 1000:
             self.part_list_view.result_count.SetLabel(_("1000 Results (limited)" ))
         else:
-            self.part_list_view.result_count.SetLabel(f"{self.total_num} Results")
+            self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
 
         parameters = ["mpn", "manufacturer", "pkg", "category", "sku"]
         body = []
@@ -419,7 +419,7 @@ class PartSelectorDialog(wx.Dialog):
 
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _(f"Failed to download part detail from the BOM API ({reason})\r\n"),
+            _("Failed to download part detail from the BOM API: {reasons}\r\n").format(reasons=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )

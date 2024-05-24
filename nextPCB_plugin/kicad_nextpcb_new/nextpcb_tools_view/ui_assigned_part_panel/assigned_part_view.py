@@ -207,7 +207,7 @@ class AssignedPartView(UiAssignedPartPanel):
     def report_part_data_fetch_error(self, reason):
         mpn = self.clicked_part.get('mpn', "-")
         wx.MessageBox(
-            _(f"Failed to download part detail: {reason}\r\nWe looked for a part named:\r\n{ mpn }\r\n"),
+            _("Failed to download part detail: {reason}\r\nWe looked for a part named:\r\n{ mpn }\r\n").format(reason=reason ,mpn = mpn),
             _("Error"),
             style=wx.ICON_ERROR,
         )

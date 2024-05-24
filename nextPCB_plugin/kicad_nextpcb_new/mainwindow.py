@@ -400,16 +400,16 @@ class NextPCBTools(wx.Dialog):
             response = requests.post(url, headers=headers, json=body, timeout=5)
         except requests.exceptions.Timeout:
             self.report_part_search_error(
-                _("Request timed out. Please try again later.")
+                self.report_part_search_error(_("HTTP request timed out: {error}").format( error=e))
             )
         except requests.exceptions.RequestException as e:
             self.report_part_search_error(
-                _(f"An error occurred during the request: {e}")
+                _("An error occurred during the request: {error}").format(error=e)
             )
         
         if response.status_code != 200:
             self.report_part_search_error(
-                _(f"non-OK HTTP response status：{response.status_code}")
+                _("non-OK HTTP response status: {status_code}").format(status_code = response.status_code) 
             )
 
         if not response.json():
@@ -440,16 +440,15 @@ class NextPCBTools(wx.Dialog):
             response = requests.post(url, headers=headers, json=body, timeout=5)
         except requests.exceptions.Timeout:
             self.report_part_search_error(
-                _(f"Request timed out. Please try again later.")
+                _("HTTP request timed out: {error}").format( error=e)
             )
         except requests.exceptions.RequestException as e:
             self.report_part_search_error(
-                _(f"An error occurred during the request: {e}")
+                _("An error occurred during the request: {error}").format(error=e)
             )
-        
         if response.status_code != 200:
             self.report_part_search_error(
-                _(f"non-OK HTTP response status：{response.status_code}")
+                _("non-OK HTTP response status: {status_code}").format(status_code = response.status_code) 
             )
             
 
@@ -904,7 +903,7 @@ class NextPCBTools(wx.Dialog):
                 for component in self.parts:
                     csv_writer.writerow(component)
             wx.MessageBox(
-                _(f"Export BOM file finished. file path : {temp_dir}"),
+                _("Export BOM file finished. file path : {temp_dir}").format(temp_dir=temp_dir),
                 _("Info"),
                 style=wx.ICON_INFORMATION,
             )
@@ -912,7 +911,7 @@ class NextPCBTools(wx.Dialog):
             
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _(f"Failed to download part detail from the BOM API ({reason})\r\n"),
+            _("Failed to download part detail from the BOM API: {reasons}\r\nPlease try again later.\r\n").format(reasons=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )

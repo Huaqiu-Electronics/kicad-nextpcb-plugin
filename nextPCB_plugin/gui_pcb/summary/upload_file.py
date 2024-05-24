@@ -9,9 +9,10 @@ from pathlib import Path
 import tempfile
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 import threading
-from requests.exceptions import Timeout
+from requests.exceptions import Timeout, HTTPError
+from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import DestorySmtDataGen
 
-TIMEOUT_SECONDS = 40
+TIMEOUT_SECONDS = 5
 class UploadFile:
     def __init__(self, board_manager: BoardManager, url, forms, smt_order_region, number ):
         self._board_manager = board_manager
@@ -26,19 +27,21 @@ class UploadFile:
             Path(self.file_path).mkdir(parents=True, exist_ok=True)
         except PermissionError as e:
             self.file_path = os.path.join(tempfile.gettempdir(), "nextpcb")
+        
+        self.other_file_id =''
+        self.gerber_file_id = ''
 
         self.usa_get_files()
         # Create thread upload file
-        pcb_thread = threading.Thread(target=self.upload_pcbfile )
-        smt_thread = threading.Thread(target=self.upload_smtfile )
+        # pcb_thread = threading.Thread(target=self.upload_pcbfile )
+        # smt_thread = threading.Thread(target=self.upload_smtfile )
 
-        pcb_thread.start()
-        smt_thread.start()
-        pcb_thread.join()
-        smt_thread.join()
-        # self.upload_pcbfile()
-        # self.upload_smtfile()
-
+        # pcb_thread.start()
+        # smt_thread.start()
+        # pcb_thread.join()
+        # smt_thread.join()
+        self.upload_pcbfile()
+        self.upload_smtfile()
 
     def usa_get_files(self):
         self.getdir = os.path.join(self.file_path, "production_files")
@@ -59,35 +62,26 @@ class UploadFile:
 
     def upload_pcbfile(self):
         form = { "type": "pcbfile" }
-        # rsp = requests.post(
-        #     self._url,
-        #     files={
-        #         "file": open(self.pcb_file, 'rb')
-        #     },
-        #     data=form,
-        #     timeout=TIMEOUT_SECONDS 
-        # )
-        # fp = json.loads(rsp.content)
-        
         fp = self.request_api( self._url, self.pcb_file, form )
-        self.gerber_file_id = fp.get("response_data",{}).get("gerber_file_id",{})
+        if fp is not None:
+            self.gerber_file_id = fp.get("response_data",{}).get("gerber_file_id",{})
 
 
     def upload_smtfile(self):
         form = { "type": "attach" }
-        # rsp = requests.post(
-        #     self._url,
-        #     files={
-        #         "file": open(self.patch_file, 'rb')
-        #     },
-        #     data=form,
-        # )
-        # fp = json.loads(rsp.content)
         fp = self.request_api( self._url, self.patch_file, form )
-        self.other_file_id = fp.get("response_data",{}).get("other_file_id",{})
+        if fp is not None:
+            self.other_file_id = fp.get("response_data",{}).get("other_file_id",{})
 
+
+    def verify_pcb_smt_upload_success(self):
+        if self.other_file_id and self.gerber_file_id:
+            return True
+        else:
+            return False
 
     def upload_bomfile(self):
+        form = {}
         if self.smt_order_region == SupportedRegion.EUROPE_USA:
             form = { 'type': 'pcbabomfile',
                     'gerber_file_id': self.gerber_file_id ,
@@ -99,28 +93,17 @@ class UploadFile:
                     'other_file_id': self.other_file_id ,
                     'region': 'jp',
                     }
-        # rsp = requests.post(
-        #     self._url,
-        #     files={
-        #         "file": open(self.bom_file, 'rb')
-        #     },
-        #     data=form,
-        #     timeout=TIMEOUT_SECONDS   
-        # )
-        # fp = json.loads(rsp.content)
-        
         fp = self.request_api( self._url, self.bom_file, form )
-        if not fp:  # 如果JSON内容为空
-            self.report_part_search_error( _(f"Garber file upload failed") )
-        redirect = fp.get("response_data",{}).get("redirect",{})
-        parsed_url = urlparse(redirect)
-        query_params = parse_qs(parsed_url.query)
-        
-        query_params['bcount'] = [self._number]
-        query_params['number'] = [self._number]
-        updated_url = parsed_url._replace(query=urlencode(query_params, doseq=True)).geturl()
-        
-        return updated_url
+        if fp is not None:
+            redirect = fp.get("response_data",{}).get("redirect",{})
+            parsed_url = urlparse(redirect)
+            query_params = parse_qs(parsed_url.query)
+            
+            query_params['bcount'] = [self._number]
+            query_params['number'] = [self._number]
+            updated_url = parsed_url._replace(query=urlencode(query_params, doseq=True)).geturl()
+            return updated_url
+
 
     def request_api(self, _url, upload_file, form ):
         rsp = None
@@ -137,18 +120,18 @@ class UploadFile:
             fp = rsp.json()  # 解析JSON内容
             return fp
         except Timeout as e:
-            self.report_part_search_error( _(f"Request timed out after {TIMEOUT_SECONDS} seconds: {e}") )
+            self.report_part_search_error(_("HTTP request timed out: {error}").format( error=e))
+        except HTTPError as e:
+            self.report_part_search_error(_("HTTP error occurred: {error}").format(error=e))
+        except ValueError as e:
+            self.report_part_search_error(_("Failed to parse JSON response: {error}").format(error=e))
         except Exception as e:
-            self.report_part_search_error(_( f"An unexpected error occurred: {e}") )
-        # finally:
-        #     if upload_file:
-        #         upload_file.close()  # 确保文件流被关闭
-
+            self.report_part_search_error(_("An unexpected HTTP error occurred: {error}").format(error=e))
 
 
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _(f"Failed to load API: {reason}\r\n"),
+            _("Failed to request the API: {reason}.\r\n \r\nPlease try making the request again.\r\n").format(reason=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )
