@@ -51,8 +51,8 @@ class PartSelectorDialog(wx.Dialog):
         self.one_page_size =24
         self.is_searching = False
         
-        self.last_click_time = 0
-        self.click_interval = 0.5
+        self.last_call_time = 0  # 记录上一次事件触发的时间
+        self.throttle_interval = 0.3  # 设置时间间隔，单位为秒
 
         part_selection = self.get_existing_selection(parts)
         self.part_info = part_selection.split(",")
@@ -79,10 +79,10 @@ class PartSelectorDialog(wx.Dialog):
         self.search_view.description.SetValue(
             self.part_info[0]+ " " + self.part_info[1] + " " +  self.part_info[2] + " " + self.part_info[3] 
         )
-        self.search_view.description.Bind(wx.EVT_SEARCH, self.on_search)
-        self.search_view.mpn_textctrl.Bind(wx.EVT_TEXT_ENTER, self.on_search)
-        self.search_view.manufacturer.Bind(wx.EVT_TEXT_ENTER, self.on_search)
-        self.search_view.search_button.Bind(wx.EVT_BUTTON, self.on_search)
+        self.search_view.description.Bind(wx.EVT_SEARCH, self.search)
+        self.search_view.mpn_textctrl.Bind(wx.EVT_TEXT_ENTER, self.search)
+        self.search_view.manufacturer.Bind(wx.EVT_TEXT_ENTER, self.search)
+        self.search_view.search_button.Bind(wx.EVT_BUTTON, self.search)
 
         self.part_list_view.part_list.Bind(
             wx.dataview.EVT_DATAVIEW_COLUMN_HEADER_CLICK, self.OnSortPartList
@@ -95,8 +95,7 @@ class PartSelectorDialog(wx.Dialog):
             wx.dataview.EVT_DATAVIEW_ITEM_CONTEXT_MENU, self.on_right_down
         )
         
-        self.last_call_time = 0  # 记录上一次事件触发的时间
-        self.throttle_interval = 0.4  # 设置时间间隔，单位为秒
+
 
         self.part_list_view.prev_button.Bind(wx.EVT_BUTTON, self.on_prev_page)
         self.part_list_view.next_button.Bind(wx.EVT_BUTTON, self.on_next_page)
@@ -142,7 +141,7 @@ class PartSelectorDialog(wx.Dialog):
 
     def OnSortPartList(self, e):
         """Set order_by to the clicked column and trigger list refresh."""
-        self.on_search(e)
+        self.search(e)
 
 
     def enable_toolbar_buttons(self, state):
@@ -152,20 +151,9 @@ class PartSelectorDialog(wx.Dialog):
         ]:
             b.Enable(bool(state))
 
-    def on_search(self, evt):
-        if self.is_searching:
-            print("Search is already in progress.")
-            return
-        self.search_view.search_button.Disable()
-        self.is_searching = True
-        try:
-            self.search(evt)
-        finally:
-            self.is_searching = False
-            self.search_view.search_button.Enable()
-
     def search(self, e):
         """Search the library for parts that meet the search criteria."""
+        wx.BeginBusyCursor()
         if self.current_page == 0:
             self.current_page = 1
 
@@ -219,10 +207,9 @@ class PartSelectorDialog(wx.Dialog):
             self.search_api_request(url, body)
         finally:
             self.search_view.search_button.Enable()
+            wx.CallAfter(wx.EndBusyCursor)
 
     def search_api_request(self, url, data):
-        wx.CallAfter(wx.BeginBusyCursor)
-
         response = self.api_request_interface(url, data )
         self.search_part_list = []
         res_datas = response.json().get("result", {})
@@ -232,6 +219,9 @@ class PartSelectorDialog(wx.Dialog):
         self.total_num = response.json().get("total", {})
         if self.total_num == 0:
             self.current_page = 0
+        if self.total_num > 1000:
+            self.total_num = 1000
+            
         for item in res_datas:
             if not item.get("queryPartVO", {}).get("part", {}):
                 self.report_part_search_error(
@@ -240,7 +230,7 @@ class PartSelectorDialog(wx.Dialog):
             search_part = item.get("queryPartVO", {}).get("part", {})
             self.search_part_list.append(search_part)
         wx.CallAfter(self.populate_part_list)
-        wx.CallAfter(wx.EndBusyCursor)
+        
 
 
     def populate_part_list(self):
@@ -336,6 +326,12 @@ class PartSelectorDialog(wx.Dialog):
         wx.PostEvent(self.parent, evt)
         self.EndModal(wx.ID_OK)
 
+    def cancel_selcetion(self ):
+        item = self.part_list_view.part_list.GetSelection()
+        if item.IsOk():
+            self.part_list_view.part_list.Unselect(item)
+            self.part_details_view.initialize_data()
+
 
     def on_part_selected_timer_event(self, event):
         current_time = time.time()
@@ -360,7 +356,7 @@ class PartSelectorDialog(wx.Dialog):
             try:
                 wx.BeginBusyCursor()
                 wx.CallAfter(self.part_details_view.get_part_data ,self.clicked_part )
-                # self.part_details_view.get_part_data(self.clicked_part)
+
             finally:
                 wx.EndBusyCursor()
         else:
@@ -371,33 +367,25 @@ class PartSelectorDialog(wx.Dialog):
             )
 
     def on_prev_page(self, event):
-        current_time = time.time()
-        if current_time - self.last_click_time < self.click_interval:
-            print("Click too fast, ignoring this click.")
-            return 
-        self.last_click_time = current_time
-        # self.FindWindowByLabel("0").Destroy()
         if self.current_page > 1:
             self.current_page -= 1
-            self.on_search(None)
             self.update_page_label()
+            self.search(None)
+            self.cancel_selcetion()
+            
 
 
     def on_next_page(self, event):
-        current_time = time.time()
-        if current_time - self.last_click_time < self.click_interval:
-            print("Click too fast, ignoring this click.")
-            return 
-        self.last_click_time = current_time
-        
         if self.current_page < self.total_pages:
             self.current_page += 1
-            self.on_search(None)
             self.update_page_label()
+            self.search(None)
+            self.cancel_selcetion()
+            
 
     def update_page_label(self):
         self.part_list_view.page_label.SetLabel(
-            f"{self.current_page}/{self.total_pages}"
+            f" {self.current_page}/{self.total_pages} "
         )
         self.part_list_view.update_view()
 
@@ -423,8 +411,6 @@ class PartSelectorDialog(wx.Dialog):
             _("Error"),
             style=wx.ICON_ERROR,
         )
-        wx.CallAfter(wx.EndBusyCursor)
-        # return
 
     def on_right_down(self, e):
         conMenu = wx.Menu()

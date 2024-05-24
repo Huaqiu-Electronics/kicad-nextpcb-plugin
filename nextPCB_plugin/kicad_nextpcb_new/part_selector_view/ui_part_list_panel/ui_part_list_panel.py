@@ -55,7 +55,7 @@ class UiPartListPanel ( wx.Panel ):
 		bSizer1.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		self.prev_button = wx.Button( self, wx.ID_ANY, _(u"Previous"), wx.DefaultPosition, wx.Size( 70,26 ), 0 )
-		bSizer1.Add( self.prev_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		bSizer1.Add( self.prev_button, 0, wx.ALIGN_CENTER|wx.ALL, 10 )
 
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
 
