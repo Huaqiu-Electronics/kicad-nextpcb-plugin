@@ -44,21 +44,20 @@ class UiAssignedPartPanel ( wx.Panel ):
 		self.m_scrolledWindow41.SetScrollRate( 5, 5 )
 		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( self.m_scrolledWindow41, wx.ID_ANY, _(u"Part Picture") ), wx.VERTICAL )
 
-		self.m_scrolledWindow3 = wx.ScrolledWindow( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.HSCROLL|wx.VSCROLL )
-		self.m_scrolledWindow3.SetScrollRate( 5, 5 )
+		self.m_panel1 = wx.Panel( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 
-		self.part_image = wx.StaticBitmap( self.m_scrolledWindow3, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.part_image = wx.StaticBitmap( self.m_panel1, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.part_image.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
 		self.part_image.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
 
 		bSizer3.Add( self.part_image, 1, wx.ALL|wx.EXPAND, 5 )
 
 
-		self.m_scrolledWindow3.SetSizer( bSizer3 )
-		self.m_scrolledWindow3.Layout()
-		bSizer3.Fit( self.m_scrolledWindow3 )
-		sbSizer2.Add( self.m_scrolledWindow3, 1, wx.EXPAND |wx.ALL, 5 )
+		self.m_panel1.SetSizer( bSizer3 )
+		self.m_panel1.Layout()
+		bSizer3.Fit( self.m_panel1 )
+		sbSizer2.Add( self.m_panel1, 1, wx.EXPAND |wx.ALL, 5 )
 
 
 		self.m_scrolledWindow41.SetSizer( sbSizer2 )

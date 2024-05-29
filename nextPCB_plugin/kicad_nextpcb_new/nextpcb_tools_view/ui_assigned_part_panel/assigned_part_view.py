@@ -11,6 +11,9 @@ import threading
 from PIL import Image
 import json
 from nextPCB_plugin.kicad_nextpcb_new.events import CacheBitmapInDatabase
+from requests.exceptions import Timeout, ConnectionError, HTTPError
+from .assigned_part_model import PartDetailsModel
+import pcbnew
 
 parameters = {
     "mpn": _("MPN"),
@@ -38,6 +41,7 @@ class AssignedPartView(UiAssignedPartPanel):
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
         self.parent = parent
+        self.part_details_data=[]
 
         # ---------------------------------------------------------------------
         # ----------------------- Properties List -----------------------------
@@ -52,18 +56,24 @@ class AssignedPartView(UiAssignedPartPanel):
             _("Value"), width=-1, mode=dv.DATAVIEW_CELL_ACTIVATABLE, align=wx.ALIGN_LEFT
         )
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_open_pdf)
-        self.initialize_data()
+        self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_show_more_info)
+        self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_tooltip)
+        self.init_UI()
 
-    def initialize_data(self):
-        # Initialize data and populate the data list
-        self.data_list.DeleteAllItems()
-        self.part_image.SetBitmap(wx.NullBitmap)
-
+    def init_UI(self):
         for k, v in parameters.items():
-            self.data_list.AppendItem([v, " "])
-        self.Layout()
+            self.part_details_data.append([v, " "])
+        self.PartDetailsModel = PartDetailsModel( self.part_details_data )
+        self.data_list.AssociateModel(self.PartDetailsModel)
+        wx.CallAfter( self.data_list.Refresh )
+        
+    def initialize_data(self):
+        self.PartDetailsModel.DeleteAll()
+        for k, v in parameters.items():
+            self.PartDetailsModel.AddRow([v, " "])
+        self.data_list.Refresh()
 
-    def on_open_pdf(self, e):
+    def on_open_pdf(self, event):
         """Open the linked datasheet PDF on button click."""
         item = self.data_list.GetSelection()
         row = self.data_list.ItemToRow(item)
@@ -85,6 +95,7 @@ class AssignedPartView(UiAssignedPartPanel):
         else:
             self.logger.debug(f"pdf trigger link error")
             return
+        event.Skip()
 
     def show_cache_image(self, content):
         bitmap = self.display_bitmap(content)
@@ -139,8 +150,8 @@ class AssignedPartView(UiAssignedPartPanel):
         
         bitmap = self.display_bitmap(content)
         return bitmap
-        
-        
+
+
     def display_bitmap(self, content):
         io_bytes = io.BytesIO(content)
         try:
@@ -183,26 +194,69 @@ class AssignedPartView(UiAssignedPartPanel):
         self.clicked_part = json.loads( _clicked_part[0] )
         self.bitmap_data = _clicked_part[1]
         
-        for i in range(self.data_list.GetItemCount()):
-            self.data_list.DeleteItem(0)
+        self.PartDetailsModel.DeleteAll()
+
+        manu_id = self.clicked_part.get("manufacturer_id", "-")
+        mpn = self.clicked_part.get("mpn", "-")
+        self.show_more_body = {
+            "leaderPartId": "",
+            "manufacturer_id": manu_id,
+            "mpn": mpn
+            }
+        
+        self.part_details_data.clear()
         for k, v in parameters.items():
             val = self.clicked_part.get(k, "-")
             if val != "null" and val:
-                self.data_list.AppendItem([v, str(val)])
+                self.PartDetailsModel.AddRow([v, str(val)])
             else:
-                self.data_list.AppendItem([v, "-"])
+                self.PartDetailsModel.AddRow( [v, "-"] )
+        
+        self.PartDetailsModel.AddRow( [_("Show more"), ""] )
+        self.data_list.Refresh()
 
         self.pdfurl = self.clicked_part.get("datasheet", {})
         self.pdfurl = "-" if self.pdfurl == "" else self.pdfurl
 
-        
+
         if self.bitmap_data and self.bitmap_data is not None:
             self.show_cache_image(self.bitmap_data)
-            # pass
         else:
             picture = self.clicked_part.get("image", [])
             threading.Thread(target= self.show_image,args=(picture, ) ).start()
+
+
+    def on_show_more_info(self, event):
+        item = self.data_list.GetSelection()
+        row = self.data_list.ItemToRow(item)
+        if item is None or row == -1:
+            return 
+        show_more = self.data_list.GetTextValue(row, 0)
+        if show_more == _("Show more"): 
+            url = "http://www.fdatasheets.com/api/chiplet/products/productDetail"
+
+            response = self.api_request_interface( url, self.show_more_body )
+            res_datas = response.json().get("result", {})
+            if not response.json():
+                wx.MessageBox( _("No corresponding sku data was matched") )
             
+            self.PartDetailsModel.DeleteRows( [7] )
+            extraction_datas =  res_datas.get("groupAttrInfoVOList", {})
+            for res_data in extraction_datas:
+                for data in res_data.get("attrInfoVO", "-"):
+                    if not data:
+                        return
+                    if pcbnew.GetLanguage() == "简体中文":
+                        property = data.get("attrName", "-")
+                        value = data.get("attrValue", "-")
+                        self.PartDetailsModel.AddRow( [property, value] )
+                    else:
+                        property = data.get("attrShortName", "-")
+                        value = data.get("attrValue", "-")
+                        self.PartDetailsModel.AddRow( [property, value] )
+
+            self.data_list.Refresh()
+        event.Skip()
 
     def report_part_data_fetch_error(self, reason):
         mpn = self.clicked_part.get('mpn', "-")
@@ -211,4 +265,36 @@ class AssignedPartView(UiAssignedPartPanel):
             _("Error"),
             style=wx.ICON_ERROR,
         )
-        # self.Destroy()
+
+
+    def on_tooltip(self, event):
+        selected_item = self.data_list.GetSelectedRow()
+        if selected_item:
+            data = self.data_list.GetValue(selected_item, 1)
+            tip = wx.ToolTip("{}".format(data))
+            self.data_list.SetToolTip(tip)
+            tip.Enable(True)
+        else:
+            self.data_list.SetToolTip(None)
+        event.Skip()
+
+
+    def api_request_interface(self, url, data ):
+        headers = {"Content-Type": "application/json"}
+        try:
+            response = requests.post(url, headers=headers, json=data, timeout=30)
+            response.raise_for_status()
+            return response
+        except Timeout:
+            self.report_part_search_error("HTTP response timeout")
+        except (ConnectionError, HTTPError) as e:
+            self.report_part_search_error(f"HTTP error occurred: {e}")
+        except Exception as e:
+            self.report_part_search_error(f"An unexpected error occurred: {e}")
+
+    def report_part_search_error(self, reason):
+        wx.MessageBox(
+            _("Failed to download part detail from the BOM API: {reasons}\r\n").format(reasons=reason),
+            _("Error"),
+            style=wx.ICON_ERROR,
+        )

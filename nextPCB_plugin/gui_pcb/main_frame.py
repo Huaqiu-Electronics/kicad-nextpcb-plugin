@@ -533,9 +533,6 @@ class MainFrameNextpcb(wx.Frame):
             if url is None:
                 wx.MessageBox(_("No available url for querying price in current region"))
                 return
-            if not self.judge_files_exist():
-                wx.MessageBox(_('Place perform "BOM Match"'))
-                return
             self.show_data_gen_progress_dialog()
             self.summary_view.on_generate_fabrication_file()
             try:

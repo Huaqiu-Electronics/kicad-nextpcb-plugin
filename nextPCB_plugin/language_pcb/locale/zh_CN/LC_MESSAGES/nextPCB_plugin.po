@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-05-24 14:47+0800\n"
-"PO-Revision-Date: 2024-05-24 16:06+0800\n"
+"POT-Creation-Date: 2024-05-28 18:38+0800\n"
+"PO-Revision-Date: 2024-05-28 18:42+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -33,7 +33,7 @@ msgid "The browser will be launched automatically while ready"
 msgstr "订单准备好后会自动打开浏览器"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\main_frame.py:301
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\main_frame.py:547
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\main_frame.py:544
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_pcb\fabrication_data_generator_thread.py:68
 msgid "Sending order request"
 msgstr "正在发送订单请求"
@@ -56,11 +56,7 @@ msgstr "返回错误信息"
 msgid "No available url for placing order in current region"
 msgstr "当前区域无可下单接口"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\main_frame.py:537
-msgid "Place perform \"BOM Match\""
-msgstr "请先执行“BOM匹配”"
-
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\main_frame.py:544
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\main_frame.py:541
 msgid "Upload fabrication file"
 msgstr "上传制造文件"
 
@@ -247,8 +243,8 @@ msgstr "标识符"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\summary_panel.py:100
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:38
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:52
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:48
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:56
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:53
 msgid "Value"
 msgstr "值"
 
@@ -284,8 +280,8 @@ msgstr "绿"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\summary_panel.py:382
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:52
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:16
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:14
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:19
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:18
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\part_list_view.py:25
 msgid "MPN"
 msgstr "MPN"
@@ -345,8 +341,8 @@ msgid "Add to Cart"
 msgstr "加入购物车"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\upload_file.py:123
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:403
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:443
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:444
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:484
 msgid "HTTP request timed out: {error}"
 msgstr "HTTP请求超时：{error}"
 
@@ -373,11 +369,13 @@ msgstr ""
 "稍后请再次尝试。\n"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\gui_pcb\summary\upload_file.py:135
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:915
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:211
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:369
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:423
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:179
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:953
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:265
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:298
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:364
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:410
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:237
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:271
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\pcb_fabrication_pcb\base_pcb\base_info_view.py:124
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\pcb_fabrication_pcb\base_pcb\base_info_view.py:131
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\pcb_fabrication_pcb\base_pcb\base_info_view.py:139
@@ -388,39 +386,39 @@ msgstr "错误"
 msgid "BOM Tools"
 msgstr "BOM Tools"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:149
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:137
 msgid " Group by: "
 msgstr "按组分类："
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:157
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:145
 msgid " No Group "
 msgstr "不分组"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:157
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:145
 msgid " Value & Footprint "
 msgstr "值&封装"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:162
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:150
 msgid "No Group"
 msgstr "不分组"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:177
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:165
 msgid "Auto Match "
 msgstr "自动匹配"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:179
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:167
 msgid "Auto Match MPN number to parts"
 msgstr "自动匹配MPN号码器件"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:216
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:198
 msgid "   All   "
 msgstr "全部"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:232
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:214
 msgid "Unmanaged"
 msgstr "未管理"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:350
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:391
 msgid ""
 "Auto match finished.Some parts might match failed. You can try it again or "
 "match by manual."
@@ -428,56 +426,52 @@ msgstr ""
 "自动匹配完成。某些部分可能匹配失败。\n"
 "您可以再试一次或手动匹配。"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:351
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:416
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:907
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:392
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:457
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:945
 msgid "Info"
 msgstr "信息"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:407
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:447
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:448
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:488
 msgid "An error occurred during the request: {error}"
 msgstr "HTTP请求错误： {error}"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:412
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:451
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:453
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:492
 msgid "non-OK HTTP response status: {status_code}"
 msgstr "错误的HTTP相应状态码： {status_code}"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:416
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:457
 msgid "No return data"
 msgstr "没有返回数据"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:457
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:230
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:498
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:216
 msgid "No corresponding data was matched"
 msgstr "没有匹配到相应的数据"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:818
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:859
 msgid "Copy MPN"
 msgstr "复制MPN"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:822
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:863
 msgid "Paste MPN"
 msgstr "粘贴MPN"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:826
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:867
 msgid "Manual Match"
 msgstr "手动匹配"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:830
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:871
 msgid "Remove Assigned MPN"
 msgstr "移除匹配的MPN"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:834
-msgid "Show Part Details"
-msgstr "显示器件详情"
-
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:906
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:944
 msgid "Export BOM file finished. file path : {temp_dir}"
 msgstr "导出BOM文件完成。文件路径：{temp_dir}"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:914
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\mainwindow.py:952
 msgid ""
 "Failed to download part detail from the BOM API: {reasons}\r\n"
 "Please try again later.\r\n"
@@ -495,22 +489,22 @@ msgid "Reference"
 msgstr "位号"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:59
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:17
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:15
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:20
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:19
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\part_list_view.py:28
 msgid "Manufacturer"
 msgstr "制造商"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:66
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:19
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:17
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:22
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:21
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\part_list_view.py:40
 msgid "Category"
 msgstr "种类"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\foot_print_list.py:73
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:22
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:20
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:25
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:24
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_list_panel\part_list_view.py:46
 msgid "SKU"
 msgstr "SKU"
@@ -527,41 +521,55 @@ msgstr "POS"
 msgid "Side"
 msgstr "面"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:18
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:16
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_model.py:46
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:215
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:235
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_model.py:62
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:190
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:207
+msgid "Show more"
+msgstr "显示更多"
+
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:21
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:20
 msgid "Package / Footprint"
 msgstr "封装"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:20
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:18
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:23
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:22
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\ui_part_details_panel.py:30
 msgid "Description"
 msgstr "描述"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:21
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:73
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:19
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:70
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:24
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:83
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:23
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:82
 msgid "Datasheet"
 msgstr "数据手册"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:46
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:42
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:50
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:47
 msgid "Property"
 msgstr "属性"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:157
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:132
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:168
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:145
 msgid "The width and height of new size must be greater than 0"
 msgstr "新尺寸的宽高必须大于0"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:181
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:155
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:192
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:168
 msgid "returned data does not have expected clicked part"
 msgstr "返回的数据没有预期的点击器件"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:210
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:178
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:241
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:261
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:213
+msgid "No corresponding sku data was matched"
+msgstr "没有匹配到相应的SKU数据"
+
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:264
 msgid ""
 "Failed to download part detail: {reason}\r\n"
 "We looked for a part named:\r\n"
@@ -571,6 +579,12 @@ msgstr ""
 "器件名称：\n"
 "{ mpn }\n"
 "\n"
+
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\assigned_part_view.py:297
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:409
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:270
+msgid "Failed to download part detail from the BOM API: {reasons}\r\n"
+msgstr "从BOM API接口加载器件详情失败：{reasons}\n"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\nextpcb_tools_view\ui_assigned_part_panel\ui_assigned_part_panel.py:29
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\ui_part_details_panel.py:23
@@ -601,42 +615,45 @@ msgstr "移除匹配的MPN"
 msgid " Epxort... "
 msgstr "导出.."
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:39
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:38
 msgid "BOM Search Online"
 msgstr "BOM Search Online"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:238
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:227
 msgid "returned JSON data does not have expected 'part' attribute"
 msgstr "返回的JSON数据不是期望的器件属性"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:252
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:256
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:241
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:245
 msgid "{total} Results"
 msgstr "{total} 条"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:254
-msgid "1000 Results (limited)"
-msgstr "1000 条（被限制）"
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:243
+msgid "{max_part_count} Results (limited)"
+msgstr "{max_part_count} 条（被限制）"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:272
-msgid "No corresponding sku data was matched"
-msgstr "没有匹配到相应的SKU数据"
-
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:368
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:363
 msgid "Failed to get clicked part from NextPCB"
 msgstr "未能从NextPCB获取到被点击器件"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:406
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:393
 msgid "Help"
 msgstr "帮助"
 
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:422
-msgid "Failed to download part detail from the BOM API: {reasons}\r\n"
-msgstr "从BOM API接口加载器件详情失败：{reasons}\n"
-
-#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:431
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\part_selector.py:416
 msgid "Select Part"
 msgstr "选择器件"
+
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\part_details_view.py:236
+msgid ""
+"Failed to download part detail: {reason}\r\n"
+"We looked for a part named:\r\n"
+"{mpn} \r\n"
+msgstr ""
+"加载器件详情失败： {reason}\n"
+"器件名称：\n"
+"{mpn}\n"
+"\n"
 
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\kicad_nextpcb_new\part_selector_view\ui_part_details_panel\ui_part_details_panel.py:42
 msgid "Picture"
@@ -1256,6 +1273,14 @@ msgstr "堆叠"
 msgid "Metallized Sides Count"
 msgstr "金属化边框数量"
 
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\plugin_nextpcb\_main.py:15
+msgid "In progress"
+msgstr "正在进行中"
+
+#: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\plugin_nextpcb\_main.py:15
+msgid "Open Software"
+msgstr "打开应用"
+
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\smt_pcb_fabrication_pcb\personalized_nextpcb\personalized_info_view.py:14
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\smt_pcb_fabrication_pcb\personalized_nextpcb\personalized_info_view.py:24
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\smt_pcb_fabrication_pcb\personalized_nextpcb\personalized_info_view.py:29
@@ -1520,6 +1545,12 @@ msgstr "定制PCB板"
 #: c:\Users\haf\Documents\KiCad\8.0\scripting\plugins\kicad-nextpcb-plugin\nextPCB_plugin\smt_pcb_fabrication_pcb\smt_base_nextpcb\ui_smt_base_info.py:71
 msgid "BOM Material Purchase"
 msgstr "BOM物料种类"
+
+#~ msgid "Place perform \"BOM Match\""
+#~ msgstr "请先执行“BOM匹配”"
+
+#~ msgid "Show Part Details"
+#~ msgstr "显示器件详情"
 
 #~ msgid "Request timed out. Please try again later."
 #~ msgstr "请求超时，请再次请求。"

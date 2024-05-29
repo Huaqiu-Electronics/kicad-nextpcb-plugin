@@ -101,25 +101,13 @@ class NextPCBTools(wx.Dialog):
         self.load_settings()
         self.Bind(wx.EVT_CLOSE, self.quit_dialog)
 
-        self.assigned_part_view = AssignedPartView(self)
-        self.match_part_view = MatchPartView(self)
+        # self.assigned_part_view = AssignedPartView(self)
+        # self.match_part_view = MatchPartView(self)
 
         # ---------------------------------------------------------------------
         # ---------------------------- events --------------------------------
         # ---------------------------------------------------------------------
-        self.bom = [
-            {
-                "reference": "",
-                "value": "",
-                "footprint": "",
-                "MPN": "",
-                "manufacturer": "",
-                "Category": "",
-                "SKU": "",
-                "quantity": "",
-            }
-        ]
-        self.Bind(wx.EVT_BUTTON, self.export_bom, self.match_part_view.export_csv)
+
         # ---------------------------------------------------------------------
         # ---------------------------- Hotkeys --------------------------------
         # ---------------------------------------------------------------------
@@ -182,28 +170,22 @@ class NextPCBTools(wx.Dialog):
 
         self.upper_toolbar.Realize()
 
-        self.Bind(wx.EVT_COMBOBOX, self.group_parts, self.cb_group_strategy)
-        self.Bind(wx.EVT_TOOL, self.auto_match_parts, self.auto_match_button)
-
-        # ---------------------------------------------------------------------
-        # ------------------ down toolbar List --------------------------
-        # ---------------------------------------------------------------------
-
-        self.Bind(
-            wx.EVT_BUTTON, self.select_part, self.match_part_view.select_part_button
-        )
-        self.Bind(
-            wx.EVT_BUTTON, self.remove_part, self.match_part_view.remove_part_button
-        )
-
         # ---------------------------------------------------------------------
         # ----------------------- Footprint List ------------------------------
         # ---------------------------------------------------------------------
         table_sizer = wx.BoxSizer(wx.VERTICAL)
         table_sizer.SetMinSize(HighResWxSize(self.window, wx.Size(-1, 300)))
 
+
+        self.m_splitter1 = wx.SplitterWindow( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.SP_3D )
+        self.m_splitter1.Bind( wx.EVT_IDLE, self.m_splitter1OnIdle )
+
+        self.m_panel8 = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+        bSizer9 = wx.BoxSizer( wx.VERTICAL )
+
+
         self.notebook = wx.Notebook(
-            self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0
+            self.m_panel8, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0
         )
         self.first_panel = wx.Panel(
             self.notebook,
@@ -236,8 +218,79 @@ class NextPCBTools(wx.Dialog):
         self.fplist_unmana = FootPrintList(self.second_panel, self)
         grid_sizer2.Add(self.fplist_unmana, 20, wx.ALL | wx.EXPAND, 5)
 
-        table_sizer.Add(self.notebook, 20, wx.EXPAND | wx.ALL, 5)
-        table_sizer.Add(self.match_part_view, 0, wx.ALL | wx.EXPAND, 0)
+        # table_sizer.Add(self.notebook, 20, wx.EXPAND | wx.ALL, 5)
+        # table_sizer.Add(self.match_part_view, 0, wx.ALL | wx.EXPAND, 0)
+
+        # ---------------------------------------------------------------------
+        # ---------------------- Main Layout Sizer ----------------------------
+        # ---------------------------------------------------------------------
+        # self.assigned_part = wx.BoxSizer(wx.VERTICAL)
+        # self.assigned_part.SetMinSize(wx.Size(-1, 220))
+        # self.assigned_part.Add(self.assigned_part_view, 1, wx.EXPAND, 0)
+
+
+
+        # self.m_splitter1 = wx.SplitterWindow( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.SP_3D )
+        # self.m_splitter1.Bind( wx.EVT_IDLE, self.m_splitter1OnIdle )
+
+        # self.m_panel8 = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+        # bSizer9 = wx.BoxSizer( wx.VERTICAL )
+
+        bSizer9.Add(self.notebook, 20, wx.EXPAND | wx.ALL, 5)
+        self.match_part_view = MatchPartView(self.m_panel8)
+        bSizer9.Add(self.match_part_view, 0, wx.ALL | wx.EXPAND, 0)
+
+        self.m_panel8.SetSizer( bSizer9 )
+        self.m_panel8.Layout()
+        bSizer9.Fit( self.m_panel8 )
+        # self.assigned_part_view = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+        self.assigned_part_view = AssignedPartView(self.m_splitter1)
+        self.m_splitter1.SplitHorizontally( self.m_panel8, self.assigned_part_view, 0 )
+        table_sizer.Add( self.m_splitter1, 1, wx.EXPAND, 5 )
+
+
+
+        self.SetSizeHints(HighResWxSize(self.window, wx.Size(1000, -1)), wx.DefaultSize)
+        layout = wx.BoxSizer(wx.VERTICAL)
+        layout.Add(self.upper_toolbar, 0, wx.ALL | wx.EXPAND, 5)
+        layout.Add(table_sizer, 5, wx.ALL | wx.EXPAND, 5)
+        # layout.Add(self.assigned_part, 2, wx.ALL | wx.EXPAND, 0)
+
+
+        self.SetSizer(layout)
+        self.Layout()
+        self.Centre(wx.BOTH)
+
+
+
+        self.bom = [
+            {
+                "reference": "",
+                "value": "",
+                "footprint": "",
+                "MPN": "",
+                "manufacturer": "",
+                "Category": "",
+                "SKU": "",
+                "quantity": "",
+            }
+        ]
+        
+        self.last_call_time = 0  # 记录上一次事件触发的时间
+        self.throttle_interval = 0.4  # 设置时间间隔，单位为秒
+        
+        self.Bind(wx.EVT_BUTTON, self.export_bom, self.match_part_view.export_csv)
+        
+        self.Bind(wx.EVT_COMBOBOX, self.group_parts, self.cb_group_strategy)
+        self.Bind(wx.EVT_TOOL, self.auto_match_parts, self.auto_match_button)
+        self.Bind(
+            wx.EVT_BUTTON, self.select_part, self.match_part_view.select_part_button
+        )
+        self.Bind(
+            wx.EVT_BUTTON, self.remove_part, self.match_part_view.remove_part_button
+        )
+
+
 
         self.notebook.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.on_notebook_page_changed)
         self.notebook.Bind(
@@ -254,25 +307,6 @@ class NextPCBTools(wx.Dialog):
             wx.dataview.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.toggle_update_to_db
         )
         
-        self.last_call_time = 0  # 记录上一次事件触发的时间
-        self.throttle_interval = 0.4  # 设置时间间隔，单位为秒
-
-        # ---------------------------------------------------------------------
-        # ---------------------- Main Layout Sizer ----------------------------
-        # ---------------------------------------------------------------------
-        self.assigned_part = wx.BoxSizer(wx.VERTICAL)
-        self.assigned_part.SetMinSize(wx.Size(-1, 220))
-        self.assigned_part.Add(self.assigned_part_view, 1, wx.EXPAND, 0)
-
-        self.SetSizeHints(HighResWxSize(self.window, wx.Size(1000, -1)), wx.DefaultSize)
-        layout = wx.BoxSizer(wx.VERTICAL)
-        layout.Add(self.upper_toolbar, 0, wx.ALL | wx.EXPAND, 5)
-        layout.Add(table_sizer, 5, wx.ALL | wx.EXPAND, 5)
-        layout.Add(self.assigned_part, 2, wx.ALL | wx.EXPAND, 0)
-
-        self.SetSizer(layout)
-        self.Layout()
-        self.Centre(wx.BOTH)
 
         # ---------------------------------------------------------------------
         # ------------------------ Custom Events ------------------------------
@@ -287,7 +321,14 @@ class NextPCBTools(wx.Dialog):
         self.init_fabrication()
         self.init_store()
         self.init_logger()
-        
+
+    def m_splitter1OnIdle( self, event ):
+        window_size = self.m_splitter1.GetSize()
+        height = window_size.height
+        self.m_splitter1.SetSashPosition( height-220 )
+        self.m_splitter1.Unbind( wx.EVT_IDLE )
+
+
 
     @property
     def file_path(self):
@@ -831,8 +872,6 @@ class NextPCBTools(wx.Dialog):
         conMenu.Append(remove_mpn)
         conMenu.Bind(wx.EVT_MENU, self.remove_part, remove_mpn)
 
-        part_detail = wx.MenuItem(conMenu, ID_PART_DETAILS, _("Show Part Details"))
-        conMenu.Append(part_detail)
 
         item_count = len(self.footprint_list.GetSelections())
         if item_count > 1:
@@ -840,7 +879,6 @@ class NextPCBTools(wx.Dialog):
                 ID_COPY_MPN,
                 ID_PASTE_MPN,
                 ID_MANUAL_MATCH,
-                ID_PART_DETAILS,
             ):
                 conMenu.Enable(menu_item, False)
         else:
@@ -851,7 +889,7 @@ class NextPCBTools(wx.Dialog):
             mpn = self.footprint_list.GetTextValue(row, 4)
             state = False if not mpn else True
 
-            for menu_item in (ID_COPY_MPN, ID_REMOVE_PART, ID_PART_DETAILS):
+            for menu_item in (ID_COPY_MPN, ID_REMOVE_PART ):
                 conMenu.Enable(menu_item, state)
         self.footprint_list.PopupMenu(conMenu)
         # destroy to avoid memory leak

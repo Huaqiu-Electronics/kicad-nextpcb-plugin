@@ -2,8 +2,6 @@ import logging
 
 import wx
 import requests
-import threading
-import json
 import wx.dataview
 from nextPCB_plugin.kicad_nextpcb_new.events import AssignPartsEvent, UpdateSetting
 from nextPCB_plugin.kicad_nextpcb_new.helpers import HighResWxSize, loadBitmapScaled
@@ -24,6 +22,7 @@ ID_SELECT_PART = wx.NewIdRef()
 
 COLUM_SKU = 5
 
+MAX_PART_COUNT = 500
 
 def ceil(x, y):
     return -(-x // y)
@@ -219,8 +218,8 @@ class PartSelectorDialog(wx.Dialog):
         self.total_num = response.json().get("total", {})
         if self.total_num == 0:
             self.current_page = 0
-        if self.total_num > 1000:
-            self.total_num = 1000
+        if self.total_num > MAX_PART_COUNT:
+            self.total_num = MAX_PART_COUNT
             
         for item in res_datas:
             if not item.get("queryPartVO", {}).get("part", {}):
@@ -240,8 +239,8 @@ class PartSelectorDialog(wx.Dialog):
         self.total_pages = ceil(self.total_num, self.one_page_size)
         self.update_page_label()
         self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
-        if self.total_num >= 1000:
-            self.part_list_view.result_count.SetLabel(_("1000 Results (limited)" ))
+        if self.total_num >= MAX_PART_COUNT:
+            self.part_list_view.result_count.SetLabel(_("{max_part_count} Results (limited)" ).format(max_part_count=MAX_PART_COUNT))
         else:
             self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
 
@@ -293,7 +292,7 @@ class PartSelectorDialog(wx.Dialog):
     def api_request_interface(self, url, data ):
         headers = {"Content-Type": "application/json"}
         try:
-            response = requests.post(url, headers=headers, json=data, timeout=10)
+            response = requests.post(url, headers=headers, json=data, timeout=30)
             response.raise_for_status()
             return response
         except Timeout:
@@ -401,7 +400,7 @@ class PartSelectorDialog(wx.Dialog):
         The keyword search field is applied to "LCSC Part", "Description", "MFR.Part",
         "Package" and "Manufacturer".\n
         Enter triggers the search the same way the search button does.\n
-        The results are limited to 1000.
+        The results are limited to 500.
         """
         wx.MessageBox(text, title, style=wx.ICON_INFORMATION)
 
