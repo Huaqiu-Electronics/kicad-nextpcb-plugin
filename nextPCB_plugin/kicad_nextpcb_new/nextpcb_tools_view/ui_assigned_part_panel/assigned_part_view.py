@@ -1,4 +1,5 @@
-import wx
+import wx 
+import wx  
 import wx.xrc
 import wx.dataview
 import requests
@@ -14,6 +15,8 @@ from nextPCB_plugin.kicad_nextpcb_new.events import CacheBitmapInDatabase
 from requests.exceptions import Timeout, ConnectionError, HTTPError
 from .assigned_part_model import PartDetailsModel
 import pcbnew
+import json
+import os
 
 parameters = {
     "mpn": _("MPN"),
@@ -59,6 +62,7 @@ class AssignedPartView(UiAssignedPartPanel):
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_show_more_info)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_tooltip)
         self.init_UI()
+        self.get_language_setting()
 
     def init_UI(self):
         for k, v in parameters.items():
@@ -146,7 +150,7 @@ class AssignedPartView(UiAssignedPartPanel):
             return None
         
         evt = CacheBitmapInDatabase( content=content, ) 
-        wx.PostEvent(self.parent, evt )
+        wx.PostEvent(self.GetGrandParent(), evt )
         
         bitmap = self.display_bitmap(content)
         return bitmap
@@ -246,7 +250,8 @@ class AssignedPartView(UiAssignedPartPanel):
                 for data in res_data.get("attrInfoVO", "-"):
                     if not data:
                         return
-                    if pcbnew.GetLanguage() == "简体中文":
+
+                    if self.lang.count("中文"):
                         property = data.get("attrName", "-")
                         value = data.get("attrValue", "-")
                         self.PartDetailsModel.AddRow( [property, value] )
@@ -257,6 +262,16 @@ class AssignedPartView(UiAssignedPartPanel):
 
             self.data_list.Refresh()
         event.Skip()
+        
+    def get_language_setting(self):
+        kicad_setting_path = str(pcbnew.SETTINGS_MANAGER.GetUserSettingsPath())
+        if len(kicad_setting_path):
+            kicad_common_json = os.path.join(
+                kicad_setting_path, "kicad_common.json"
+            )
+            with open(kicad_common_json) as f:
+                data = json.loads(f.read())
+                self.lang: str = data["system"]["language"]
 
     def report_part_data_fetch_error(self, reason):
         mpn = self.clicked_part.get('mpn', "-")
@@ -269,7 +284,7 @@ class AssignedPartView(UiAssignedPartPanel):
 
     def on_tooltip(self, event):
         selected_item = self.data_list.GetSelectedRow()
-        if selected_item:
+        if selected_item >= 0:
             data = self.data_list.GetValue(selected_item, 1)
             tip = wx.ToolTip("{}".format(data))
             self.data_list.SetToolTip(tip)
@@ -285,16 +300,19 @@ class AssignedPartView(UiAssignedPartPanel):
             response = requests.post(url, headers=headers, json=data, timeout=30)
             response.raise_for_status()
             return response
-        except Timeout:
-            self.report_part_search_error("HTTP response timeout")
-        except (ConnectionError, HTTPError) as e:
-            self.report_part_search_error(f"HTTP error occurred: {e}")
+        except Timeout as e:
+            self.report_part_search_error(_("HTTP request timed out"))
+        except HTTPError as e:
+            self.report_part_search_error(_("HTTP error occurred: {error}").format(error=e))
+        except ValueError as e:
+            self.report_part_search_error(_("Failed to parse JSON response: {error}").format(error=e))
         except Exception as e:
-            self.report_part_search_error(f"An unexpected error occurred: {e}")
+            self.report_part_search_error(_("An unexpected HTTP error occurred: {error}").format(error=e))
+
 
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _("Failed to download part detail from the BOM API: {reasons}\r\n").format(reasons=reason),
+            _("Failed to download part detail from the BOM API:\r\n{reasons}\r\n").format(reasons=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )

@@ -317,6 +317,8 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         result = dlg.ShowModal()
         if result in (wx.ID_OK, wx.ID_CANCEL):
             dlg.Destroy()
+        self.load_Designator()
+        
 
     def on_update_price_clicked(self, ev):
         self.clear_content()

@@ -29,32 +29,32 @@ class PartDetailsModel(dv.DataViewIndexListModel):
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
-        # 检查行索引是否在有效范围内
-        if row < 0 or row >= self.GetCount():
-            print(f"Error: Row index {row} is out of range. It must be between 0 and {self.GetCount() - 1}.")
-            return None
-        
-        # 检查列索引是否在有效范围内
-        if col < 0 or col >= len(self.data[row]):
-            print(f"Error: Column index {col} is out of range for row {row}. It must be between 0 and {len(self.data[row]) - 1}.")
-            return None
-        return self.data[row][col]
+        # # 检查行索引是否在有效范围内
+        # if row < 0 or row >= self.GetCount():
+        #     print(f"Error: Row index {row} is out of range. It must be between 0 and {self.GetCount() - 1}.")
+        #     return None
         
         # # 检查列索引是否在有效范围内
-        # if col < 0 or col >= MAX_COLS:
-        #     return None 
-        # try:
-        #     # 使用循环来获取数据，而不是多个 elif 语句
-        #     return self.data[row][col]
+        # if col < 0 or col >= len(self.data[row]):
+        #     print(f"Error: Column index {col} is out of range for row {row}. It must be between 0 and {len(self.data[row]) - 1}.")
+        #     return None
+        # return self.data[row][col]
         
-        # except IndexError as e:
-        #     # 如果 row 索引超出了范围，捕获错误
-        #     print(f"Error: Row index {row} is out of range. {e}")
-        #     return None
-        # except Exception as e:
-        #     # 捕获其他可能的错误
-        #     print(f"An unexpected error occurred: {e}")
-        #     return None
+        # 检查列索引是否在有效范围内
+        if col < 0 or col >= MAX_COLS:
+            return None 
+        try:
+            # 使用循环来获取数据，而不是多个 elif 语句
+            return self.data[row][col]
+        
+        except IndexError as e:
+            # 如果 row 索引超出了范围，捕获错误
+            print(f"Error: Row index {row} is out of range. {e}")
+            return None
+        except Exception as e:
+            # 捕获其他可能的错误
+            print(f"An unexpected error occurred: {e}")
+            return None
     
     
     def GetAttrByRow(self, row, col, attr):
@@ -103,17 +103,28 @@ class PartDetailsModel(dv.DataViewIndexListModel):
         else:
             return 0
        
-    def DeleteRows(self ,rows):
+    def DeleteRows(self, rows):
         # 删除行的实现
         rows = list(rows)
         # use reverse order so the indexes don't change as we remove items
         rows.sort(reverse=True)
 
         for row in rows:
-            # remove it from our data structure
-            del self.data[row]
-            # notify the view(s) using this model that it has been removed
+            # 检查行索引是否在有效范围内
+            if row < 0 or row >= self.GetCount():
+                print(f"Delete Error: Row index {row} is out of range. It must be between 0 and {self.GetCount() - 1}.")
+                continue
+
+            # notify the view(s) using this model that it will be removed
             self.RowDeleted(row)
+
+        for row in rows:
+            # 删除数据结构中的行
+            try:
+                del self.data[row]
+            except IndexError:
+                print(f"Delete Error: Row index {row} is out of range for data structure.")
+                continue
 
     def DeleteAll( self ):
         # 删除行的实现

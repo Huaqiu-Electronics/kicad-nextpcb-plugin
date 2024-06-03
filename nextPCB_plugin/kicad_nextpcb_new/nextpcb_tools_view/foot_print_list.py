@@ -15,7 +15,7 @@ class FootPrintList(wx.dataview.DataViewListCtrl):
         id=wx.ID_ANY,
         pos=wx.DefaultPosition,
         size=wx.DefaultSize,
-        style=wx.dataview.DV_MULTIPLE,
+        style=wx.dataview.DV_SINGLE,
     ):
         wx.dataview.DataViewListCtrl.__init__(self, parent, id, pos, size, style)
 

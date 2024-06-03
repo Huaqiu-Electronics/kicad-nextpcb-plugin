@@ -131,7 +131,7 @@ class UploadFile:
 
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _("Failed to request the API: {reason}.\r\n \r\nPlease try making the request again.\r\n").format(reason=reason),
+            _("Failed to request the API:\r\n{reason}.\r\n \r\nPlease try making the request again.\r\n").format(reason=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )

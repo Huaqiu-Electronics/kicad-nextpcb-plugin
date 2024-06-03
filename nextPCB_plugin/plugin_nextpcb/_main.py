@@ -12,10 +12,7 @@ def _main():
     if not SINGLE_PLUGIN.show_existing():
         from nextPCB_plugin.gui_pcb.app_base import NextPCBApp
         import wx
-        progress_dialog = wx.ProgressDialog(_("Open Software"), _("In progress") )
         app = NextPCBApp()
         if app.load_success():
-            progress_dialog.Update( 50 )
             app.startup_dialog()
-            progress_dialog.Update( 100 )
-            progress_dialog.Destroy()
+

@@ -29,6 +29,8 @@ class NextPCBApp(wx.EvtHandler):
         existing_locale = wx.GetLocale()
         if existing_locale is not None:
             existing_locale.AddCatalog(LANG_DOMAIN)
+        self.progress_dialog = wx.ProgressDialog(_("Open Software"), _("In progress") )
+        self.progress_dialog.Update( 30 )
 
     def load_success(self):
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
@@ -52,8 +54,13 @@ class NextPCBApp(wx.EvtHandler):
         # dlg = NextPCBTools(None, self.board_manager)
         # dlg.ShowModal()
         
+        
+        self.progress_dialog.Update( 60 )
         self.main_wind = MainFrameNextpcb(
             self.board_manager, SETTING_MANAGER.get_window_size()
         )
         self.main_wind.SetIcon(wx.Icon(GetImagePath("Huaqiu.ico")))
         self.main_wind.Show()
+        
+        self.progress_dialog.Update( 100 )
+        self.progress_dialog.Destroy()

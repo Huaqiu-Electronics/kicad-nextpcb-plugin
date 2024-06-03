@@ -240,7 +240,7 @@ class PartSelectorDialog(wx.Dialog):
         self.update_page_label()
         self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
         if self.total_num >= MAX_PART_COUNT:
-            self.part_list_view.result_count.SetLabel(_("{max_part_count} Results (limited)" ).format(max_part_count=MAX_PART_COUNT))
+            self.part_list_view.result_count.SetLabel(_("{max_part_count} Results" ).format(max_part_count=MAX_PART_COUNT))
         else:
             self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
 
@@ -296,11 +296,11 @@ class PartSelectorDialog(wx.Dialog):
             response.raise_for_status()
             return response
         except Timeout:
-            self.report_part_search_error("HTTP response timeout")
+            self.report_part_search_error(_("HTTP request timed out"))
         except (ConnectionError, HTTPError) as e:
-            self.report_part_search_error(f"HTTP error occurred: {e}")
+            self.report_part_search_error(_("HTTP error occurred: {error}").format(error=e))
         except Exception as e:
-            self.report_part_search_error(f"An unexpected error occurred: {e}")
+            self.report_part_search_error(_("An unexpected HTTP error occurred: {error}").format(error=e))
 
 
     def select_part(self, e):
@@ -373,7 +373,6 @@ class PartSelectorDialog(wx.Dialog):
             self.cancel_selcetion()
             
 
-
     def on_next_page(self, event):
         if self.current_page < self.total_pages:
             self.current_page += 1
@@ -400,13 +399,13 @@ class PartSelectorDialog(wx.Dialog):
         The keyword search field is applied to "LCSC Part", "Description", "MFR.Part",
         "Package" and "Manufacturer".\n
         Enter triggers the search the same way the search button does.\n
-        The results are limited to 500.
+        The results are  500.
         """
         wx.MessageBox(text, title, style=wx.ICON_INFORMATION)
 
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _("Failed to download part detail from the BOM API: {reasons}\r\n").format(reasons=reason),
+            _("Failed to download part detail from the BOM API:\r\n{reasons}\r\n").format(reasons=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )

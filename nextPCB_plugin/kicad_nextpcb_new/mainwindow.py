@@ -28,7 +28,6 @@ from pcbnew import GetBuildVersion, ToMM
 from .events import (
     EVT_MESSAGE_EVENT,
     EVT_ASSIGN_PARTS_EVENT,
-    EVT_POPULATE_FOOTPRINT_LIST_EVENT,
     EVT_UPDATE_SETTING,
     EVT_CACHE_BITMAP_IN_DATABASE,
 )
@@ -100,9 +99,6 @@ class NextPCBTools(wx.Dialog):
         self.group_strategy = 0
         self.load_settings()
         self.Bind(wx.EVT_CLOSE, self.quit_dialog)
-
-        # self.assigned_part_view = AssignedPartView(self)
-        # self.match_part_view = MatchPartView(self)
 
         # ---------------------------------------------------------------------
         # ---------------------------- events --------------------------------
@@ -218,23 +214,9 @@ class NextPCBTools(wx.Dialog):
         self.fplist_unmana = FootPrintList(self.second_panel, self)
         grid_sizer2.Add(self.fplist_unmana, 20, wx.ALL | wx.EXPAND, 5)
 
-        # table_sizer.Add(self.notebook, 20, wx.EXPAND | wx.ALL, 5)
-        # table_sizer.Add(self.match_part_view, 0, wx.ALL | wx.EXPAND, 0)
-
         # ---------------------------------------------------------------------
         # ---------------------- Main Layout Sizer ----------------------------
         # ---------------------------------------------------------------------
-        # self.assigned_part = wx.BoxSizer(wx.VERTICAL)
-        # self.assigned_part.SetMinSize(wx.Size(-1, 220))
-        # self.assigned_part.Add(self.assigned_part_view, 1, wx.EXPAND, 0)
-
-
-
-        # self.m_splitter1 = wx.SplitterWindow( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.SP_3D )
-        # self.m_splitter1.Bind( wx.EVT_IDLE, self.m_splitter1OnIdle )
-
-        # self.m_panel8 = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-        # bSizer9 = wx.BoxSizer( wx.VERTICAL )
 
         bSizer9.Add(self.notebook, 20, wx.EXPAND | wx.ALL, 5)
         self.match_part_view = MatchPartView(self.m_panel8)
@@ -243,7 +225,6 @@ class NextPCBTools(wx.Dialog):
         self.m_panel8.SetSizer( bSizer9 )
         self.m_panel8.Layout()
         bSizer9.Fit( self.m_panel8 )
-        # self.assigned_part_view = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
         self.assigned_part_view = AssignedPartView(self.m_splitter1)
         self.m_splitter1.SplitHorizontally( self.m_panel8, self.assigned_part_view, 0 )
         table_sizer.Add( self.m_splitter1, 1, wx.EXPAND, 5 )
@@ -254,7 +235,6 @@ class NextPCBTools(wx.Dialog):
         layout = wx.BoxSizer(wx.VERTICAL)
         layout.Add(self.upper_toolbar, 0, wx.ALL | wx.EXPAND, 5)
         layout.Add(table_sizer, 5, wx.ALL | wx.EXPAND, 5)
-        # layout.Add(self.assigned_part, 2, wx.ALL | wx.EXPAND, 0)
 
 
         self.SetSizer(layout)
@@ -313,7 +293,6 @@ class NextPCBTools(wx.Dialog):
         # ---------------------------------------------------------------------
         self.Bind(EVT_MESSAGE_EVENT, self.display_message)
         self.Bind(EVT_ASSIGN_PARTS_EVENT, self.assign_parts)
-        self.Bind(EVT_POPULATE_FOOTPRINT_LIST_EVENT, self.populate_footprint_list)
         self.Bind(EVT_UPDATE_SETTING, self.update_settings)
         self.Bind( EVT_CACHE_BITMAP_IN_DATABASE, self.onCacheBitmapInDatabase )
 
@@ -388,7 +367,7 @@ class NextPCBTools(wx.Dialog):
 
             wx.CallAfter( self.populate_footprint_list )
             wx.MessageBox(
-                _("Auto match finished.Some parts might match failed. You can try it again or match by manual."),
+                _('The matching is complete. Check the matching result carefully. You can try to manually match the "Unmatched" part'),
                 _("Info"),
                 style=wx.ICON_INFORMATION,
             )
@@ -949,7 +928,7 @@ class NextPCBTools(wx.Dialog):
             
     def report_part_search_error(self, reason):
         wx.MessageBox(
-            _("Failed to download part detail from the BOM API: {reasons}\r\nPlease try again later.\r\n").format(reasons=reason),
+            _("Failed to download part detail from the BOM API:\r\n{reasons}\r\nPlease try again later.\r\n").format(reasons=reason),
             _("Error"),
             style=wx.ICON_ERROR,
         )
