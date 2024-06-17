@@ -42,13 +42,23 @@ Everything is in sync, so no additional adjustments are required. Of course, you
 The following regions are supported:
 
 - Europe and the U.S.A : [NextPCB](https://www.nextpcb.com/pcb-quote)
-- China mainland [HQPCB](https://www.hqpcb.com/quote/)
 - Japan:[JP.NextPCB](https://jp.nextpcb.com/pcb-quote#/pcb-quote/)
 
 ## Installation
 
 Download the latest release ZIP file from **reserved for package** then within KiCad, open the "Plugin and Content Manager" from the main window. Finally, install the ZIP file using "Install from File..." at the bottom of the window.
 ![image](https://github.com/HubertHQH/HQ-NextPCB/assets/125419974/97ef0ca3-380e-4f6f-a14b-6960271118fc)
+
+## HQ PCB
+
+HQ PCB is the China version of HQ PCB, supporting orders in China mainland.
+- China mainland [HQPCB](https://www.hqpcb.com/quote/)
+
+## HQ DFM
+
+HQ DFM One-click analysis of over 20 design risk issues including open circuits, disconnected traces, line spacing, and width.
+[华秋DFM](https://dfm.hqpcb.com/)
+you can use the HQ DFM Gerber Viewer to double check your manufacturing files, adjust board parameters 
 
 ### About HQ NextPCB
 
