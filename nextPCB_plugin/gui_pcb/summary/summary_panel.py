@@ -15,7 +15,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     OrderRegionChanged,
     SmtOrderRegionChanged,
     EVT_PANEL_TAB_CONTROL,
-    GetUniqueMpnCount,
+    GetUniqueValueFpCount,
     
 )
 
@@ -36,7 +36,6 @@ import threading
 from nextPCB_plugin.kicad_pcb.helpers import get_valid_footprints
 
 OrderRegionSettings = (
-    # EditDisplayRole(SupportedRegion.CHINA_MAINLAND, _("Mainland China")),
     EditDisplayRole(SupportedRegion.EUROPE_USA, _("Worldwide (English)")),
     EditDisplayRole(SupportedRegion.JAPAN, _("Worldwide (Japanese)")),
 )
@@ -45,10 +44,7 @@ class PriceCategoryNextpcb(Enum):
     PCB = "pcb"
     SMT = "smt"
 
-pcb_price_model = { PriceCategoryNextpcb.PCB: PCBPriceModel() }
-smt_price_model = { PriceCategoryNextpcb.PCB: pcb_price_model[PriceCategoryNextpcb.PCB],
-                PriceCategoryNextpcb.SMT: SmtPriceModel(),
-                }
+
 
 
         
@@ -71,7 +67,11 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
             PriceCategoryNextpcb.PCB: PCBPriceModel(),
             PriceCategoryNextpcb.SMT: SmtPriceModel(),
         }
-
+        
+        self.pcb_price_model = { PriceCategoryNextpcb.PCB : PCBPriceModel() }
+        self.smt_price_model = { PriceCategoryNextpcb.PCB : self.pcb_price_model[PriceCategoryNextpcb.PCB],
+                        PriceCategoryNextpcb.SMT : SmtPriceModel(),
+                        }
         
         
         self.btn_update_price.Bind(wx.EVT_BUTTON, self.on_update_price_clicked)
@@ -156,7 +156,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         )
 
 
-        self.model_price_summary = PriceSummaryModel( pcb_price_model )
+        self.model_price_summary = PriceSummaryModel( self.pcb_price_model )
         self.list_price_detail.AssociateModel(self.model_price_summary)
         self.choice_order_region.AppendItems(
             [i.DisplayRole for i in OrderRegionSettings]
@@ -209,7 +209,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
     def is_database_exists(self):
         result = os.path.exists(self.db_file_path)
         
-        evt = GetUniqueMpnCount(-1, unique_npm_count = self.store.get_unique_mpn_count() )
+        evt = GetUniqueValueFpCount(-1, unique_value_fp_count = self.store.get_unique_value_fp_count() )
         wx.PostEvent(self.Parent, evt)
         
         parts = self.store.get_reference_mpn_footprint()
@@ -221,9 +221,6 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         parts = []
         self.list_bom_view.DeleteAllItems()
         parts = self.store.get_reference_mpn_footprint()
-
-        evt = GetUniqueMpnCount(-1, unique_npm_count = self.store.get_unique_mpn_count() )
-        wx.PostEvent(self.Parent, evt)
         for part in parts:
             self.list_bom_view.AppendItem(part)
 
@@ -281,7 +278,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         
         wx.CallAfter(self.switch_smt_splitter.UpdateSize)
         wx.CallAfter(self.splitter_detail_summary.UpdateSize)
-        self.model_price_summary = PriceSummaryModel( pcb_price_model )
+        self.model_price_summary = PriceSummaryModel( self.pcb_price_model )
         self.list_price_detail.AssociateModel(self.model_price_summary)
         
         
@@ -294,7 +291,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         self.switch_smt_splitter.SetSashPosition(sash_position)
         wx.CallAfter(self.switch_smt_splitter.UpdateSize)
         wx.CallAfter(self.splitter_detail_summary.UpdateSize) 
-        self.model_price_summary = PriceSummaryModel( smt_price_model )
+        self.model_price_summary = PriceSummaryModel( self.smt_price_model )
         self.list_price_detail.AssociateModel(self.model_price_summary)
 
     def splitter_detail_summaryOnIdle(self, event):

@@ -28,7 +28,7 @@ from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import (
     EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT,
     EVT_SHOW_SOLDER_MASK_COLOR,
     EVT_SHOW_PCB_PACKAGE_KIND,
-    EVT_GET_UNIQUE_MPN_COUNT,
+    EVT_GET_UNIQUE_VALUE_FP_COUNT,
     EVT_DESTORY_SMT_DATA_GEN,
 )
 from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
@@ -249,7 +249,7 @@ class MainFrameNextpcb(wx.Frame):
         self.Bind( EVT_SHOW_TIP_FLNSIHED_COPPER_WEIGHT, self.OnShowTipFinishedCopperWeight )
         self.Bind( EVT_SHOW_SOLDER_MASK_COLOR, self.OnShowTipSolderMaskColor  )
         self.Bind(EVT_SHOW_PCB_PACKAGE_KIND, self.OnShowTipPcbPackageKind )
-        self.Bind(EVT_GET_UNIQUE_MPN_COUNT, self.OnGetBomMaterialCount )
+        self.Bind(EVT_GET_UNIQUE_VALUE_FP_COUNT, self.OnGetValueFpGuoupCount )
         
 
         self.Bind(
@@ -275,8 +275,8 @@ class MainFrameNextpcb(wx.Frame):
     def OnShowTipPcbPackageKind(self , evt):
         self.summary_view.ShowTipPcbPackageKind(evt.pcb_package_kind_selection)
         
-    def OnGetBomMaterialCount(self , evt):
-        self.smt_pcb_form_parts[SMTPCBFormPartNextpcb.SMT_PROCESS_INFO].SetBomMaterialCount(evt.unique_npm_count)
+    def OnGetValueFpGuoupCount(self , evt):
+        self.smt_pcb_form_parts[SMTPCBFormPartNextpcb.SMT_PROCESS_INFO].SetValueFpGuoupCount(evt.unique_value_fp_count)
         
     def change_ui(self, evt):
         self.selected_page_index = self.main_notebook.GetSelection()
@@ -540,8 +540,10 @@ class MainFrameNextpcb(wx.Frame):
                 smt_order_region = SETTING_MANAGER.order_region
                 self._data_gen_progress.Update( 200, _("Upload fabrication file") )
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
+                self._data_gen_progress.Update( 400 )
+                uploadfile.upload_smtfile()
                 if uploadfile.verify_pcb_smt_upload_success():
-                    self._data_gen_progress.Update( 500, _("Sending order request") )
+                    self._data_gen_progress.Update( 600, _("Sending order request") )
                     upload_file = uploadfile.upload_bomfile()
                     webbrowser.open(upload_file)
 
@@ -584,4 +586,5 @@ class MainFrameNextpcb(wx.Frame):
 
     def OnClose(self, evt):
         SINGLE_PLUGIN.register_main_wind(None)
+        self.summary_view.Destroy()
         self.Destroy()

@@ -15,6 +15,7 @@ class TimeStamp:
                 format='%(asctime)s - %(levelname)s - %(message)s',
                 datefmt= None,  # 使用自定义格式，因此这里设置为None
                 filename = log_file_path,
+                # filename = "plugin.log",
                 filemode = 'a'  # 追加模式
             )
         except Exception as e:

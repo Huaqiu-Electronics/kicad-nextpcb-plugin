@@ -11,6 +11,10 @@ from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 import threading
 from requests.exceptions import Timeout, HTTPError
 from nextPCB_plugin.gui_pcb.event.pcb_fabrication_evt_list import DestorySmtDataGen
+from nextPCB_plugin.settings_nextpcb.timestamp import TimeStamp
+import logging
+import sys
+
 
 TIMEOUT_SECONDS = 100
 class UploadFile:
@@ -21,27 +25,19 @@ class UploadFile:
         self._number = number
         self.smt_order_region = smt_order_region
         self.project_path = os.path.split(self._board_manager.board.GetFileName())[0]
-        
         self.file_path = os.path.join(self.project_path, "nextpcb")
         try:
             Path(self.file_path).mkdir(parents=True, exist_ok=True)
         except PermissionError as e:
             self.file_path = os.path.join(tempfile.gettempdir(), "nextpcb")
-        
+        self.timestemp = TimeStamp()
+        self.timestemp.log("上传文件 vedio")
         self.other_file_id =''
         self.gerber_file_id = ''
 
         self.usa_get_files()
-        # Create thread upload file
-        # pcb_thread = threading.Thread(target=self.upload_pcbfile )
-        # smt_thread = threading.Thread(target=self.upload_smtfile )
-
-        # pcb_thread.start()
-        # smt_thread.start()
-        # pcb_thread.join()
-        # smt_thread.join()
         self.upload_pcbfile()
-        self.upload_smtfile()
+
 
     def usa_get_files(self):
         self.getdir = os.path.join(self.file_path, "production_files")
@@ -61,17 +57,22 @@ class UploadFile:
 
 
     def upload_pcbfile(self):
+        self.timestemp.log("开始上传 pcbfile ")
         form = { "type": "pcbfile" }
         fp = self.request_api( self._url, self.pcb_file, form )
         if fp is not None:
             self.gerber_file_id = fp.get("response_data",{}).get("gerber_file_id",{})
+        self.timestemp.log("文件上传结束 ")
 
 
     def upload_smtfile(self):
+        self.timestemp.log("开始上传 smtfile ")
+        
         form = { "type": "attach" }
         fp = self.request_api( self._url, self.patch_file, form )
         if fp is not None:
             self.other_file_id = fp.get("response_data",{}).get("other_file_id",{})
+        self.timestemp.log("文件上传结束 ")
 
 
     def verify_pcb_smt_upload_success(self):
@@ -81,6 +82,8 @@ class UploadFile:
             return False
 
     def upload_bomfile(self):
+        self.timestemp.log("开始上传 bomfile ")
+        
         form = {}
         if self.smt_order_region == SupportedRegion.EUROPE_USA:
             form = { 'type': 'pcbabomfile',
@@ -94,6 +97,8 @@ class UploadFile:
                     'region': 'jp',
                     }
         fp = self.request_api( self._url, self.bom_file, form )
+        self.timestemp.log("文件上传结束 ")
+        
         if fp is not None:
             redirect = fp.get("response_data",{}).get("redirect",{})
             parsed_url = urlparse(redirect)
@@ -103,6 +108,7 @@ class UploadFile:
             query_params['number'] = [self._number]
             updated_url = parsed_url._replace(query=urlencode(query_params, doseq=True)).geturl()
             return updated_url
+        
 
 
     def request_api(self, _url, upload_file, form ):
