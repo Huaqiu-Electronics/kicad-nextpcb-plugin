@@ -8,7 +8,7 @@
     "bwidth": "8.02",
     "bcount": "5",
     "sidedirection": "N/A",
-    "plate_type": "FR-4",
+    "plate_type": "Fr-4",
     "units": "1",
     "testpoint": 0,
     "board_tg": "TG130",

@@ -1726,8 +1726,8 @@ msgstr "BOM物料种类"
 #~ msgid "Material Type:"
 #~ msgstr "板材:"
 
-#~ msgid "FR-4"
-#~ msgstr "FR-4"
+#~ msgid "Fr-4"
+#~ msgstr "Fr-4"
 
 #~ msgid "Layer Count:"
 #~ msgstr "板子层数:"
