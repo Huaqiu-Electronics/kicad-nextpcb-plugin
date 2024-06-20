@@ -1,14 +1,14 @@
-# HQ NextPCB Active Manufacturing
+# NextPCB
 
 ### Get PCB quotations within KiCad and order with a single click
 
-HQ NextPCB's Active manufacturing plugin will help you:
+NextPCB plugin will help you:
 
 - Extract key manufacturing parameters from your design
 - Get real-time quotations from NextPCB within KiCad
 - Generate Gerber files and upload them to NextPCB along with your personal board settings
 
-Once the upload is complete, you can use the HQDFM Gerber Viewer to double check your manufacturing files, adjust board parameters then add it to your NextPCB cart directly.
+Once the upload is complete, you can use the HQ DFM Gerber Viewer to double check your manufacturing files, adjust board parameters then add it to your NextPCB cart directly.
 ![NextPCB Plugin](https://github.com/SYSUeric66/kicad-amf-plugin/blob/8318782634b7f8237bd4a650c37e4031e876e3a0/docs/amf.gif)
 
 ## Features
@@ -60,8 +60,8 @@ HQ DFM One-click analysis of over 20 design risk issues including open circuits,
 [华秋DFM](https://dfm.hqpcb.com/)
 you can use the HQ DFM Gerber Viewer to double check your manufacturing files, adjust board parameters 
 
-### About HQ NextPCB
+### About NextPCB
 
-HQ NextPCB specializes in reliable multilayer PCB manufacture and assembly, and like KiCad, our goal is to enable engineers to build tomorrow's electronics. NextPCB is working with KiCad to provide smart tools to simplify the progression from design to physical product. With 3 major factories catering to prototyping, mass production and PCB assembly, and over 15 years of engineering expertise, NextPCB believes our industrial experience will prove invaluable to KiCad users and the PCB design community.
+NextPCB specializes in reliable multilayer PCB manufacture and assembly, and like KiCad, our goal is to enable engineers to build tomorrow's electronics. NextPCB is working with KiCad to provide smart tools to simplify the progression from design to physical product. With 3 major factories catering to prototyping, mass production and PCB assembly, and over 15 years of engineering expertise, NextPCB believes our industrial experience will prove invaluable to KiCad users and the PCB design community.
 
 We are a [KiCad Platinum Sponsor](https://www.nextpcb.com/blog/kicad-nextpcb-platinum-sponsorship).
