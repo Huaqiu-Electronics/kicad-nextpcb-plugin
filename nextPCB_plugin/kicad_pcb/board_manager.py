@@ -25,7 +25,7 @@ def load_board_manager():
         if board:
             return BoardManager(board)
     except Exception as e:
-        for fp in   'C:\\Program Files\\demos\\flat_hierarchy\\flat_hierarchy.kicad_pcb',"C:\\Program Files\\demos\\video\\video.kicad_pcb",  "C:\\Program Files\\demos\\ecc83\\ecc83-pp.kicad_pcb","D:\\KiCad7.0\\share\\kicad\\demos\\ecc83\\ecc83-pp.kicad_pcb",:
+        for fp in   'C:\\Program Files\\demos\\flat_hierarchy\\flat_hierarchy.kicad_pcb',"C:\\Program Files\\demos\\video\\video.kicad_pcb",  "C:\\Program Files\\demos\\ecc83\\ecc83-pp.kicad_pcb",:
             if os.path.exists(fp):
                 return BoardManager(LoadBoard(fp))
 
@@ -39,7 +39,7 @@ class BoardVarManager:
         self._tracks = []
         self._fp_parts = []
 
-        self._init_event  = threading.Event()  # 用于指示初始化是否完成
+        self._init_event  = threading.Event() 
         self._init_thread = threading.Thread(target=self._async_init)
         self._init_thread.start()
 
@@ -64,6 +64,6 @@ class BoardVarManager:
         except Exception as e:
             print(f"Initialization failed: {e}")
         finally:
-            self._init_event.set()  # 无论成功或失败，都通知初始化完成
+            self._init_event.set() 
 
 

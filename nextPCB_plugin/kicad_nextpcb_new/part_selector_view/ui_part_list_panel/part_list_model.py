@@ -16,7 +16,7 @@ import wx.dataview as dv
 #
 # For this example our data is stored in a simple list of lists.  In
 # real life you can use whatever you want or need to hold your data.
-# 定义列的最大数量
+
 MAX_COLS = 6
 
 class PartListModel(dv.DataViewIndexListModel):
@@ -30,29 +30,12 @@ class PartListModel(dv.DataViewIndexListModel):
     # particular row,col
     def GetValueByRow(self, row, col):
 
-        # 检查列索引是否在有效范围内
         if col < 0 or col >= MAX_COLS:
             return None 
-        # 使用循环来获取数据，而不是多个 elif 语句
         return self.data[row][col]
-    
-        # try:
-            
-        #     # 使用循环来获取数据，而不是多个 elif 语句
-        #     return self.data[row][col]
-        
-        # except IndexError as e:
-        #     # 如果 row 索引超出了范围，捕获错误
-        #     print(f"Error: Row index {row} is out of range. {e}")
-        #     return None
-        # except Exception as e:
-        #     # 捕获其他可能的错误
-        #     print(f"An unexpected error occurred: {e}")
-        #     return None
     
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
-        # 根据列的索引更新数据
         if 0 <= col < len(self.data[row]):
             self.data[row][col] = value
             return True
@@ -64,7 +47,7 @@ class PartListModel(dv.DataViewIndexListModel):
 
     # Specify the data type for a column
     def GetColumnType(self, col):
-        return "string"  # 所有列的数据类型都是字符串
+        return "string"  
 
     # Report the number of rows in the model
     def GetCount(self):
@@ -82,13 +65,11 @@ class PartListModel(dv.DataViewIndexListModel):
         row1 = self.GetRow(item1)
         row2 = self.GetRow(item2)
         if col == 0:
-            # 对键进行排序
             return (self.data[row1][0] > self.data[row2][0]) - (self.data[row1][0] < self.data[row2][0]) if ascending else -1 * ((self.data[row1][0] > self.data[row2][0]) - (self.data[row1][0] < self.data[row2][0]))
         else:
             return 0
         
     def DeleteRows(self, rows):
-        # 删除行的实现
         for row in sorted(rows, reverse=True):
             del self.data[row]
         self.RowDeleted(row)

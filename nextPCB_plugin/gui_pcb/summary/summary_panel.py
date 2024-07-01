@@ -86,7 +86,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
 
         self.init_ui()
         thread = threading.Thread(target=self.load_Designator)
-        thread.start()  # 启动线程
+        thread.start() 
 
     def init_ui(self ):
         self.list_bom_view.AppendTextColumn(
@@ -179,7 +179,6 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         try:
             print("Event triggered with weight:")
             wx.MessageBox(f"Event triggered with weight:")
-            # 其他处理代码...
         except Exception as e:
             print("Exception in event handler:", e)
 

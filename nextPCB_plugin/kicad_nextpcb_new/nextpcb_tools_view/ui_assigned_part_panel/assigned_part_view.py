@@ -75,7 +75,8 @@ class AssignedPartView(UiAssignedPartPanel):
         self.PartDetailsModel.DeleteAll()
         for k, v in parameters.items():
             self.PartDetailsModel.AddRow([v, " "])
-        self.data_list.Refresh()
+        self.part_image.SetBitmap(wx.NullBitmap)
+        self.Layout()
 
     def on_open_pdf(self, event):
         """Open the linked datasheet PDF on button click."""
@@ -237,7 +238,7 @@ class AssignedPartView(UiAssignedPartPanel):
             return 
         show_more = self.data_list.GetTextValue(row, 0)
         if show_more == _("Show more"): 
-            url = "http://www.fdatasheets.com/api/chiplet/products/productDetail"
+            url = "http://www.eda.cn/api/chiplet/products/productDetail"
 
             response = self.api_request_interface( url, self.show_more_body )
             res_datas = response.json().get("result", {})

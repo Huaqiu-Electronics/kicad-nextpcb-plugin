@@ -86,7 +86,6 @@ class PriceSummaryModel(dv.PyDataViewModel):
         # item and make DV items for each of its child objects.
         node = self.ItemToObject(parent)
         if node is None:
-            # 如果 node 为 None，则不进行任何操作，直接返回
             return
         if isinstance(node, PriceModelBase):
             for i in node.get_items():
@@ -157,7 +156,6 @@ class PriceSummaryModel(dv.PyDataViewModel):
         # data at all in the cell. If it returns False then GetValue will not be
         # called for this item and column.
         # if item is None:
-        # # 如果 node 为 None，则不进行任何操作，直接返回
         #     return
         if int(item.GetID()) == 1:
             return False
@@ -175,7 +173,6 @@ class PriceSummaryModel(dv.PyDataViewModel):
         # associated with the items in GetChildren.
 
         # Fetch the data object for this item.
-        # 如果 node 为 None，则不进行任何操作，直接返回
         if int(item.GetID()) == 1:
             return False
         node = self.ItemToObject(item)
@@ -201,7 +198,6 @@ class PriceSummaryModel(dv.PyDataViewModel):
 
     def GetAttr(self, item, col, attr):
         ##self.log.write('GetAttr')
-        # 如果 node 为 None，则不进行任何操作，直接返回
         if int(item.GetID()) == 1:
             return False
         node = self.ItemToObject(item)

@@ -362,15 +362,8 @@ class NextPCBTools(wx.Dialog):
             wx.BeginBusyCursor()
             # get unmanaged part from UI
             unmanaged_parts = self.get_unmanaged_parts_from_list()
-            
             self.bom_match_api_request (unmanaged_parts )
 
-            wx.CallAfter( self.populate_footprint_list )
-            wx.MessageBox(
-                _('The matching is complete. Check the matching result carefully. You can try to manually match the "Unmatched" part'),
-                _("Info"),
-                style=wx.ICON_INFORMATION,
-            )
         finally:
             wx.EndBusyCursor()
             self.upper_toolbar.EnableTool(ID_AUTO_MATCH, True)
@@ -393,7 +386,7 @@ class NextPCBTools(wx.Dialog):
         match_lists = []
         request_bodys = []
         for index, batch_part in enumerate(unmanaged_parts):
-            # 在每个子数组的末尾添加该子数组的索引值
+            # The index value of each subarray is added to the end of the subarray
             batch_part.append( str(index) )
             value = batch_part[1]
             footprint = batch_part[2]
@@ -414,7 +407,7 @@ class NextPCBTools(wx.Dialog):
         
         # body =[{'line_no': '1', 'mpn': '', 'manufacturer': '', 'package': 'LED_D3.0mm', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'LED'}, {'line_no': '2', 'mpn': '', 'manufacturer': '', 'package': 'DSUB-9_Female_Horizontal_P2.77x2.84mm_EdgePinOffset14.56mm_Housed_MountingHolesOffset15.98mm', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'DB9FEM'}, {'line_no': '3', 'mpn': '', 'manufacturer': '', 'package': 'LRTDK', 'reference': '', 'quantity': 0, 'sku': '', 'comment': '470ns'}, {'line_no': '4', 'mpn': '', 'manufacturer': '', 'package': 'subclick', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'BNC'}, {'line_no': '5', 'mpn': '', 'manufacturer': '', 'package': 'PinHeader_1x02_P2.54mm_Vertical', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'CONN_2'}, {'line_no': '6', 'mpn': '', 'manufacturer': '', 'package': 'PinHeader_1x05_P2.54mm_Vertical', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'CONN_5'}]
         body = request_bodys
-        url = "http://www.fdatasheets.com/api/chiplet/kicad/bomComponentsMatch"
+        url = "http://www.eda.cn/api/chiplet/kicad/bomComponentsMatch"
         
         try:
             response = requests.post(url, headers=headers, json=body, timeout=5)
@@ -438,6 +431,7 @@ class NextPCBTools(wx.Dialog):
         data = response.json()
         res_datas = response.json().get("result", {})
         if not res_datas:
+            wx.MessageBox( _("No corresponding data was matched. You can try to manually match.") )
             return
         
         request_bodys = []
@@ -454,7 +448,7 @@ class NextPCBTools(wx.Dialog):
 
 
         body = request_bodys
-        url = "http://www.fdatasheets.com/api/chiplet/kicad/searchSupplyChain"
+        url = "http://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
         
         try:
             response = requests.post(url, headers=headers, json=body, timeout=5)
@@ -470,11 +464,10 @@ class NextPCBTools(wx.Dialog):
             self.report_part_search_error(
                 _("non-OK HTTP response status: {status_code}").format(status_code = response.status_code) 
             )
-            
 
         res_datas = response.json().get("result", {})
-        if not res_datas:
-            wx.MessageBox( _("No corresponding data was matched") )
+        # if not res_datas:
+        #     wx.MessageBox( _("No corresponding data was matched") )
             
         for batch_part in unmanaged_parts:
             match_list = [None, None, None, None, None, None, None]
@@ -496,7 +489,11 @@ class NextPCBTools(wx.Dialog):
 
         self.batch_update_db_match(match_lists)
         self.populate_footprint_list()
-
+        wx.MessageBox(
+            _('The matching is complete. Check the matching result carefully. You can try to manually match the "Unmatched" part.'),
+            _("Info"),
+            style=wx.ICON_INFORMATION,
+        )
 
     def batch_update_db_match(self, matched_lists):
         if matched_lists:
@@ -687,7 +684,7 @@ class NextPCBTools(wx.Dialog):
     def get_part_details_timer_event(self, event):
         current_time = time.time()
         if current_time - self.last_call_time < self.throttle_interval:
-            return  # 如果时间间隔小于设定的阈值，则不处理事件
+            return 
         self.last_call_time = current_time
         self.get_part_details()
 
@@ -705,10 +702,8 @@ class NextPCBTools(wx.Dialog):
             part_detail_db = self.store.get_part_detail(ref)
             self.assigned_part_view.get_part_data(part_detail_db)
 
-    
     def onCacheBitmapInDatabase(self, evt):
         wx.CallAfter( self.store.set_cache_image, self.image_refs, evt.content)
-
 
 
     def get_column_by_name(self, column_title_to_find):
@@ -768,7 +763,6 @@ class NextPCBTools(wx.Dialog):
             wx.BeginBusyCursor()
             PartSelectorDialog(self, selection).ShowModal()
         except Exception as e:
-            # 处理异常，例如记录日志或向用户显示错误消息
             self.logger.error("An exception occurred: %s", e)
         finally:
             wx.EndBusyCursor()

@@ -72,7 +72,8 @@ class PartDetailsView(UiPartDetailsPanel):
         self.PartDetailsModel.DeleteAll()
         for k, v in parameters.items():
             self.PartDetailsModel.AddRow([v, " "])
-        self.data_list.Refresh()
+        self.part_image.SetBitmap(wx.NullBitmap)
+        self.Layout()
 
     def on_open_pdf(self, event):
         """Open the linked datasheet PDF on button click."""
@@ -89,7 +90,6 @@ class PartDetailsView(UiPartDetailsPanel):
                     query_pos = self.pdfurl.rfind('?')
                     if query_pos != -1:
                         self.pdfurl = self.pdfurl[:query_pos]
-                # 确保 URL 以 'http' 开头
                 if not self.pdfurl.startswith('http'):
                     self.pdfurl = 'http:' + self.pdfurl
                 webbrowser.open(self.pdfurl)
@@ -110,7 +110,6 @@ class PartDetailsView(UiPartDetailsPanel):
 
     def get_scaled_bitmap(self, url):
         """Download a picture from a URL and convert it into a wx Bitmap"""
-        # 确保 URL 是一个完整的网址，添加 https:// 如果缺失
         if not url.startswith("http:") and not url.startswith("https:"):
             url = "https:" + url
         self.logger.debug(f"image_count: {url}")
@@ -153,7 +152,6 @@ class PartDetailsView(UiPartDetailsPanel):
         new_height = int(image.height * factor)
         resized_image = image.resize((new_width, new_height), Image.LANCZOS)
 
-        # 将PIL图像转换为wxPython图像
         wx_image = wx.Image(new_width, new_height)
         wx_image.SetData(resized_image.convert('RGB').tobytes())
         
@@ -207,7 +205,7 @@ class PartDetailsView(UiPartDetailsPanel):
             return 
         show_more = self.data_list.GetTextValue(row, 0)
         if show_more == _("Show more"): 
-            url = "http://www.fdatasheets.com/api/chiplet/products/productDetail"
+            url = "http://www.eda.cn/api/chiplet/products/productDetail"
 
             response = self.api_request_interface( url, self.show_more_body )
             res_datas = response.json().get("result", {})

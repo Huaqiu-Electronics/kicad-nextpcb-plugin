@@ -261,7 +261,7 @@ class Fabrication:
         self.logger.info("Finished generating ZIP file")
 
     def generate_cpl(self):
-        """Generate placement file (CPL)."""
+        """Generate placement file (CPL).Create the ZIP file and add the CSV file to the ZIP zip package"""
         cplname = f"CPL-{self.filename.split('.')[0]}.csv"
         zipname = f"CPL-{self.filename.split('.')[0]}.zip"
         # self.corrections = self.parent.library.get_all_correction_data()
@@ -289,7 +289,6 @@ class Fabrication:
                             "top" if fp.GetLayer() == 0 else "bottom",
                         ]
                     )
-        # 创建ZIP文件并将CSV文件添加到ZIP压缩包中
         with ZipFile(os.path.join(self.outputdir, zipname), 'w') as zipf:
             zipf.write(os.path.join(self.outputdir, cplname), arcname=cplname)
         self.logger.info("Finished generating CPL file")
@@ -301,7 +300,6 @@ class Fabrication:
             os.path.join(self.outputdir, bomname), "w", newline="", encoding="utf-8"
         ) as csvfile:
             writer = csv.writer(csvfile, delimiter=",")
-            # writer.writerow(["Value", "Designator", "Footprint", "MPN"])
             writer.writerow(["MPN", "Qty", "Designator","value", "manufacturer", "Category", "SKU", "Customer Supply", "Customer Remark"])
             for part in self.parent.store.read_bom_parts():
                 writer.writerow(part)
