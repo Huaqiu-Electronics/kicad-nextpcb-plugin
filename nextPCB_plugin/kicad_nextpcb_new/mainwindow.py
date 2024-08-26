@@ -62,6 +62,8 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 from nextPCB_plugin.kicad_pcb.board_manager import BoardManager
 import time
+from nextPCB_plugin.kicad_nextpcb_new.nextpcb_tools_view.foot_print_list_model import FootprintListModel
+import wx.dataview as dv
 
 DB_MPN = 3
 DB_MANU = 4
@@ -195,7 +197,7 @@ class NextPCBTools(wx.Dialog):
         grid_sizer1 = wx.GridSizer(0, 1, 0, 0)
         self.first_panel.SetSizer(grid_sizer1)
         grid_sizer1.Fit(self.first_panel)
-        self.fplist_all = FootPrintList(self.first_panel, self)
+        self.fplist_all = FootPrintList(self.first_panel )
         grid_sizer1.Add(self.fplist_all, 20, wx.ALL | wx.EXPAND, 5)
         self.selected_page_index = 0
 
@@ -211,7 +213,7 @@ class NextPCBTools(wx.Dialog):
         grid_sizer2 = wx.GridSizer(0, 1, 0, 0)
         grid_sizer2.Fit(self.second_panel)
         self.second_panel.SetSizer(grid_sizer2)
-        self.fplist_unmana = FootPrintList(self.second_panel, self)
+        self.fplist_unmana = FootPrintList(self.second_panel )
         grid_sizer2.Add(self.fplist_unmana, 20, wx.ALL | wx.EXPAND, 5)
 
         # ---------------------------------------------------------------------
@@ -407,24 +409,23 @@ class NextPCBTools(wx.Dialog):
         
         # body =[{'line_no': '1', 'mpn': '', 'manufacturer': '', 'package': 'LED_D3.0mm', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'LED'}, {'line_no': '2', 'mpn': '', 'manufacturer': '', 'package': 'DSUB-9_Female_Horizontal_P2.77x2.84mm_EdgePinOffset14.56mm_Housed_MountingHolesOffset15.98mm', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'DB9FEM'}, {'line_no': '3', 'mpn': '', 'manufacturer': '', 'package': 'LRTDK', 'reference': '', 'quantity': 0, 'sku': '', 'comment': '470ns'}, {'line_no': '4', 'mpn': '', 'manufacturer': '', 'package': 'subclick', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'BNC'}, {'line_no': '5', 'mpn': '', 'manufacturer': '', 'package': 'PinHeader_1x02_P2.54mm_Vertical', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'CONN_2'}, {'line_no': '6', 'mpn': '', 'manufacturer': '', 'package': 'PinHeader_1x05_P2.54mm_Vertical', 'reference': '', 'quantity': 0, 'sku': '', 'comment': 'CONN_5'}]
         body = request_bodys
-        url = "http://www.eda.cn/api/chiplet/kicad/bomComponentsMatch"
+        url = "https://www.eda.cn/api/chiplet/kicad/bomComponentsMatch"
         
         try:
-            response = requests.post(url, headers=headers, json=body, timeout=5)
-        except requests.exceptions.Timeout:
-            self.report_part_search_error(
-                self.report_part_search_error(_("HTTP request timed out: {error}").format( error=e))
-            )
+            response = requests.post(url, headers=headers, json=body, timeout= 30)
+        except requests.exceptions.Timeout as e:
+            self.report_part_search_error(_("HTTP request timed out: {error}").format( error=e))
+            return
         except requests.exceptions.RequestException as e:
             self.report_part_search_error(
                 _("An error occurred during the request: {error}").format(error=e)
             )
-        
+            return
         if response.status_code != 200:
             self.report_part_search_error(
                 _("non-OK HTTP response status: {status_code}").format(status_code = response.status_code) 
             )
-
+            return
         if not response.json():
             wx.MessageBox( _("No return data"), _("Info"), style=wx.ICON_ERROR, )
             return
@@ -448,22 +449,25 @@ class NextPCBTools(wx.Dialog):
 
 
         body = request_bodys
-        url = "http://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
+        url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
         
         try:
-            response = requests.post(url, headers=headers, json=body, timeout=5)
-        except requests.exceptions.Timeout:
+            response = requests.post(url, headers=headers, json=body, timeout=30)
+        except requests.exceptions.Timeout as e:
             self.report_part_search_error(
                 _("HTTP request timed out: {error}").format( error=e)
             )
+            return
         except requests.exceptions.RequestException as e:
             self.report_part_search_error(
                 _("An error occurred during the request: {error}").format(error=e)
             )
+            return
         if response.status_code != 200:
             self.report_part_search_error(
                 _("non-OK HTTP response status: {status_code}").format(status_code = response.status_code) 
             )
+            return
 
         res_datas = response.json().get("result", {})
         # if not res_datas:
@@ -509,11 +513,11 @@ class NextPCBTools(wx.Dialog):
                     image_url = "https:" + image_url
                 self.logger.debug(f"image_count: {image_url}")
                 header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36"
+                    "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"    
                 }
                 content = None
                 try:
-                    response = requests.get(image_url, headers=header, timeout=10)
+                    response = requests.get(image_url, headers=header, timeout = 10)
                     response.raise_for_status()  # Raises an HTTPError for bad responses
                     content = response.content
                 except requests.exceptions.RequestException as e:
@@ -555,7 +559,7 @@ class NextPCBTools(wx.Dialog):
         """Populate/Refresh list of footprints."""
         if not self.store:
             self.init_store()
-        self.footprint_list.DeleteAllItems()
+        # self.footprint_list.DeleteAllItems()
         toogles_dict = {
             0: False,
             1: True,
@@ -590,12 +594,20 @@ class NextPCBTools(wx.Dialog):
                 part[DB_SIDE] = side
             part.insert(11, "")
             parts.append(part)
+        new_parts = []
         for idx, part in enumerate(parts, start=1):
             part.insert(0, f"{idx}")
             part[8] = str(part[8])
             if self.selected_page_index == 1 and part[4]:
                 continue
-            self.footprint_list.AppendItem(part)
+            else:
+                new_parts.append(part)
+                
+        self.FootprintListModel = FootprintListModel( new_parts )
+        self.footprint_list.AssociateModel(self.FootprintListModel)
+        self.Layout()  
+
+
 
     def on_sort_footprint_list(self, e):
         """Set order_by to the clicked column and trigger list refresh."""
@@ -682,10 +694,6 @@ class NextPCBTools(wx.Dialog):
 
 
     def get_part_details_timer_event(self, event):
-        current_time = time.time()
-        if current_time - self.last_call_time < self.throttle_interval:
-            return 
-        self.last_call_time = current_time
         self.get_part_details()
 
     def get_part_details(self):
@@ -844,7 +852,7 @@ class NextPCBTools(wx.Dialog):
         remove_mpn = wx.MenuItem(conMenu, ID_REMOVE_PART, _("Remove Assigned MPN"))
         conMenu.Append(remove_mpn)
         conMenu.Bind(wx.EVT_MENU, self.remove_part, remove_mpn)
-
+        
 
         item_count = len(self.footprint_list.GetSelections())
         if item_count > 1:

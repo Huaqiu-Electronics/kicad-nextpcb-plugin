@@ -20,4 +20,4 @@ if __name__ == "__main__":
     app = StandAloneApp()
     _main()
     app.MainLoop()
-    
+

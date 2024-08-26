@@ -136,11 +136,11 @@ class AssignedPartView(UiAssignedPartPanel):
             url = "https:" + url
         self.logger.debug(f"image_url: {url}")
         header = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36"
-        }
+                "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"    
+            }
 
         try:
-            response = requests.get(url, headers=header)
+            response = requests.get(url, headers=header, timeout=10)
             response.raise_for_status()  # Raises an HTTPError for bad responses
             content = response.content
         except requests.exceptions.RequestException as e:
@@ -238,7 +238,7 @@ class AssignedPartView(UiAssignedPartPanel):
             return 
         show_more = self.data_list.GetTextValue(row, 0)
         if show_more == _("Show more"): 
-            url = "http://www.eda.cn/api/chiplet/products/productDetail"
+            url = "https://www.eda.cn/api/chiplet/products/productDetail"
 
             response = self.api_request_interface( url, self.show_more_body )
             res_datas = response.json().get("result", {})
@@ -317,3 +317,4 @@ class AssignedPartView(UiAssignedPartPanel):
             _("Error"),
             style=wx.ICON_ERROR,
         )
+

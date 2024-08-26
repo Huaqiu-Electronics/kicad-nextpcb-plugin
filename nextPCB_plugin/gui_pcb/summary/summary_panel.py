@@ -314,7 +314,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
         if result in (wx.ID_OK, wx.ID_CANCEL):
             dlg.Destroy()
         self.load_Designator()
-        
+
 
     def on_update_price_clicked(self, ev):
         self.clear_content()
@@ -367,6 +367,7 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
 
     def load_Designator(self):
         if self.is_database_exists():
+            self.list_bom_view.DeleteAllItems()
             for fp in get_valid_footprints(self._board_manager.board):
                 part = [
                     fp.GetReference(),

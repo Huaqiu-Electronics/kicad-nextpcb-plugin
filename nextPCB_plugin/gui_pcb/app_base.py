@@ -53,8 +53,8 @@ class NextPCBApp(wx.EvtHandler):
         
         # dlg = NextPCBTools(None, self.board_manager)
         # dlg.ShowModal()
-        
-        
+
+                
         self.progress_dialog.Update( 60 )
         self.main_wind = MainFrameNextpcb(
             self.board_manager, SETTING_MANAGER.get_window_size()

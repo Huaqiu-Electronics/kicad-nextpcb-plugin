@@ -95,7 +95,6 @@ class PartSelectorDialog(wx.Dialog):
         )
         
 
-
         self.part_list_view.prev_button.Bind(wx.EVT_BUTTON, self.on_prev_page)
         self.part_list_view.next_button.Bind(wx.EVT_BUTTON, self.on_next_page)
         self.update_page_label()
@@ -199,7 +198,7 @@ class PartSelectorDialog(wx.Dialog):
             }
 
 
-        url = "http://www.eda.cn/api/chiplet/products/queryPage"
+        url = "https://www.eda.cn/api/chiplet/products/queryPage"
 
         self.search_view.search_button.Disable()
         try:
@@ -229,7 +228,6 @@ class PartSelectorDialog(wx.Dialog):
             search_part = item.get("queryPartVO", {}).get("part", {})
             self.search_part_list.append(search_part)
         wx.CallAfter(self.populate_part_list)
-        
 
 
     def populate_part_list(self):
@@ -253,7 +251,7 @@ class PartSelectorDialog(wx.Dialog):
             body_value = ( f"{manu_id}-{mpn}" )
             body.append(body_value)
         
-        url = "http://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
+        url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
 
         response = self.api_request_interface( url, body )
         res_datas = response.json().get("result", {})
@@ -286,7 +284,7 @@ class PartSelectorDialog(wx.Dialog):
                 part.insert(0, f"{idx}")
                 part_list_data.append(part)
                 
-            self.part_list_view.init_data_view(part_list_data)
+            self.part_list_view.init_data_view( part_list_data )
 
 
     def api_request_interface(self, url, data ):
@@ -372,7 +370,6 @@ class PartSelectorDialog(wx.Dialog):
             self.search(None)
             self.cancel_selcetion()
             
-
     def on_next_page(self, event):
         if self.current_page < self.total_pages:
             self.current_page += 1
@@ -380,12 +377,11 @@ class PartSelectorDialog(wx.Dialog):
             self.search(None)
             self.cancel_selcetion()
             
-
     def update_page_label(self):
         self.part_list_view.page_label.SetLabel(
             f" {self.current_page}/{self.total_pages} "
         )
-        self.part_list_view.update_view()
+        self.part_list_view.Layout()
 
     def help(self, e):
         """Show message box with help instructions"""

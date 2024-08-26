@@ -138,8 +138,9 @@ class MainFrameNextpcb(wx.Frame):
             parent=self,
             style=0 | wx.PD_APP_MODAL,
         )
-        
-        
+
+
+
     def init_ui(self):
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
         left_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -152,6 +153,7 @@ class MainFrameNextpcb(wx.Frame):
         self.active_manufacturing = wx.Panel( self.main_notebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
         self.main_notebook.AddPage( self.active_manufacturing, u"                PCB                ", True )
         amf_sizer = wx.BoxSizer( wx.VERTICAL )
+
         
         pcb_fab_scroll_wind = wx.ScrolledWindow(
             self.active_manufacturing,
@@ -352,7 +354,7 @@ class MainFrameNextpcb(wx.Frame):
             if SETTING_MANAGER.order_region != SupportedRegion.CHINA_MAINLAND:
                 form =self.remove_extra_params(form, ALLOWED_KEYS) 
                 form = self.convert_keys(form)
-                form = form | ADDED_DATA
+                form = form
         return form
 
     def remove_extra_params(self, form, allowed_keys):
@@ -368,7 +370,9 @@ class MainFrameNextpcb(wx.Frame):
         return converted_form
 
     def get_place_order_form(self):
-        return {**self.build_form(FormKind.PLACE_ORDER), "type": "pcbfile"}
+        if self.selected_page_index == 0:
+            return {**self.build_form(FormKind.PLACE_ORDER), "type": "pcbfile"}
+        return {**self.build_form(FormKind.PLACE_ORDER) }
 
     def form_is_valid(self):
         for i in self._pcb_form_parts.values():
@@ -517,7 +521,7 @@ class MainFrameNextpcb(wx.Frame):
             if self._dataGenThread is not None:
                 self._dataGenThread.join()
                 self._dataGenThread = None
-
+            data = self.get_place_order_form()
             self._dataGenThread = DataGenThread(
                 self, 
                 self.fabrication_data_generator, 
@@ -536,10 +540,12 @@ class MainFrameNextpcb(wx.Frame):
             self.show_data_gen_progress_dialog()
             self.summary_view.on_generate_fabrication_file()
             try:
-                form = self.get_query_price_form()
+                form = self.get_place_order_form() | self.get_query_price_form()
+                # form = self.get_query_price_form()
                 smt_order_region = SETTING_MANAGER.order_region
                 self._data_gen_progress.Update( 200, _("Upload fabrication file") )
                 uploadfile =  UploadFile( self._board_manager, url, form, smt_order_region, self._number )
+
                 self._data_gen_progress.Update( 400 )
                 uploadfile.upload_smtfile()
                 if uploadfile.verify_pcb_smt_upload_success():

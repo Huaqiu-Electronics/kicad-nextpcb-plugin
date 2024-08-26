@@ -10,7 +10,12 @@
 import wx
 import wx.xrc
 
+import gettext
+_ = gettext.gettext
+
 BOX_SIZE_SETTING = 2000
+BOX_BREAK_AWAY = 2001
+BOX_PANEL_SETTING = 2002
 
 ###########################################################################
 ## Class UiSmtBaseInfo
@@ -179,4 +184,138 @@ class UiSmtBaseInfo ( wx.Panel ):
 
 	def __del__( self ):
 		pass
+
+
+###########################################################################
+## Class MyPanel2
+###########################################################################
+
+class MyPanel2 ( wx.Panel ):
+
+	def __init__( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 500,300 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
+		wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
+
+		bSizer2 = wx.BoxSizer( wx.VERTICAL )
+
+		sbSizer12 = wx.StaticBoxSizer( wx.StaticBox( self, BOX_BREAK_AWAY, _(u"Break-away Rail") ), wx.VERTICAL )
+
+		fgSizer24 = wx.FlexGridSizer( 0, 3, 0, 0 )
+		fgSizer24.AddGrowableCol( 1 )
+		fgSizer24.SetFlexibleDirection( wx.BOTH )
+		fgSizer24.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		comb_margin_modeChoices = []
+		self.comb_margin_mode = wx.Choice( sbSizer12.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, comb_margin_modeChoices, 0 )
+		self.comb_margin_mode.SetSelection( 0 )
+		fgSizer24.Add( self.comb_margin_mode, 0, wx.ALL|wx.EXPAND, 5 )
+
+		self.edit_margin_size = wx.TextCtrl( sbSizer12.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer24.Add( self.edit_margin_size, 0, wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText39 = wx.StaticText( sbSizer12.GetStaticBox(), wx.ID_ANY, _(u"mm"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText39.Wrap( -1 )
+
+		fgSizer24.Add( self.m_staticText39, 0, wx.ALL, 5 )
+
+
+		sbSizer12.Add( fgSizer24, 1, wx.EXPAND, 5 )
+
+
+		bSizer2.Add( sbSizer12, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+
+		sbSizer21 = wx.StaticBoxSizer( wx.StaticBox( self, BOX_PANEL_SETTING, _(u"Panel Type") ), wx.VERTICAL )
+
+		fgSizer4 = wx.FlexGridSizer( 0, 2, 0, 0 )
+		fgSizer4.AddGrowableCol( 1 )
+		fgSizer4.SetFlexibleDirection( wx.BOTH )
+		fgSizer4.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		bSizer4 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText8 = wx.StaticText( sbSizer21.GetStaticBox(), wx.ID_ANY, _(u"X:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText8.Wrap( -1 )
+
+		bSizer4.Add( self.m_staticText8, 0, wx.ALL, 5 )
+
+
+		fgSizer4.Add( bSizer4, 1, wx.EXPAND, 5 )
+
+		fgSizer6 = wx.FlexGridSizer( 0, 2, 0, 0 )
+		fgSizer6.AddGrowableCol( 0 )
+		fgSizer6.SetFlexibleDirection( wx.BOTH )
+		fgSizer6.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		self.edit_panel_x = wx.TextCtrl( sbSizer21.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer6.Add( self.edit_panel_x, 0, wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText10 = wx.StaticText( sbSizer21.GetStaticBox(), wx.ID_ANY, _(u"pcs"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText10.Wrap( -1 )
+
+		fgSizer6.Add( self.m_staticText10, 0, wx.ALL, 5 )
+
+
+		fgSizer4.Add( fgSizer6, 1, wx.EXPAND, 5 )
+
+		self.m_staticText81 = wx.StaticText( sbSizer21.GetStaticBox(), wx.ID_ANY, _(u"Y:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText81.Wrap( -1 )
+
+		fgSizer4.Add( self.m_staticText81, 0, wx.ALL, 5 )
+
+		fgSizer61 = wx.FlexGridSizer( 0, 2, 0, 0 )
+		fgSizer61.AddGrowableCol( 0 )
+		fgSizer61.SetFlexibleDirection( wx.BOTH )
+		fgSizer61.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		self.edit_panel_y = wx.TextCtrl( sbSizer21.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer61.Add( self.edit_panel_y, 0, wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText101 = wx.StaticText( sbSizer21.GetStaticBox(), wx.ID_ANY, _(u"pcs"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText101.Wrap( -1 )
+
+		fgSizer61.Add( self.m_staticText101, 0, wx.ALL, 5 )
+
+
+		fgSizer4.Add( fgSizer61, 1, wx.EXPAND, 5 )
+
+
+		sbSizer21.Add( fgSizer4, 1, wx.EXPAND, 5 )
+
+
+		bSizer2.Add( sbSizer21, 1, wx.EXPAND, 5 )
+
+		bSizer3 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText5 = wx.StaticText( self, wx.ID_ANY, _(u"1 SET "), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText5.Wrap( -1 )
+
+		self.m_staticText5.SetToolTip( _(u"The finished PCB are by single or by panel") )
+
+		bSizer3.Add( self.m_staticText5, 0, wx.ALL, 5 )
+
+		fgSizer611 = wx.FlexGridSizer( 0, 2, 0, 0 )
+		fgSizer611.AddGrowableCol( 0 )
+		fgSizer611.SetFlexibleDirection( wx.BOTH )
+		fgSizer611.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		self.edit_panel_x1 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer611.Add( self.edit_panel_x1, 0, wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText1011 = wx.StaticText( self, wx.ID_ANY, _(u"pcs"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText1011.Wrap( -1 )
+
+		fgSizer611.Add( self.m_staticText1011, 0, wx.ALL, 5 )
+
+
+		bSizer3.Add( fgSizer611, 1, wx.EXPAND, 5 )
+
+
+		bSizer2.Add( bSizer3, 1, wx.EXPAND, 5 )
+
+
+		self.SetSizer( bSizer2 )
+		self.Layout()
+
+	def __del__( self ):
+		pass
+
 

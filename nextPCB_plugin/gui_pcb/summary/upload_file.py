@@ -18,10 +18,10 @@ import sys
 
 TIMEOUT_SECONDS = 100
 class UploadFile:
-    def __init__(self, board_manager: BoardManager, url, forms, smt_order_region, number ):
+    def __init__(self, board_manager: BoardManager, url, _forms, smt_order_region, number ):
         self._board_manager = board_manager
         self._url = url
-        self._form = forms
+        self.forms = _forms
         self._number = number
         self.smt_order_region = smt_order_region
         self.project_path = os.path.split(self._board_manager.board.GetFileName())[0]
@@ -67,7 +67,7 @@ class UploadFile:
 
     def upload_smtfile(self):
         self.timestemp.log("开始上传 smtfile ")
-        
+ 
         form = { "type": "attach" }
         fp = self.request_api( self._url, self.patch_file, form )
         if fp is not None:
@@ -89,13 +89,13 @@ class UploadFile:
             form = { 'type': 'pcbabomfile',
                     'gerber_file_id': self.gerber_file_id ,
                     'other_file_id': self.other_file_id ,
-                    }
+                    }|self.forms
         else:
             form = { 'type': 'pcbabomfile',
                     'gerber_file_id': self.gerber_file_id ,
                     'other_file_id': self.other_file_id ,
                     'region': 'jp',
-                    }
+                    } | self.forms
         fp = self.request_api( self._url, self.bom_file, form )
         self.timestemp.log("文件上传结束 ")
         

@@ -1,17 +1,17 @@
 import wx
 import wx.dataview
-
+from .foot_print_list_model import FootprintListModel
 from nextPCB_plugin.kicad_nextpcb_new.helpers import (
     PLUGIN_PATH,
     HighResWxSize,
 )
+import wx.dataview as dv
 
 
 class FootPrintList(wx.dataview.DataViewListCtrl):
     def __init__(
         self,
         parent,
-        mainwindows,
         id=wx.ID_ANY,
         pos=wx.DefaultPosition,
         size=wx.DefaultSize,
@@ -19,97 +19,106 @@ class FootPrintList(wx.dataview.DataViewListCtrl):
     ):
         wx.dataview.DataViewListCtrl.__init__(self, parent, id, pos, size, style)
 
-        self.SetMinSize(HighResWxSize(mainwindows.window, wx.Size(900, 400)))
+        self.SetMinSize(HighResWxSize(self, wx.Size(900, 400)))
         self.idx = self.AppendTextColumn(
             _("index"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 50),
+
+            width=70, 
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.reference = self.AppendTextColumn(
             _("Reference"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 80),
+
+            width=80,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.value = self.AppendTextColumn(
             _("Value"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 100),
+
+            width= 100,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.footprint = self.AppendTextColumn(
             _("Footprint"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 300),
+
+            width= 300,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.colu_mpn = self.AppendTextColumn(
             _("MPN"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 200),
+
+            width= 200,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.colu_manufact = self.AppendTextColumn(
             _("Manufacturer"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 200),
+
+            width= 200,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.colu_category = self.AppendTextColumn(
             _("Category"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 200),
+
+            width= 200,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.colu_sku = self.AppendTextColumn(
             _("SKU"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 150),
+
+            width= 150,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         
         self.colu_quantity = self.AppendTextColumn(
             _("Quantity"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 80),
+
+            width= 80,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.bom = self.AppendToggleColumn(
             _("BOM"),
-            mode=wx.dataview.DATAVIEW_CELL_ACTIVATABLE,
-            width=int(mainwindows.scale_factor * 60),
+
+            width= 60,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.pos = self.AppendToggleColumn(
             _("POS"),
-            mode=wx.dataview.DATAVIEW_CELL_ACTIVATABLE,
-            width=int(mainwindows.scale_factor * 60),
+
+            width= 60,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
         self.side = self.AppendTextColumn(
             _("Side"),
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
-            width=int(mainwindows.scale_factor * 50),
+
+            width= 50,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
 
         self.AppendTextColumn(
             " ",
-            mode=wx.dataview.DATAVIEW_CELL_INERT,
+
             width=1,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
             align=wx.ALIGN_CENTER,
-            flags=wx.dataview.DATAVIEW_COL_RESIZABLE,
         )
+
+    def init_data_view(self, foot_print_list_data):
+        return
+
+        self.FootprintListModel = FootprintListModel( foot_print_list_data )
+        self.AssociateModel( self.FootprintListModel )
+
+        # wx.CallAfter(self.part_list_data_panel.Layout)
+        

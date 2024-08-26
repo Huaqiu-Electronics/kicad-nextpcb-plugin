@@ -16,45 +16,29 @@ import wx.dataview as dv
 #
 # For this example our data is stored in a simple list of lists.  In
 # real life you can use whatever you want or need to hold your data.
-# 定义列的最大数量
-MAX_COLS = 2
+MAX_COLS = 13
 
-class PartDetailsModel(dv.DataViewIndexListModel):
+class FootprintListModel(dv.DataViewIndexListModel):
     def __init__(self, data ):
-        dv.DataViewIndexListModel.__init__(self, len(data))
-        self.data = data
+        # dv.DataViewIndexListModel.__init__(self, len(data))
+            # 尝试初始化基类
+            dv.DataViewIndexListModel.__init__(self, len(data))
+            # super(FootprintListModel, self).__init__(len(data))
+            self.data = data
 
-        # self.log = log
 
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
-        # 检查行索引是否在有效范围内
-        if row < 0 or row >= self.GetCount():
-            print(f"Error: Row index {row} is out of range. It must be between 0 and {self.GetCount() - 1}.")
-            return None
-        
-        # 检查列索引是否在有效范围内
-        if col < 0 or col >= len(self.data[row]):
-            print(f"Error: Column index {col} is out of range for row {row}. It must be between 0 and {len(self.data[row]) - 1}.")
-            return None
+
+        if col < 0 or col >= MAX_COLS:
+            return None 
         return self.data[row][col]
-        
     
-    def GetAttrByRow(self, row, col, attr):
-        ##self.log.write('GetAttrByRow: (%d, %d)' % (row, col))
-        if col == 0 and row == 7 and self.data[row][col] == _("Show more"):
-            attr.SetColour('blue')  # 设置单元格颜色
-            return True
-
-        return False
-
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
-        # 根据列的索引更新数据
         if 0 <= col < len(self.data[row]):
             self.data[row][col] = value
-            self.RowChanged(row)
             return True
         return False
 
@@ -64,7 +48,7 @@ class PartDetailsModel(dv.DataViewIndexListModel):
 
     # Specify the data type for a column
     def GetColumnType(self, col):
-        return "string"  # 所有列的数据类型都是字符串
+        return "string"  
 
     # Report the number of rows in the model
     def GetCount(self):
@@ -82,40 +66,19 @@ class PartDetailsModel(dv.DataViewIndexListModel):
         row1 = self.GetRow(item1)
         row2 = self.GetRow(item2)
         if col == 0:
-            # 对键进行排序
             return (self.data[row1][0] > self.data[row2][0]) - (self.data[row1][0] < self.data[row2][0]) if ascending else -1 * ((self.data[row1][0] > self.data[row2][0]) - (self.data[row1][0] < self.data[row2][0]))
         else:
             return 0
-       
-    def DeleteRows(self ,rows):
-        # 删除行的实现
-        rows = list(rows)
-        # use reverse order so the indexes don't change as we remove items
-        rows.sort(reverse=True)
-
-        for row in rows:
-            # remove it from our data structure
+        
+    def DeleteRows(self, rows):
+        for row in sorted(rows, reverse=True):
             del self.data[row]
-            # notify the view(s) using this model that it has been removed
-            self.RowDeleted(row)
+        self.RowDeleted(row)
 
-    def DeleteAll( self ):
-        # 删除行的实现
-        total_rows = self.GetCount()
-        self.data = []
-        for row in range(total_rows - 1, -1, -1):
-            self.RowDeleted(row)
 
     def AddRow(self, value):
         # update data structure
         self.data.append(value)
         # notify views
         self.RowAppended()
-
-    def AddRows(self, values):
-        for row_index, new_value in enumerate(values):
-                # 添加新行到数据结构
-                self.data.append(new_value)
-                # 通知模型新行已被添加
-                self.RowAppended()
-
+        

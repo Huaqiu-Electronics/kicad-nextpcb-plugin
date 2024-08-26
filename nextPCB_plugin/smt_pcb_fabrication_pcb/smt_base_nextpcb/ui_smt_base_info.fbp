@@ -11,7 +11,7 @@
     <property name="embedded_files_path">res</property>
     <property name="encoding">UTF-8</property>
     <property name="event_generation">connect</property>
-    <property name="file">ui_base_info</property>
+    <property name="file">ui_smt_base_info</property>
     <property name="first_id">2000</property>
     <property name="help_provider">none</property>
     <property name="image_path_wrapper_function_name"></property>
@@ -714,7 +714,7 @@
             </object>
           </object>
         </object>
-        <object class="sizeritem" expanded="false">
+        <object class="sizeritem" expanded="true">
           <property name="border">5</property>
           <property name="flag">wxEXPAND</property>
           <property name="proportion">0</property>
@@ -808,11 +808,11 @@
                 <property name="permission">none</property>
                 <property name="rows">0</property>
                 <property name="vgap">0</property>
-                <object class="sizeritem" expanded="false">
+                <object class="sizeritem" expanded="true">
                   <property name="border">5</property>
                   <property name="flag">wxALL|wxEXPAND</property>
                   <property name="proportion">0</property>
-                  <object class="wxTextCtrl" expanded="false">
+                  <object class="wxTextCtrl" expanded="true">
                     <property name="BottomDockable">1</property>
                     <property name="LeftDockable">1</property>
                     <property name="RightDockable">1</property>
@@ -943,16 +943,16 @@
           <property name="border">5</property>
           <property name="flag">wxEXPAND</property>
           <property name="proportion">0</property>
-          <object class="wxBoxSizer" expanded="false">
+          <object class="wxBoxSizer" expanded="true">
             <property name="minimum_size"></property>
             <property name="name">bSizer2</property>
             <property name="orient">wxVERTICAL</property>
             <property name="permission">none</property>
-            <object class="sizeritem" expanded="false">
+            <object class="sizeritem" expanded="true">
               <property name="border">5</property>
               <property name="flag">wxEXPAND</property>
               <property name="proportion">0</property>
-              <object class="wxStaticBoxSizer" expanded="false">
+              <object class="wxStaticBoxSizer" expanded="true">
                 <property name="id">BOX_SIZE_SETTING</property>
                 <property name="label">Size (Single)</property>
                 <property name="minimum_size"></property>
@@ -960,11 +960,11 @@
                 <property name="orient">wxVERTICAL</property>
                 <property name="parent">1</property>
                 <property name="permission">none</property>
-                <object class="sizeritem" expanded="false">
+                <object class="sizeritem" expanded="true">
                   <property name="border">5</property>
                   <property name="flag">wxEXPAND</property>
                   <property name="proportion">1</property>
-                  <object class="wxFlexGridSizer" expanded="false">
+                  <object class="wxFlexGridSizer" expanded="true">
                     <property name="cols">2</property>
                     <property name="flexible_direction">wxBOTH</property>
                     <property name="growablecols">1</property>
@@ -1038,11 +1038,11 @@
                         <property name="wrap">-1</property>
                       </object>
                     </object>
-                    <object class="sizeritem" expanded="false">
+                    <object class="sizeritem" expanded="true">
                       <property name="border">5</property>
                       <property name="flag">wxEXPAND</property>
                       <property name="proportion">1</property>
-                      <object class="wxFlexGridSizer" expanded="false">
+                      <object class="wxFlexGridSizer" expanded="true">
                         <property name="cols">2</property>
                         <property name="flexible_direction">wxBOTH</property>
                         <property name="growablecols">0</property>

@@ -96,7 +96,7 @@ AVAILABLE_QUANTITY = [
     9000,
     10000,
 ]
- 
+
 class SmtBaseInfoViewNextpcb(UiSmtBaseInfo, FormPanelBase):
     def __init__(self, parent, board_manager: BoardManager):
         super().__init__(parent)
@@ -176,7 +176,7 @@ class SmtBaseInfoViewNextpcb(UiSmtBaseInfo, FormPanelBase):
         self.bom_purchase.Append([i.DisplayRole for i in BOM_PURCHASE])
         self.bom_purchase.SetSelection(0)
         
-        self.combo_number.SetValue("5")        
+        self.combo_number.SetValue("5")      
         for i in self.edit_size_x, self.edit_size_y:
             i.SetEditable(False)
 
