@@ -12,16 +12,16 @@ class URL_KIND(Enum):
 class OrderRegion:
     AVAILABLE_URLS = {
         SupportedRegion.EUROPE_USA: {
-            URL_KIND.PLACE_ORDER: "https://www.nextpcb.com/Upfile/kiCadUpFile",
-            URL_KIND.QUERY_PRICE: "https://www.nextpcb.com/ajax/valuation",
-            URL_KIND.SMT_QUERY_PRICE: "https://api.nextpcb.com/assembly/compute/?appid=7d1b25dce0b410dc588181713afe3465",
-            URL_KIND.SMT_PLACE_ORDER: "https://api.nextpcb.com/analyze/upfile/?appid=7f94517ab22cdec82cfcbd09bbed1400"
+            URL_KIND.PLACE_ORDER: "https://www.eda.cn/openapi/api/nextpcb/Upfile/kiCadUpFile",
+            URL_KIND.QUERY_PRICE: "https://www.eda.cn/openapi/api/nextpcb/ajax/valuation",
+            URL_KIND.SMT_QUERY_PRICE: "https://www.eda.cn/openapi/api/api-nextpcb/assembly/compute/?appid=7d1b25dce0b410dc588181713afe3465",
+            URL_KIND.SMT_PLACE_ORDER: "https://www.eda.cn/openapi/api/api-nextpcb/analyze/upfile/?appid=7f94517ab22cdec82cfcbd09bbed1400"
         },
         SupportedRegion.JAPAN: {
-            URL_KIND.PLACE_ORDER: "https://jp.nextpcb.com/Upfile/kiCadUpFile",
-            URL_KIND.QUERY_PRICE: "https://jp.nextpcb.com/ajax/valuation",
-            URL_KIND.SMT_QUERY_PRICE: "https://api.nextpcb.com/assembly/compute/?appid=7d1b25dce0b410dc588181713afe3465",
-            URL_KIND.SMT_PLACE_ORDER: "https://api.nextpcb.com/analyze/upfile/?appid=7f94517ab22cdec82cfcbd09bbed1400"
+            URL_KIND.PLACE_ORDER: "https://www.eda.cn/openapi/api/jp-nextpcb/Upfile/kiCadUpFile",
+            URL_KIND.QUERY_PRICE: "https://www.eda.cn/openapi/api/jp-nextpcb/ajax/valuation",
+            URL_KIND.SMT_QUERY_PRICE: "https://www.eda.cn/openapi/api/api-nextpcb/assembly/compute/?appid=7d1b25dce0b410dc588181713afe3465",
+            URL_KIND.SMT_PLACE_ORDER: "https://www.eda.cn/openapi/api/api-nextpcb/analyze/upfile/?appid=7f94517ab22cdec82cfcbd09bbed1400"
         },
         # SupportedRegion.CHINA_MAINLAND: {
         #     URL_KIND.PLACE_ORDER: "https://www.hqpcb.com/External/fileQuote",

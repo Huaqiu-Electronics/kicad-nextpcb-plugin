@@ -90,12 +90,16 @@ class UploadFile:
                     'gerber_file_id': self.gerber_file_id ,
                     'other_file_id': self.other_file_id ,
                     }|self.forms
+            self._url = 'https://www.eda.cn/openapi/api/api-nextpcb/analyze/upfile/bom?appid=7f94517ab22cdec82cfcbd09bbed1400'
+
         else:
             form = { 'type': 'pcbabomfile',
                     'gerber_file_id': self.gerber_file_id ,
                     'other_file_id': self.other_file_id ,
                     'region': 'jp',
                     } | self.forms
+            self._url = 'https://www.eda.cn/openapi/api/api-nextpcb/analyze/upfile/jp?appid=7f94517ab22cdec82cfcbd09bbed1400'
+
         fp = self.request_api( self._url, self.bom_file, form )
         self.timestemp.log("文件上传结束 ")
         

@@ -70,6 +70,9 @@ class DataGenThread(Thread):
                 )
             )
             wx.PostEvent(self.win, event=evt)
+            headers = {
+                'Content-Type': 'multipart/form-data',  # 假设你需要添加的自定义请求头
+            }
             rsp = requests.post(
                 self._url,
                 files={

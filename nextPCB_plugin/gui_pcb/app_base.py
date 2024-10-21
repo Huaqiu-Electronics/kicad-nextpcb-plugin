@@ -35,8 +35,11 @@ class NextPCBApp(wx.EvtHandler):
     def load_success(self):
         from nextPCB_plugin.settings_nextpcb.setting_manager import SETTING_MANAGER
         from nextPCB_plugin.settings_nextpcb.supported_layer_count import AVAILABLE_LAYER_COUNTS
+        try:
+            import PIL
+        except ImportError:
+            wx.MessageBox(_("Pillow is not installed.Please try to install it."))
 
-        
         SETTING_MANAGER.register_app(self)
         self.board_manager = load_board_manager()
         if self.board_manager.board.GetCopperLayerCount() not in AVAILABLE_LAYER_COUNTS:

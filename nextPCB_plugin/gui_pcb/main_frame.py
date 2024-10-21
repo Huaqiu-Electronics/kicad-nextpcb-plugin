@@ -63,8 +63,8 @@ import webbrowser
 from nextPCB_plugin.gui_pcb.summary.upload_file import UploadFile
 from nextPCB_plugin.order_nextpcb.supported_region import SupportedRegion
 from nextPCB_plugin.utils_nextpcb.request_helper import RequestHelper
-        
-
+from requests.exceptions import Timeout, HTTPError
+import requests
 class SMTPCBFormPartNextpcb(Enum):
     SMT_BASE_INFO = 0
     SMT_PROCESS_INFO = 1
@@ -455,28 +455,35 @@ class MainFrameNextpcb(wx.Frame):
             if url is None:
                 wx.MessageBox(_("No available url for querying price in current region"))
                 return
+
+            form = self.get_query_price_form()
+
+            headers = {'Content-Type': 'application/json'}
+            rsp = None
             try:
-                form = self.get_query_price_form()
-                rep = urllib.request.Request(
-                    url, data=RequestHelper.convert_dict_to_request_data(form)
+                rsp = requests.post(
+                    url, json=form,headers =headers
                 )
-                fp = urllib.request.urlopen(rep)
-                data = fp.read()
-                encoding = fp.info().get_content_charset("utf-8")
-                content = data.decode(encoding)
+                rsp.raise_for_status()  # 检查HTTP响应状态
+                content = rsp.text
                 quote = json.loads(content)
-                if DATA in quote and LIST in quote[DATA]:
-                    return self.parse_price_list(quote[DATA][LIST])
-                elif SUGGEST in quote:
-                    return self.parse_price(quote)
-                else:
-                    err_msg = quote
-                    if "msg" in quote:
-                        err_msg = quote["msg"]
-                    wx.MessageBox(_("Incorrect form parameter: ") + err_msg)
+            except Timeout as e:
+                self.report_part_search_error(_("HTTP request timed out: {error}").format( error=e))
+            except HTTPError as e:
+                self.report_part_search_error(_("HTTP error occurred: {error}").format(error=e))
+            except ValueError as e:
+                self.report_part_search_error(_("Failed to parse JSON response: {error}").format(error=e))
             except Exception as e:
-                wx.MessageBox(str(e))
-                raise e  # TODO remove me
+                self.report_part_search_error(_("An unexpected HTTP error occurred: {error}").format(error=e))
+            if DATA in quote and LIST in quote[DATA]:
+                return self.parse_price_list(quote[DATA][LIST])
+            elif SUGGEST in quote:
+                return self.parse_price(quote)
+            else:
+                err_msg = quote
+                if "code" in quote:
+                    err_msg = quote["code"]
+                wx.MessageBox(_("Incorrect form parameter. There's a system error."))
 
         elif self.selected_page_index == 1:
             if not self.form_is_valid():
@@ -594,3 +601,11 @@ class MainFrameNextpcb(wx.Frame):
         SINGLE_PLUGIN.register_main_wind(None)
         self.summary_view.Destroy()
         self.Destroy()
+
+    def report_part_search_error(self, reason):
+        wx.MessageBox(
+            _("Failed to request the API:\r\n{reason}.\r\n \r\nPlease try making the request again.\r\n").format(reason=reason),
+            _("Error"),
+            style=wx.ICON_ERROR,
+        )
+        return
