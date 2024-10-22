@@ -13,7 +13,6 @@ def _main():
         from nextPCB_plugin.gui_pcb.app_base import NextPCBApp
         import wx
         app = NextPCBApp()
-
         if app.load_success():
             app.startup_dialog()
 
