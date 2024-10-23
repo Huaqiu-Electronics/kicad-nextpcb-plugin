@@ -1,5 +1,4 @@
 import wx 
-import wx  
 import wx.xrc
 import wx.dataview
 import requests
@@ -17,6 +16,7 @@ from .assigned_part_model import PartDetailsModel
 import pcbnew
 import json
 import os
+from nextPCB_plugin.utils_nextpcb.warning import SilentLogTarget
 
 parameters = {
     "mpn": _("MPN"),
@@ -27,7 +27,6 @@ parameters = {
     "datasheet":_("Datasheet"),
     "sku": _("SKU"),
 }
-
 class AssignedPartView(UiAssignedPartPanel):
 
     def __init__(
@@ -61,6 +60,11 @@ class AssignedPartView(UiAssignedPartPanel):
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_open_pdf)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_show_more_info)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_tooltip)
+        
+        log_target = SilentLogTarget()
+        wx.Log.SetLogLevel(wx.LOG_Info)  # 设置日志级别为 Info，这样 Warning 和 Error 级别的日志仍然会被记录
+        wx.Log.SetActiveTarget(log_target)
+                
         self.init_UI()
         self.get_language_setting()
 
@@ -70,6 +74,7 @@ class AssignedPartView(UiAssignedPartPanel):
         self.PartDetailsModel = PartDetailsModel( self.part_details_data )
         self.data_list.AssociateModel(self.PartDetailsModel)
         wx.CallAfter( self.data_list.Refresh )
+        
         
     def initialize_data(self):
         self.PartDetailsModel.DeleteAll()
@@ -104,12 +109,16 @@ class AssignedPartView(UiAssignedPartPanel):
 
     def show_cache_image(self, content):
         bitmap = self.display_bitmap(content)
-        if bitmap:
-            self.logger.debug("Setting image")
-            self.part_image.SetBitmap(bitmap)
-        else:
-            self.logger.debug("Image is not valid")
-            self.part_image.SetBitmap(wx.NullBitmap)
+        try:
+            if bitmap:
+                self.logger.debug("Setting image")
+                self.part_image.SetBitmap(bitmap)
+            else:
+                self.logger.debug("Image is not valid")
+                self.part_image.SetBitmap(wx.NullBitmap)
+            self.Layout()
+        except Exception as e:
+            self.logger.error(f"An error occurred: {e}")
         self.Layout()
         
         
@@ -159,36 +168,53 @@ class AssignedPartView(UiAssignedPartPanel):
 
     def display_bitmap(self, content):
         io_bytes = io.BytesIO(content)
+        sb_size = self.part_image.GetSize()
+        min_dimension = min(sb_size.GetWidth(), sb_size.GetHeight())
+        if min_dimension <= 0:
+            self.report_part_data_fetch_error( 
+                _("The width and height of new size must be greater than 0")
+            )
+            return
         try:
             from PIL import Image
             image = Image.open(io_bytes)
-            sb_size = self.part_image.GetSize()
-            min_dimension = min(sb_size.GetWidth(), sb_size.GetHeight())
-            if min_dimension <= 0:
-                self.report_part_data_fetch_error(
-                    _("The width and height of new size must be greater than 0")
-                )
-                return
+
             # Scale the image
             factor = min_dimension / max(image.width, image.height) 
             new_width = int(image.width * factor)
             new_height = int(image.height * factor)
             resized_image = image.resize((new_width, new_height), Image.LANCZOS)
+            wx_image = wx.Image(new_width, new_height)
+            wx_image.SetData(resized_image.convert('RGB').tobytes())
+            
+        except (IOError, SyntaxError,ImportError) as e:
+            wx.InitAllImageHandlers()
+            try:
+                # 使用 wx.Image 从 BytesIO 对象中直接创建图像
+                wx_image = wx.Image(io_bytes, wx.BITMAP_TYPE_ANY, -1)
+                if not wx_image.IsOk():
+                    return None
 
-        except (IOError, SyntaxError) as e:
-            # Handle the error if the image file is not valid
-            print(f"Error opening image: {e}")
-            return
+                # 缩放图像
+                factor = min_dimension / max(wx_image.GetWidth(), wx_image.GetHeight())
+                new_width = int(wx_image.GetWidth() * factor)
+                new_height = int(wx_image.GetHeight() * factor)
+                wx_image = wx_image.Rescale(new_width, new_height )
+                bitmap = wx_image.ConvertToBitmap()
+
+                self.part_image.SetBitmap(bitmap)
+            except Exception as e:
+                # 处理图像文件无效时的错误
+                print(f"Error opening image: {e}")
+                return None
         # 将PIL图像转换为wxPython图像
-        wx_image = wx.Image(new_width, new_height)
-        wx_image.SetData(resized_image.convert('RGB').tobytes())
+
         
         if not wx_image.IsOk():
             self.logger.error("The wx.Image is not valid.")
             return None
         result = wx.Bitmap(wx_image)
         return result
-
 
     def get_part_data(self, _clicked_part):
         """fetch part data from NextPCB API and parse it into the table, set picture and PDF link"""
