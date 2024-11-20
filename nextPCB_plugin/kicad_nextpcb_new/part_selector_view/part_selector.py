@@ -13,6 +13,8 @@ import time
 import threading
 import logging
 from requests.exceptions import Timeout, ConnectionError, HTTPError
+from datetime import datetime
+import asyncio
 
 # 配置日志
 logging.basicConfig(level=logging.DEBUG)
@@ -52,6 +54,8 @@ class PartSelectorDialog(wx.Dialog):
         
         self.last_call_time = 0  # 记录上一次事件触发的时间
         self.throttle_interval = 0.3  # 设置时间间隔，单位为秒
+        self.page_throttle_interval = 2  # 设置时间间隔，单位为秒
+        self.thread = None
 
         part_selection = self.get_existing_selection(parts)
         self.part_info = part_selection.split(",")
@@ -200,15 +204,22 @@ class PartSelectorDialog(wx.Dialog):
 
         url = "https://www.eda.cn/api/chiplet/products/queryPage"
 
+        # self.search_view.search_button.Disable()
         self.search_view.search_button.Disable()
+        self.part_list_view.prev_button.Disable()
+        self.part_list_view.next_button.Disable()
         try:
+            
             self.search_api_request(url, body)
+
         finally:
-            self.search_view.search_button.Enable()
+            # self.search_view.search_button.Enable()
             wx.CallAfter(wx.EndBusyCursor)
 
     def search_api_request(self, url, data):
+
         response = self.api_request_interface(url, data )
+
         self.search_part_list = []
         res_datas = response.json().get("result", {})
         if not res_datas:
@@ -227,13 +238,16 @@ class PartSelectorDialog(wx.Dialog):
                 )
             search_part = item.get("queryPartVO", {}).get("part", {})
             self.search_part_list.append(search_part)
+
         wx.CallAfter(self.populate_part_list)
 
 
     def populate_part_list(self):
         """Populate the list with the result of the search."""
+
         if self.search_part_list is None:
             return
+        part_list_data = []
         self.total_pages = ceil(self.total_num, self.one_page_size)
         self.update_page_label()
         self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
@@ -245,46 +259,91 @@ class PartSelectorDialog(wx.Dialog):
         parameters = ["mpn", "manufacturer", "pkg", "category", "sku"]
         body = []
         
+ 
+        if not self.search_part_list:  # 如果列表为空
+            print("搜索结果为空，没有可处理的数据。")
+            return
+        
         for part_info in self.search_part_list:
             manu_id = part_info.get("manufacturer_id", {})
             mpn = part_info.get("mpn", {})
             body_value = ( f"{manu_id}-{mpn}" )
             body.append(body_value)
-        
-        url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
 
+        for idx, part_info in enumerate(self.search_part_list, start=1):
+            sku = "-"
+            mpn = part_info["mpn"]
+            part_info["sku"] = sku
+            # 确保idx-1不会超出列表的范围
+            if idx-1 < len(self.search_part_list):
+                self.search_part_list[idx-1]["sku"] = sku
+                
+            part = []
+            for k in parameters:
+                val = part_info.get(k, "")
+                val = "-" if val == "" else val
+                part.append(val)
+            part.insert(0, f"{idx}")
+            part_list_data.append(part)
+            
+        try:
+            self.part_list_view.init_data_view(part_list_data)
+            self.part_list_view.Layout()
+            self.Layout()
+        except Exception as e:
+            print("Error during rendering:", e)
+            
+        # thread = threading.Thread(target=self.search_supply_chain, args=(body, parameters))
+        # # 启动线程
+        # thread.start()
+        if self.thread is not None:
+            self.thread.join()  # 等待线程结束
+
+        # 创建并启动新线程
+        self.thread = threading.Thread(target=self.search_supply_chain, args=(body, parameters))
+        self.thread.start()
+
+
+        
+    def search_supply_chain(self, body, parameters ):
+    # async def search_supply_chain(self, body, parameters ):
+        part_list_data = []
+        url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
+        now = datetime.now()
+        self.logger.debug(f"当前时间2： {now}") 
         response = self.api_request_interface( url, body )
         res_datas = response.json().get("result", {})
         if not response.json():
             wx.MessageBox( _("No corresponding sku data was matched") )
-        
-        part_list_data = []
-        if not self.search_part_list:  # 如果列表为空
-            print("搜索结果为空，没有可处理的数据。")
-            return
-        else:
-            for idx, part_info in enumerate(self.search_part_list, start=1):
-                sku = "-"
-                mpn = part_info["mpn"]
-                for data in res_datas:
-                    if data.get("mpn") == mpn and data.get("vendor") == "hqself":
-                        sku = data.get("sku", "-") 
-                        break 
-                part_info["sku"] = sku
+        now = datetime.now()
+        self.logger.debug(f"当前时间3： {now}")
 
-                # 确保idx-1不会超出列表的范围
-                if idx-1 < len(self.search_part_list):
-                    self.search_part_list[idx-1]["sku"] = sku
-                    
-                part = []
-                for k in parameters:
-                    val = part_info.get(k, "")
-                    val = "-" if val == "" else val
-                    part.append(val)
-                part.insert(0, f"{idx}")
-                part_list_data.append(part)
+
+        for idx, part_info in enumerate(self.search_part_list, start=1):
+            sku = "-"
+            mpn = part_info["mpn"]
+            for data in res_datas:
+                if data.get("mpn") == mpn and data.get("vendor") == "hqself":
+                    sku = data.get("sku", "-") 
+                    break 
+            part_info["sku"] = sku
+
+            # 确保idx-1不会超出列表的范围
+            if idx-1 < len(self.search_part_list):
+                self.search_part_list[idx-1]["sku"] = sku
                 
-            self.part_list_view.init_data_view( part_list_data )
+            part = []
+            for k in parameters:
+                val = part_info.get(k, "")
+                val = "-" if val == "" else val
+                part.append(val)
+            part.insert(0, f"{idx}")
+            part_list_data.append(part)
+        
+        self.search_view.search_button.Enable()
+        self.part_list_view.prev_button.Enable()
+        self.part_list_view.next_button.Enable()
+        self.part_list_view.init_data_view( part_list_data )
 
 
     def api_request_interface(self, url, data ):
@@ -364,18 +423,28 @@ class PartSelectorDialog(wx.Dialog):
             )
 
     def on_prev_page(self, event):
+        # current_time = time.time()
+        # if current_time - self.last_call_time < self.page_throttle_interval:
+        #     return  # 如果时间间隔小于设定的阈值，则不处理事件
+        # self.last_call_time = current_time
         if self.current_page > 1:
             self.current_page -= 1
             self.update_page_label()
             self.search(None)
             self.cancel_selcetion()
+
             
     def on_next_page(self, event):
+        # current_time = time.time()
+        # if current_time - self.last_call_time < self.page_throttle_interval:
+        #     return  # 如果时间间隔小于设定的阈值，则不处理事件
+        # self.last_call_time = current_time
         if self.current_page < self.total_pages:
             self.current_page += 1
             self.update_page_label()
             self.search(None)
             self.cancel_selcetion()
+
             
     def update_page_label(self):
         self.part_list_view.page_label.SetLabel(

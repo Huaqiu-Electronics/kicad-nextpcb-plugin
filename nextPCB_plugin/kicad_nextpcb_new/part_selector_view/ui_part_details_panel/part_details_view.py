@@ -110,7 +110,12 @@ class PartDetailsView(UiPartDetailsPanel):
                 self.part_image.SetBitmap(self.get_scaled_bitmap(picture))
         else:
             self.part_image.SetBitmap(wx.NullBitmap)
-        self.Layout()
+
+        # 确保 Layout 在主线程中调用
+        if wx.IsMainThread():
+            self.Layout()
+        else:
+            wx.CallAfter(self.Layout)
 
     def get_scaled_bitmap(self, url):
         """Download a picture from a URL and convert it into a wx Bitmap"""
