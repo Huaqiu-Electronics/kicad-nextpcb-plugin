@@ -311,8 +311,8 @@ class SummaryPanelNextpcb(UiSummaryPanelNextpcb):
     def on_bom_match(self, e):
         dlg = NextPCBTools(self, self._board_manager)
         result = dlg.ShowModal()
-        if result in (wx.ID_OK, wx.ID_CANCEL):
-            dlg.Destroy()
+        # if result in (wx.ID_OK, wx.ID_CANCEL):
+        #     dlg.Destroy()
         self.load_Designator()
 
 
