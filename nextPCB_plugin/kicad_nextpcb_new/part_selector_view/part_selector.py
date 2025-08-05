@@ -256,7 +256,7 @@ class PartSelectorDialog(wx.Dialog):
         else:
             self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
 
-        parameters = ["mpn", "manufacturer", "pkg", "category", "sku"]
+        parameters = ["mpn", "manufacturer", "package", "category", "sku", "stock"]
         body = []
         
  
@@ -304,6 +304,8 @@ class PartSelectorDialog(wx.Dialog):
         self.thread.start()
 
 
+# {'vendorPartId': '0', 'mpn': '100YXJ220M12.5X25', 'mfgId': 6464, 'sku': '1103593888', 'vendor': 'hqself', 'quantity': 1, 'moq': 1, 'factoryLeadDays': 1, 'packing': None, 'distributorUrl': 'https://item.hqchip.com/1103593888.html', 'price': [{...}, {...}, {...}, {...}, {...}, {...}, {...}, {...}], 
+# 'vendorName': 'HQ Chip', 'stock': 4922, 'batchNumber': '-', 'exchangeRate': 1, 'currencyUnit': '¥', 'selected': 0, 'recommend': 1, 'itemPrice': 11.58434, 'isAuthorizedDealers': 1}
         
     def search_supply_chain(self, body, parameters ):
     # async def search_supply_chain(self, body, parameters ):
@@ -321,12 +323,15 @@ class PartSelectorDialog(wx.Dialog):
 
         for idx, part_info in enumerate(self.search_part_list, start=1):
             sku = "-"
+            stock = "-"
             mpn = part_info["mpn"]
             for data in res_datas:
                 if data.get("mpn") == mpn and data.get("vendor") == "hqself":
                     sku = data.get("sku", "-") 
+                    stock = str(data.get("stock", "-") )
                     break 
             part_info["sku"] = sku
+            part_info["stock"] = stock
 
             # 确保idx-1不会超出列表的范围
             if idx-1 < len(self.search_part_list):

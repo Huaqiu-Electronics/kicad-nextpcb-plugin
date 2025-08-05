@@ -19,11 +19,12 @@ from nextPCB_plugin.utils_nextpcb.warning import SilentLogTarget
 parameters = {
     "mpn": _("MPN"),
     "manufacturer": _("Manufacturer"),
-    "pkg": _("Package / Footprint"),
+    "package": _("Package / Footprint"),
     "category": _("Category"),
     "part_desc": _("Description"),
     "datasheet":_("Datasheet"),
     "sku": _("SKU"),
+    "stock": _("Stock"),
 }
 
 class PartDetailsView(UiPartDetailsPanel):
@@ -237,7 +238,7 @@ class PartDetailsView(UiPartDetailsPanel):
             if not response.json():
                 wx.MessageBox( _("No corresponding sku data was matched") )
 
-            self.PartDetailsModel.DeleteRows( [7] )
+            self.PartDetailsModel.DeleteRows( [row] )
             extraction_datas =  res_datas.get("groupAttrInfoVOList", {})
             for res_data in extraction_datas:
                 for data in res_data.get("attrInfoVO", "-"):

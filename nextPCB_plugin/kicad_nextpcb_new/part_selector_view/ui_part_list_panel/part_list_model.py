@@ -17,7 +17,7 @@ import wx.dataview as dv
 # For this example our data is stored in a simple list of lists.  In
 # real life you can use whatever you want or need to hold your data.
 
-MAX_COLS = 6
+MAX_COLS = 7
 
 class PartListModel(dv.DataViewIndexListModel):
     def __init__(self, data ):

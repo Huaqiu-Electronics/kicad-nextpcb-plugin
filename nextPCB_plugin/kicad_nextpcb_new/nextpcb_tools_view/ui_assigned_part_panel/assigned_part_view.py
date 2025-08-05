@@ -21,7 +21,7 @@ from nextPCB_plugin.utils_nextpcb.warning import SilentLogTarget
 parameters = {
     "mpn": _("MPN"),
     "manufacturer": _("Manufacturer"),
-    "pkg": _("Package / Footprint"),
+    "package": _("Package / Footprint"),
     "category": _("Category"),
     "part_desc": _("Description"),
     "datasheet":_("Datasheet"),

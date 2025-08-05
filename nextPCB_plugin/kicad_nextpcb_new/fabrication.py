@@ -124,7 +124,7 @@ class Fabrication:
         popt.SetPlotReference(
             self.parent.settings.get("gerber", {}).get("plot_references", True)
         )
-        popt.SetPlotInvisibleText(False)
+        # popt.SetPlotInvisibleText(False)
 
         popt.SetSketchPadsOnFabLayers(False)
 
@@ -135,14 +135,14 @@ class Fabrication:
 
         popt.SetSubtractMaskFromSilk(True)
 
-        popt.SetPlotViaOnMaskLayer(False)  # Set this to True if you need untented vias
+        # popt.SetPlotViaOnMaskLayer(False)  # Set this to True if you need untented vias
 
         popt.SetUseAuxOrigin(True)
 
         # Tented vias or not, selcted by user in settings
-        popt.SetPlotViaOnMaskLayer(
-            not self.parent.settings.get("gerber", {}).get("tented_vias", True)
-        )
+        # popt.SetPlotViaOnMaskLayer(
+        #     not self.parent.settings.get("gerber", {}).get("tented_vias", True)
+        # )
 
         popt.SetUseGerberX2format(True)
 
@@ -150,12 +150,12 @@ class Fabrication:
 
         popt.SetDisableGerberMacros(False)
 
-        if is_nightly(GetBuildVersion()):
-            from pcbnew import DRILL_MARKS_NO_DRILL_SHAPE
+        # if is_nightly(GetBuildVersion()):
+        from pcbnew import DRILL_MARKS_NO_DRILL_SHAPE
 
-            popt.SetDrillMarksType(DRILL_MARKS_NO_DRILL_SHAPE)
-        else:
-            popt.SetDrillMarksType(PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
+        popt.SetDrillMarksType(DRILL_MARKS_NO_DRILL_SHAPE)
+        # else:
+        #     popt.SetDrillMarksType(PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
 
         popt.SetPlotFrameRef(False)
 
