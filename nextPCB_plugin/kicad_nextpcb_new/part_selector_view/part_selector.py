@@ -217,8 +217,8 @@ class PartSelectorDialog(wx.Dialog):
             wx.CallAfter(wx.EndBusyCursor)
 
     def search_api_request(self, url, data):
-
-        response = self.api_request_interface(url, data )
+        params = {}
+        response = self.api_request_interface(url,params, data )
 
         self.search_part_list = []
         res_datas = response.json().get("result", {})
@@ -256,7 +256,7 @@ class PartSelectorDialog(wx.Dialog):
         else:
             self.part_list_view.result_count.SetLabel(_("{total} Results").format(total=self.total_num))
 
-        parameters = ["mpn", "manufacturer", "package", "category", "sku", "stock"]
+        parameters = ["mpn", "manufacturer", "package", "category", "sku", "price", "stock"]
         body = []
         
  
@@ -267,7 +267,14 @@ class PartSelectorDialog(wx.Dialog):
         for part_info in self.search_part_list:
             manu_id = part_info.get("manufacturer_id", {})
             mpn = part_info.get("mpn", {})
-            body_value = ( f"{manu_id}-{mpn}" )
+            # body_value = ( f"{manu_id}-{mpn}" )
+            body_value = {
+                "customerSupply": "0",
+                "id": manu_id,
+                "mpn": mpn,
+                "location": "SW1,SW2",
+                "qty": 10
+            }
             body.append(body_value)
 
         for idx, part_info in enumerate(self.search_part_list, start=1):
@@ -302,18 +309,27 @@ class PartSelectorDialog(wx.Dialog):
         # 创建并启动新线程
         self.thread = threading.Thread(target=self.search_supply_chain, args=(body, parameters))
         self.thread.start()
-
-
-# {'vendorPartId': '0', 'mpn': '100YXJ220M12.5X25', 'mfgId': 6464, 'sku': '1103593888', 'vendor': 'hqself', 'quantity': 1, 'moq': 1, 'factoryLeadDays': 1, 'packing': None, 'distributorUrl': 'https://item.hqchip.com/1103593888.html', 'price': [{...}, {...}, {...}, {...}, {...}, {...}, {...}, {...}], 
-# 'vendorName': 'HQ Chip', 'stock': 4922, 'batchNumber': '-', 'exchangeRate': 1, 'currencyUnit': '¥', 'selected': 0, 'recommend': 1, 'itemPrice': 11.58434, 'isAuthorizedDealers': 1}
         
     def search_supply_chain(self, body, parameters ):
-    # async def search_supply_chain(self, body, parameters ):
         part_list_data = []
-        url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
+        bomNumber = len(body)
+        data = {
+            "bomNumber": bomNumber,
+            "list": body
+        }
+
+        part_list_data = []
+        url = "https://smtapi.nextpcb.com/nextpcb/pcba/bom/inquiry"
+
+        # 定义请求的参数
+        params = {
+            "appid": "j1LWf238",
+            "timestamp": "1681810983",
+            "signature": "8e02b899be91b77dc140dfc2388dde95"
+        }
         now = datetime.now()
         self.logger.debug(f"当前时间2： {now}") 
-        response = self.api_request_interface( url, body )
+        response = self.api_request_interface( url,params,data )
         res_datas = response.json().get("result", {})
         if not response.json():
             wx.MessageBox( _("No corresponding sku data was matched") )
@@ -321,22 +337,28 @@ class PartSelectorDialog(wx.Dialog):
         self.logger.debug(f"当前时间3： {now}")
 
 
+
         for idx, part_info in enumerate(self.search_part_list, start=1):
             sku = "-"
             stock = "-"
+            price = "-"
             mpn = part_info["mpn"]
             for data in res_datas:
-                if data.get("mpn") == mpn and data.get("vendor") == "hqself":
-                    sku = data.get("sku", "-") 
-                    stock = str(data.get("stock", "-") )
+                if data.get("mpn") == mpn :
+                    sku = data.get("goodsId", "-") or "-"
+                    price = str( data.get("price", "-") or "-" )
+                    stock = str( data.get("stockQty", "-")  or "-" )
                     break 
             part_info["sku"] = sku
+            part_info["price"] = price
             part_info["stock"] = stock
 
             # 确保idx-1不会超出列表的范围
             if idx-1 < len(self.search_part_list):
                 self.search_part_list[idx-1]["sku"] = sku
-                
+                self.search_part_list[idx-1]["stock"] = stock
+                self.search_part_list[idx-1]["price"] = price
+            
             part = []
             for k in parameters:
                 val = part_info.get(k, "")
@@ -351,10 +373,91 @@ class PartSelectorDialog(wx.Dialog):
         self.part_list_view.init_data_view( part_list_data )
 
 
-    def api_request_interface(self, url, data ):
+        # for idx, part_info in enumerate(self.search_part_list, start=1):
+        #     part = [f"{idx}"] + [part_info.get(k, "-") for k in parameters]
+        #     part_list_data.append(part)
+        # # for body_mpn in body:
+        # #     # url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
+        # #     url = "https://smtapi.nextpcb.com/nextpcb/pcba/bom/inquiry"
+
+        # #     # 定义请求的参数
+        # #     params = {
+        # #         "appid": "j1LWf238",
+        # #         "timestamp": "1681810983",
+        # #         "signature": "8e02b899be91b77dc140dfc2388dde95"
+        # #     }
+        # #     data = {
+        # #         "bomNumber": "10",
+        # #         "list": [
+        # #             {
+        # #                 "customerSupply": "0",
+        # #                 "id": "4",
+        # #                 "mpn": body_mpn,
+        # #                 "location": "SW1,SW2",
+        # #                 "qty": 20
+        # #             }
+        # #         ]
+        # #     }
+        # #     now = datetime.now()
+        # #     self.logger.debug(f"当前时间2： {now}") 
+        # #     response = self.api_request_interface( url,params,data )
+        # #     res_datas = response.json().get("result", {})
+        # #     if not response.json():
+        # #         wx.MessageBox( _("No corresponding sku data was matched") )
+        # #     now = datetime.now()
+        # #     self.logger.debug(f"当前时间3： {now}")
+
+
+
+
+        # for idx, part_info in enumerate(part_list_data, start=1):
+        #         mpn = part_info[1]
+        #     # if body_mpn == part_info["mpn"]:
+        #         sku = "-"
+        #         stock = "-"
+        #         price = "-"
+        #         # mpn = part_info["mpn"]
+        #         for data in res_datas:
+        #             # if data.get("mpn") == mpn and data.get("vendor") == "hqself":
+        #             if data.get("mpn") == mpn:
+        #                 # sku = data.get("goodsId", "-") 
+        #                 sku = data.get("goodsId", "-") or "-"
+        #                 price = str( data.get("price", "-") or "-" )
+        #                 stock = str( data.get("stockQty", "-")  or "-" )
+        #                 break 
+        #         # part_info["sku"] = sku
+        #         # part_info["stock"] = stock
+        #         part_info[5] = sku
+        #         part_info[6] = price
+        #         part_info[7] = stock
+        #         # 确保idx-1不会超出列表的范围
+        #         if idx-1 < len(self.search_part_list):
+        #             self.search_part_list[idx-1]["sku"] = sku
+        #             self.search_part_list[idx-1]["stock"] = stock
+        #             self.search_part_list[idx-1]["price"] = price
+                    
+        #         # part = []
+        #         # for k in parameters:
+        #         #     val = part_info.get(k, "")
+        #         #     val = "-" if val == "" else val
+        #         #     part.append(val)
+        #         # part.insert(0, f"{idx}")
+        #         # part = [f"{idx}"] + [part_info.get(k, "-") for k in parameters]
+        #         part_list_data[idx - 1] = part_info  # 使用idx - 1来避免索引越界
+        #         if idx % 3 == 0:
+        #             self.part_list_view.init_data_view( part_list_data )
+        #         # break 
+    
+        # self.search_view.search_button.Enable()
+        # self.part_list_view.prev_button.Enable()
+        # self.part_list_view.next_button.Enable()
+        # self.part_list_view.init_data_view( part_list_data )
+
+
+    def api_request_interface(self, url,params, data ):
         headers = {"Content-Type": "application/json"}
         try:
-            response = requests.post(url, headers=headers, json=data, timeout=30)
+            response = requests.post(url, headers=headers, params=params, json=data, timeout=30)
             response.raise_for_status()
             return response
         except Timeout:
@@ -375,12 +478,14 @@ class PartSelectorDialog(wx.Dialog):
         manu = self.part_list_view.part_list.GetValue(row, 2)
         cate = self.part_list_view.part_list.GetValue(row, 4)
         sku = self.part_list_view.part_list.GetValue(row, 5)
+        price = self.part_list_view.part_list.GetValue(row, 6)
         self.selected_part = self.search_part_list[row]
         evt = AssignPartsEvent(
             mpn=selection,
             manufacturer=manu,
             category=cate,
             sku=sku,
+            price = price,
             references=list(self.parts.keys()),
             selected_part_detail=self.selected_part,
         )

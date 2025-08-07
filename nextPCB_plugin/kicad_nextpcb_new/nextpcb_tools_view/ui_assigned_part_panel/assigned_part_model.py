@@ -40,14 +40,16 @@ class PartDetailsModel(dv.DataViewIndexListModel):
             return None
         return self.data[row][col]
         
-    
-    def GetAttrByRow(self, row, col, attr):
-        ##self.log.write('GetAttrByRow: (%d, %d)' % (row, col))
-        if col == 0 and row == 7 and self.data[row][col] == _("Show more"):
-            attr.SetColour('blue')  # 设置单元格颜色
-            return True
 
+    def GetAttrByRow(self, row, col, attr):
+        # print('GetAttrByRow: (%d, %d)' % (row, col))
+        if col == 0 and self.data[row][col] == _("Show more"):
+            attr.SetColour('blue')  
+        if col == 1 and( row == 5 or row == 6):
+            attr.SetColour('blue')  
+            return True
         return False
+
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):

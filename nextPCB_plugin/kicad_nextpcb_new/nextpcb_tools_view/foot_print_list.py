@@ -77,6 +77,13 @@ class FootPrintList(wx.dataview.DataViewListCtrl):
             align=wx.ALIGN_CENTER,
         )
         
+        self.colu_sku = self.AppendTextColumn(
+            _("Price /Pc.")+"($)",
+            width= 150,
+            mode=dv.DATAVIEW_CELL_ACTIVATABLE,
+            align=wx.ALIGN_CENTER,
+        )
+
         self.colu_quantity = self.AppendTextColumn(
             _("Quantity"),
 

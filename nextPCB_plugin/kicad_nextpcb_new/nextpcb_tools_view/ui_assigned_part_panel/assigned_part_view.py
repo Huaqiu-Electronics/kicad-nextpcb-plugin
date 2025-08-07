@@ -25,7 +25,8 @@ parameters = {
     "category": _("Category"),
     "part_desc": _("Description"),
     "datasheet":_("Datasheet"),
-    "sku": _("SKU"),
+    "sku": _("ProductUrl"),
+    "price": _("Price"),
 }
 class AssignedPartView(UiAssignedPartPanel):
 
@@ -60,7 +61,11 @@ class AssignedPartView(UiAssignedPartPanel):
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_open_pdf)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_show_more_info)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_tooltip)
+        self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_open_sku_url)
         
+        self.data_list.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.on_open_sku_url)
+
+
         log_target = SilentLogTarget()
         wx.Log.SetLogLevel(wx.LOG_Info)  # 设置日志级别为 Info，这样 Warning 和 Error 级别的日志仍然会被记录
         wx.Log.SetActiveTarget(log_target)
@@ -120,7 +125,25 @@ class AssignedPartView(UiAssignedPartPanel):
         except Exception as e:
             self.logger.error(f"An error occurred: {e}")
         self.Layout()
-        
+
+
+    def on_open_sku_url(self, event):
+        """Open the linked datasheet PDF on button click."""
+        item = self.data_list.GetSelection()
+        row = self.data_list.ItemToRow(item)
+        if item is None or row == -1:
+            return 
+        col = self.data_list.GetCurrentColumn().GetModelColumn()
+        if col == 1:
+
+            datasheet = self.data_list.GetTextValue(row, 0)
+            if datasheet == _("ProductUrl"): 
+                if "http" in self.sku_url:
+                    webbrowser.open(self.sku_url)
+        else:
+            self.logger.debug(f"Goods trigger link error")
+        event.Skip()
+
         
     def show_image(self, picture):
         if picture:
@@ -237,7 +260,17 @@ class AssignedPartView(UiAssignedPartPanel):
         
         self.part_details_data.clear()
         for k, v in parameters.items():
-            val = self.clicked_part.get(k, "-")
+            if k == "sku":
+                _sku = self.clicked_part.get(k, "-")
+                if _sku != "-":
+                    # 类似（https://item.hqchip.com/2500217622.html），
+                    val = "https://item.hqchip.com/"+_sku+ ".html"
+                else:
+                    val = "-"
+                self.sku_url = val
+            else:
+                val = self.clicked_part.get(k, "-")
+
             if val != "null" and val:
                 self.PartDetailsModel.AddRow([v, str(val)])
             else:
@@ -271,7 +304,7 @@ class AssignedPartView(UiAssignedPartPanel):
             if not response.json():
                 wx.MessageBox( _("No corresponding sku data was matched") )
             
-            self.PartDetailsModel.DeleteRows( [7] )
+            self.PartDetailsModel.DeleteRows( [row] )
             extraction_datas =  res_datas.get("groupAttrInfoVOList", {})
             for res_data in extraction_datas:
                 for data in res_data.get("attrInfoVO", "-"):

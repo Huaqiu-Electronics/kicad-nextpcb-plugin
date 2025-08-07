@@ -23,7 +23,8 @@ parameters = {
     "category": _("Category"),
     "part_desc": _("Description"),
     "datasheet":_("Datasheet"),
-    "sku": _("SKU"),
+    "sku": _("ProductUrl"),
+    "price": _("Price"),
     "stock": _("Stock"),
 }
 
@@ -58,7 +59,11 @@ class PartDetailsView(UiPartDetailsPanel):
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_open_pdf)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_show_more_info)
         self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_tooltip)
+        self.data_list.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_open_sku_url)
         
+        self.data_list.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.on_open_sku_url)
+
+
         log_target = SilentLogTarget()
         wx.Log.SetActiveTarget(log_target)
         
@@ -98,6 +103,24 @@ class PartDetailsView(UiPartDetailsPanel):
                 if not self.pdfurl.startswith('http'):
                     self.pdfurl = 'http:' + self.pdfurl
                 webbrowser.open(self.pdfurl)
+        else:
+            self.logger.debug(f"pdf trigger link error")
+        event.Skip()
+
+
+    def on_open_sku_url(self, event):
+        """Open the linked datasheet PDF on button click."""
+        item = self.data_list.GetSelection()
+        row = self.data_list.ItemToRow(item)
+        if item is None or row == -1:
+            return 
+        col = self.data_list.GetCurrentColumn().GetModelColumn()
+        if col == 1:
+
+            datasheet = self.data_list.GetTextValue(row, 0)
+            if datasheet == _("ProductUrl"): 
+                if "http" in self.sku_url:
+                    webbrowser.open(self.sku_url)
         else:
             self.logger.debug(f"pdf trigger link error")
         event.Skip()
@@ -207,7 +230,17 @@ class PartDetailsView(UiPartDetailsPanel):
 
         self.part_details_data.clear()
         for k, v in parameters.items():
-            val = self.clicked_part.get(k, "-")
+            if k == "sku":
+                _sku = self.clicked_part.get(k, "-")
+                if _sku != "-":
+                    # 类似（https://item.hqchip.com/2500217622.html），
+                    val = "https://item.hqchip.com/"+_sku+ ".html"
+                else:
+                    val = "-"
+                self.sku_url = val
+            else:
+                val = self.clicked_part.get(k, "-")
+
             if val != "null" and val:
                 self.PartDetailsModel.AddRow([v, str(val)])
             else:

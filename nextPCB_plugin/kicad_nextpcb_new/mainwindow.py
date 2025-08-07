@@ -69,10 +69,11 @@ DB_MPN = 3
 DB_MANU = 4
 DB_CATE = 5
 DB_SKU = 6
-DB_QUANT = 7
-DB_BOM = 8
-DB_POS = 9
-DB_SIDE = 10
+DB_PRICE = 7
+DB_QUANT = 8
+DB_BOM = 9
+DB_POS = 10
+DB_SIDE = 11
 
 
 class NextPCBTools(wx.Dialog):
@@ -254,10 +255,12 @@ class NextPCBTools(wx.Dialog):
                 "manufacturer": "",
                 "Category": "",
                 "SKU": "",
+                "price": "",
                 "quantity": "",
+                
             }
         ]
-        
+
         self.last_call_time = 0  # 记录上一次事件触发的时间
         self.throttle_interval = 0.4  # 设置时间间隔，单位为秒
         
@@ -332,7 +335,6 @@ class NextPCBTools(wx.Dialog):
 
     def quit_dialog(self, e):
         """Destroy dialog on close"""
-        #self.Destroy()
         self.EndModal(wx.ID_OK)
 
     def init_store(self):
@@ -413,7 +415,7 @@ class NextPCBTools(wx.Dialog):
         url = "https://www.eda.cn/api/chiplet/kicad/bomComponentsMatch"
         
         try:
-            response = requests.post(url, headers=headers, json=body, timeout= 30)
+            response = requests.post(url, headers=headers, json=body, timeout= 120)
         except requests.exceptions.Timeout as e:
             self.report_part_search_error(_("HTTP request timed out: {error}").format( error=e))
             return
@@ -445,15 +447,31 @@ class NextPCBTools(wx.Dialog):
                     manu_id = batch_part[4].get("manufacturer_id", {})
                     mpn = batch_part[4].get("mpn", {})
                     
-                    body_value = (f"{manu_id}-{mpn}")
+                    body_value = {
+                        "customerSupply": "0",
+                        "id": manu_id,
+                        "mpn": mpn,
+                        "location": "SW1,SW2",
+                        "qty": 10
+                    }
                     request_bodys.append(body_value)
-
-
-        body = request_bodys
-        url = "https://www.eda.cn/api/chiplet/kicad/searchSupplyChain"
         
+        bomNumber = len(request_bodys)
+        body = {
+            "bomNumber": bomNumber,
+            "list": request_bodys,
+        }
+
+        # 定义请求的参数
+        params = {
+            "appid": "j1LWf238",
+            "timestamp": "1681810983",
+            "signature": "8e02b899be91b77dc140dfc2388dde95"
+        }
+        url = "https://smtapi.nextpcb.com/nextpcb/pcba/bom/inquiry"
+
         try:
-            response = requests.post(url, headers=headers, json=body, timeout=30)
+            response = requests.post(url, headers=headers, params=params, json=body, timeout = 120)
         except requests.exceptions.Timeout as e:
             self.report_part_search_error(
                 _("HTTP request timed out: {error}").format( error=e)
@@ -474,22 +492,29 @@ class NextPCBTools(wx.Dialog):
         # if not res_datas:
         #     wx.MessageBox( _("No corresponding data was matched") )
             
+
         for batch_part in unmanaged_parts:
-            match_list = [None, None, None, None, None, None, None]
+            match_list = [None, None, None, None, None, None, None, None]
             if len(batch_part) >= 5:
                 sku = "-"
+                price = "-"
+                prices_stair = "-"
                 for data in res_datas:
-                    if data.get("mpn") ==  batch_part[4].get("mpn") and data.get("vendor") == "hqself":
-                        sku = data.get("sku", "-") 
+                    if data.get("mpn") ==  batch_part[4].get("mpn"):
+                        sku = data.get("goodsId", "-") or "-"
+                        price = str( data.get("price", "-") or "-" )
+
                         break 
                 batch_part[4]["sku"] = sku
-
+                # batch_part[4]["price"] = prices_stair
+                batch_part[4]["price"] = price
                 match_list[0] = batch_part[0]
                 match_list[1] = batch_part[4].get("mpn", "-")
                 match_list[2] = batch_part[4].get("manufacturer", "-")
                 match_list[3] = batch_part[4].get("category", "-")
                 match_list[4] = batch_part[4].get("sku", "-")
-                match_list[5] = batch_part[4]
+                match_list[5] = batch_part[4].get("price", "-")
+                match_list[6] = batch_part[4]
                 match_lists.append(match_list)
 
         self.batch_update_db_match(match_lists)
@@ -505,10 +530,9 @@ class NextPCBTools(wx.Dialog):
             self.store.set_batch_bom_match(matched_lists)
             threading.Thread(target= self.download_and_cache_image ,args=(matched_lists, ) ).start()
 
-
     def download_and_cache_image(self, matched_lists):
         for matched_list in matched_lists :
-            image_url  =  matched_list[5].get("image", {})
+            image_url  =  matched_list[6].get("image", {})
             if image_url:
                 if not image_url.startswith("http:") and not image_url.startswith("https:"):
                     image_url = "https:" + image_url
@@ -518,7 +542,7 @@ class NextPCBTools(wx.Dialog):
                 }
                 content = None
                 try:
-                    response = requests.get(image_url, headers=header, timeout = 10)
+                    response = requests.get(image_url, headers=header, timeout = 30)
                     response.raise_for_status()  # Raises an HTTPError for bad responses
                     content = response.content
                 except requests.exceptions.RequestException as e:
@@ -543,7 +567,7 @@ class NextPCBTools(wx.Dialog):
         """Assign a selected nextPCB number to parts"""
         if len(e.references) == 1 and isinstance(e.references[0], str):
             detail = e.selected_part_detail
-            match_list =[e.mpn, e.manufacturer, e.category, e.sku, e.selected_part_detail]
+            match_list =[e.mpn, e.manufacturer, e.category, e.sku, e.price, e.selected_part_detail]
             self.store.set_bom_match_ref( e.references[0],match_list )
         self.populate_footprint_list()
 
@@ -560,7 +584,6 @@ class NextPCBTools(wx.Dialog):
         """Populate/Refresh list of footprints."""
         if not self.store:
             self.init_store()
-        # self.footprint_list.DeleteAllItems()
         toogles_dict = {
             0: False,
             1: True,
@@ -579,7 +602,8 @@ class NextPCBTools(wx.Dialog):
                 part[DB_MANU] = (part[DB_MANU].split(","))[0]
                 part[DB_CATE] = (part[DB_CATE].split(","))[0]
                 part[DB_SKU] = part[DB_SKU]
-                part[DB_QUANT] = part[DB_QUANT]
+                part[DB_PRICE] = part[DB_PRICE]
+                
                 part[DB_BOM] = 0 if "0" in part[DB_BOM].split(",") else 1
                 part[DB_POS] = 0 if "0" in part[DB_POS].split(",") else 1
                 part[DB_SIDE] = (
@@ -587,27 +611,26 @@ class NextPCBTools(wx.Dialog):
                     if ("top" in part[DB_SIDE]) and ("bottom" in part[DB_SIDE])
                     else (part[DB_SIDE].split(","))[0]
                 )
+            part[DB_QUANT] = str( part[DB_QUANT] )
             part[DB_BOM] = toogles_dict.get(part[DB_BOM], toogles_dict.get(1))
             part[DB_POS] = toogles_dict.get(part[DB_POS], toogles_dict.get(1))
             if "," not in part[0]:
                 side = "top" if fp.GetLayer() == 0 else "bottom"
                 self.store.set_part_side(part[0], side)
                 part[DB_SIDE] = side
-            part.insert(11, "")
+            part.insert(12, "")
             parts.append(part)
         new_parts = []
         for idx, part in enumerate(parts, start=1):
             part.insert(0, f"{idx}")
-            part[8] = str(part[8])
+
             if self.selected_page_index == 1 and part[4]:
                 continue
             else:
                 new_parts.append(part)
-                
         self.FootprintListModel = FootprintListModel( new_parts )
         self.footprint_list.AssociateModel(self.FootprintListModel)
         self.Layout()  
-
 
 
     def on_sort_footprint_list(self, e):
@@ -667,13 +690,12 @@ class NextPCBTools(wx.Dialog):
             mpn = self.footprint_list.GetTextValue(row, 4)
             if mpn:
                 if refs:
-                    match_list =['', '', '', '', '']
+                    match_list =['', '', '', '', '', '']
                     self.store.set_bom_match_ref( refs,match_list )
                     self.store.set_bom( refs, True )
                     self.store.set_pos( refs, True )
                     self.store.set_cache_image( refs, None )
         self.populate_footprint_list()
-
 
     def select_alike(self, e):
         """Select all parts that have the same value and footprint."""
@@ -788,6 +810,7 @@ class NextPCBTools(wx.Dialog):
         part += str(self.footprint_list.GetTextValue(row, 5)) + "\n"
         part += str(self.footprint_list.GetTextValue(row, 6)) + "\n"
         part += str(self.footprint_list.GetTextValue(row, 7)) + "\n"
+        part += str(self.footprint_list.GetTextValue(row, 8)) + "\n"
         ref = self.footprint_list.GetTextValue(row, 1).split(",")[0]
         detail = self.store.get_part_detail(ref)[0]
         part += str( detail )

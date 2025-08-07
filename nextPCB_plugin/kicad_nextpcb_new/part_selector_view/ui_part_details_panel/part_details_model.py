@@ -43,11 +43,13 @@ class PartDetailsModel(dv.DataViewIndexListModel):
     
     
     def GetAttrByRow(self, row, col, attr):
-        ##self.log.write('GetAttrByRow: (%d, %d)' % (row, col))
-        if col == 0 and row == 8 and self.data[row][col] == _("Show more"):
-            attr.SetColour('blue')  # Set unit color
+        # print('GetAttrByRow: (%d, %d)' % (row, col))
+        if col == 0 and self.data[row][col] == _("Show more"):
+            attr.SetColour('blue')  
             return True
-
+        if col == 1 and( row == 5 or row == 6):
+            attr.SetColour('blue')  
+            return True
         return False
 
     # This method is called when the user edits a data item in the view.
