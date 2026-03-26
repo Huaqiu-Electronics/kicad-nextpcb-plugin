@@ -304,7 +304,7 @@ class AssignedPartView(UiAssignedPartPanel):
             if not response.json():
                 wx.MessageBox( _("No corresponding sku data was matched") )
             
-            self.PartDetailsModel.DeleteRows( [row] )
+            self.PartDetailsModel.DeleteRows( [7] )
             extraction_datas =  res_datas.get("groupAttrInfoVOList", {})
             for res_data in extraction_datas:
                 for data in res_data.get("attrInfoVO", "-"):

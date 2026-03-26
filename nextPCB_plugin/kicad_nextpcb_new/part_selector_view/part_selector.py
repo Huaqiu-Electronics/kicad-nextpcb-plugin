@@ -323,7 +323,7 @@ class PartSelectorDialog(wx.Dialog):
 
         # 定义请求的参数
         params = {
-            "appid": "j1LWf238",
+            "appid": "7d1b25dce0b410dc588181713afe3465",
             "timestamp": "1681810983",
             "signature": "8e02b899be91b77dc140dfc2388dde95"
         }
