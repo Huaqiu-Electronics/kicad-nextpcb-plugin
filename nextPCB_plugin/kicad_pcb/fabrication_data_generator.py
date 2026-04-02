@@ -320,8 +320,9 @@ class FabricationDataGenerator:
             os.path.join(self.output_dir, bomname), "w", newline="", encoding="utf-8"
         ) as csvfile:
             writer = csv.writer(csvfile, delimiter=",")
-            writer.writerow(["Value", "Designator", "Footprint", "MPN"])
-            for part in self.parent.store.read_bom_parts():
+            writer.writerow(["Designator", "Quantity", "MPN", "manufacturer", "Package/Footprint", "Description", "Procurement Type", "Customer Note"])
+            self.parts = self.parent.store.export_parts_by_group()
+            for part in self.parts:
                 writer.writerow(part)
         self.logger.info("Finished generating BOM file")
 

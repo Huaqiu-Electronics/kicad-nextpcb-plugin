@@ -260,6 +260,19 @@ class NextPCBTools(wx.Dialog):
                 
             }
         ]
+        self.bom_next = [
+            {
+                "Designator": "",
+                "Quantity": "",
+                "MPN": "",
+                "manufacturer": "",
+                "Package/Footprint": "",
+                "Description": "",
+                "Procurement Type": "",
+                "Customer Note": "",
+                
+            }
+        ]
 
         self.last_call_time = 0  # 记录上一次事件触发的时间
         self.throttle_interval = 0.4  # 设置时间间隔，单位为秒
@@ -932,7 +945,7 @@ class NextPCBTools(wx.Dialog):
         self.parts = self.store.export_parts_by_group()
         temp_dir = os.path.join(self.file_path, "nextpcb")
         bomFileName = "BOM_" + schematic_name + ".csv"
-        if len(self.bom) > 0:
+        if len(self.bom_next) > 0:
             with open(
                 (os.path.join(temp_dir, bomFileName)),
                 "w",
@@ -941,7 +954,7 @@ class NextPCBTools(wx.Dialog):
             ) as outfile:
                 csv_writer = csv.writer(outfile)
                 # writing headers of CSV file
-                csv_writer.writerow(self.bom[0].keys())
+                csv_writer.writerow(self.bom_next[0].keys())
                 # Output all of the component information
                 for component in self.parts:
                     csv_writer.writerow(component)
