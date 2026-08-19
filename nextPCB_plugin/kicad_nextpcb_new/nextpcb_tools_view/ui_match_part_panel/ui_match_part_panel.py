@@ -35,7 +35,7 @@ class UiMatchPartPanel ( wx.Panel ):
 
 		bSizer1.Add( ( 0, 0), 2, wx.EXPAND, 5 )
 
-		self.export_csv = wx.Button( self, wx.ID_ANY, _(" Epxort... "), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.export_csv = wx.Button( self, wx.ID_ANY, _(" Export... "), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer1.Add( self.export_csv, 0, wx.ALL, 5 )
 
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
